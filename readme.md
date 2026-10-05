@@ -2,14 +2,20 @@
 
 This simple application shows how many days have passed since last Tuesday. As I write this on Monday, October 5, it indicates the number of days it took my dad to get me the AirPods Max 2 early. It also includes a second timer counting down to my birthday, showing the actual time remaining. When November 12, 2026 arrives, the application stops working.
 
-## How the page flows
+## How the page flows (v1.1)
 
-After the "Who are you?" menu (My dad / My mom / Both of us / Custom), the page reads like a story, one numbered step at a time:
+The page opens in a plain black-and-white look with the "Who are you?" menu:
+
+1. **Who are you?** My dad / My mom / Both of us / Custom. **Custom** asks for their name.
+2. **The message**: a personal message for that person.
+3. **Pick a theme**: **Standard** (the original blue look) or **Classic** (old parchment, like the U.S. Constitution). An animation reveals the chosen theme.
+4. **The intro**: "Hey, [name], let me run a few things to show why this site exists," followed by quick answers to *What is it?*, *What is it for?*, *Why not just ask again?* and *How does it work?*
+5. **Start the story**, which leads into the page, one numbered step at a time:
 
 1. **Why I need them**: the reasons (collapsible).
 2. **What it changes**: right now vs. with AirPods Max 2.
 3. **How long it's been**: days since I asked, birthday countdown, and Key Dates.
-4. **The cost**: The Math. Type the price and Q1 money to get cost per day/hour.
+4. **The cost**: The Math. The price starts at **$549, Apple's max price** for AirPods Max 2 (change `DEFAULT_PRICE` in `index.html`). Type a cheaper price and Q1 money to get cost per day/hour.
 5. **Your questions**: Excuse Busters, 14 objections answered.
 6. **Gut check**: the "Would You?" quiz.
 7. **My side of the deal**: my promises and a contract the parent can sign.

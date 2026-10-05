@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AirPods Max 2 Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,800;1,400&family=IM+Fell+English+SC&family=Pinyon+Script&display=swap" rel="stylesheet">
   <script>
     // Apply saved/system theme before paint to avoid a flash
     (function () {
@@ -282,6 +285,100 @@
     .done-banner small { display: block; font-size: 17px; font-weight: 600; margin-top: 4px; opacity: 0.85; }
     @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
     body.is-done .big.green { animation: pulse 1.6s ease-in-out infinite; }
+
+    /* ---- v1.1 themes: plain (before choosing), standard, classic ---- */
+    /* Plain: black and white until a theme is picked */
+    :root body.theme-plain {
+      --blue: #000; --blue-soft: #e5e5e5; --blue-text: #000;
+      --orange: #000; --red: #000; --green: #000; --green-soft: #f5f5f5;
+      --bg: #fff; --card: #fff; --border: #000; --row: #fff;
+      --text: #000; --muted: #444; --heading: #000;
+      --overlay: rgba(255, 255, 255, 0.55);
+      --shadow: none;
+    }
+    body.theme-plain .bg { display: none; }
+    body.theme-plain header { background: #000; animation: none; }
+    body.theme-plain .modal { border-color: #000; box-shadow: 8px 8px 0 #000; }
+    body.theme-plain .modal p.hint { background: #f2f2f2; }
+
+    /* Classic: aged parchment, like the U.S. Constitution */
+    :root body.theme-classic {
+      --blue: #7a2e1a; --blue-soft: #ead8b0; --blue-text: #5a2112;
+      --orange: #8a5a12; --red: #8b1e1e; --green: #3f6b2a; --green-soft: #e3e6c8;
+      --bg: #efe2c2;
+      --blob1: rgba(139, 90, 43, 0.20); --blob2: rgba(120, 72, 30, 0.14); --blob3: rgba(90, 50, 20, 0.12);
+      --card: rgba(250, 242, 222, 0.9); --border: #c4a878; --row: #f3e6c8;
+      --text: #2f2214; --muted: #6e5a3c; --heading: #4a3720;
+      --overlay: rgba(60, 40, 20, 0.45);
+      --shadow: 0 10px 28px rgba(70, 45, 15, 0.18);
+    }
+    :root[data-theme="dark"] body.theme-classic {
+      --blue: #e0a96d; --blue-soft: #4a3220; --blue-text: #f3dcb8;
+      --orange: #e2b25a; --red: #e08070; --green: #a8c47a; --green-soft: #2f3a1e;
+      --bg: #1e160e;
+      --blob1: rgba(224, 169, 109, 0.12); --blob2: rgba(180, 120, 60, 0.10); --blob3: rgba(140, 80, 40, 0.10);
+      --card: rgba(42, 31, 20, 0.88); --border: #5a4228; --row: #33261a;
+      --text: #f0e2c8; --muted: #b9a582; --heading: #e8d5b0;
+      --overlay: rgba(10, 6, 2, 0.65);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    }
+    body.theme-classic {
+      font-family: "EB Garamond", Georgia, "Times New Roman", serif;
+      background-image:
+        radial-gradient(ellipse at 20% 10%, rgba(255, 255, 255, 0.25), transparent 60%),
+        radial-gradient(ellipse at 85% 90%, rgba(120, 72, 30, 0.12), transparent 55%);
+      background-attachment: fixed;
+    }
+    body.theme-classic h1, body.theme-classic h2, body.theme-classic h3,
+    body.theme-classic .sec-title, body.theme-classic .kicker, body.theme-classic .badge,
+    body.theme-classic .status, body.theme-classic .t-label, body.theme-classic .reasons-toggle {
+      font-family: "IM Fell English SC", "EB Garamond", Georgia, serif;
+      letter-spacing: 0.5px;
+    }
+    body.theme-classic:not(.is-done) header {
+      background: linear-gradient(180deg, #f6ecd2, #e6d3a8);
+      color: #2f2214;
+      border: 3px double #8b6a3e;
+      animation: none;
+    }
+    :root[data-theme="dark"] body.theme-classic:not(.is-done) header { background: linear-gradient(180deg, #3a2a1a, #2a1d10); color: #f0e2c8; border-color: #8b6a3e; }
+    body.theme-classic header h1 { font-family: "Pinyon Script", "IM Fell English SC", cursive; font-size: 46px; font-weight: 400; letter-spacing: 0; }
+    body.theme-classic .card, body.theme-classic .modal { border-style: double; border-width: 4px; }
+    body.theme-classic .bar > div { background: linear-gradient(90deg, var(--blue), #b8860b, var(--blue)); background-size: 200% 100%; }
+    :root body.theme-classic .bubble { background: var(--card); }
+    body.theme-classic .modal h2 { font-family: "Pinyon Script", "IM Fell English SC", cursive; font-weight: 400; font-size: 44px; }
+
+    /* Theme reveal animation */
+    .theme-wipe {
+      position: fixed; inset: 0; z-index: 80;
+      display: grid; place-items: center; text-align: center;
+      pointer-events: none;
+    }
+    .theme-wipe .w-ico { font-size: 72px; }
+    .theme-wipe .w-title { font-size: 40px; font-weight: 800; margin-top: 8px; }
+    .theme-wipe .w-sub { font-size: 16px; opacity: 0.8; margin-top: 4px; letter-spacing: 2px; text-transform: uppercase; }
+    .theme-wipe > div { animation: pop 0.6s 0.25s cubic-bezier(.2, 1.4, .4, 1) both; }
+    .theme-wipe.standard { background: linear-gradient(120deg, #1d4ed8, #2563eb, #3b82f6); color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    .theme-wipe.classic {
+      background: radial-gradient(ellipse at center, #f7eed6 0%, #ead7ad 70%, #d9bf8a 100%);
+      color: #2f2214;
+      font-family: "IM Fell English SC", Georgia, serif;
+    }
+    .theme-wipe.classic .w-title { font-family: "Pinyon Script", cursive; font-weight: 400; font-size: 64px; }
+
+    /* Intro Q&A inside the menu */
+    .modal { max-height: calc(100vh - 32px); overflow-y: auto; }
+    .qa { text-align: left; display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
+    .qa div { background: var(--row); border: 2px solid var(--border); border-radius: 10px; padding: 12px 14px; animation: rise 0.5s ease both; }
+    .qa b { display: block; color: var(--blue); margin-bottom: 4px; }
+    .qa p { font-size: 16px !important; margin: 0 !important; line-height: 1.5; }
+    .name-input {
+      font: inherit; font-size: 20px; font-weight: 700;
+      width: 100%; padding: 12px 14px; margin-bottom: 16px;
+      border: 2px solid var(--border); border-radius: 10px;
+      background: var(--row); color: var(--text);
+    }
+    .name-input:focus { outline: none; border-color: var(--blue); }
 
     .confetti { position: fixed; inset: 0; pointer-events: none; z-index: -1; overflow: hidden; }
     .confetti i {
@@ -691,7 +788,7 @@
     }
   </style>
 </head>
-<body>
+<body class="theme-plain">
   <div class="bg"><span></span><span></span><span></span></div>
   <div class="scroll-bar" id="scrollBar"></div>
   <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
@@ -817,9 +914,9 @@
       </div>
       <section class="card left">
         <div class="sec-title">🧮 The Math</div>
-        <div class="sec-sub">Type the price from the sellers spreadsheet. It does the rest.</div>
+        <div class="sec-sub">The price starts at <strong>$549, Apple's max price</strong> for AirPods Max 2. Found it cheaper on the sellers spreadsheet? Type that in instead. It does the rest.</div>
         <div class="calc-inputs">
-          <label>Price<span class="money"><span>$</span><input id="price" inputmode="decimal" placeholder="0"></span></label>
+          <label>Price<span class="money"><span>$</span><input id="price" inputmode="decimal" placeholder="549" value="549"></span></label>
           <label>My Q1 money<span class="money"><span>$</span><input id="q1" inputmode="decimal" placeholder="0"></span></label>
         </div>
         <div class="calc-out">
@@ -841,7 +938,7 @@
         <div class="sec-title">🛡️ Excuse Busters</div>
         <div class="sec-sub">Every reason to wait, answered. Tap one.</div>
       <div class="excuses" id="excuses">
-        <details class="excuse"><summary>"They're too expensive."</summary><p>My <strong>Q1 grade money</strong> goes toward it, and used every day it's <strong>cents per day</strong>. Check The Math above.</p></details>
+        <details class="excuse"><summary>"They're too expensive."</summary><p>Even at <strong>$549 (Apple's max price)</strong>, my <strong>Q1 grade money</strong> goes toward it, and used every day it's <strong>cents per day</strong>. Check The Math above.</p></details>
         <details class="excuse"><summary>"Just wait until your birthday."</summary><p>Buying now <strong>only shifts the date</strong>, it doesn't add cost. Waiting just means <strong>more school days</strong> without real headphones.</p></details>
         <details class="excuse"><summary>"Just use your IEMs."</summary><p>They're <strong>built for gaming at home</strong> and the cord is <strong>super long</strong>. They don't work for school.</p></details>
         <details class="excuse"><summary>"Use the AirPod that still works."</summary><p>One ear for a whole school day isn't the same. Half the audio, all day, every day. <strong>Would you do it?</strong></p></details>
@@ -1103,41 +1200,157 @@
     });
     syncToggle();
 
-    // ---- "Who are you?" menu ----
-    function closeOverlay() {
-      const o = $("overlay");
-      o.classList.add("closing");
-      setTimeout(() => o.remove(), 300);
-    }
-    $("modal").addEventListener("click", e => {
-      const btn = e.target.closest("button");
-      if (!btn) return;
-      if (btn.dataset.close) return closeOverlay();
-      const who = btn.dataset.who;
-      startBubbles(who);
-      $("parentWord").textContent = { dad: "Dad", mom: "Mom", both: "Mom & Dad" }[who] || "my parent";
-      $("signName").placeholder = { dad: "Dad, sign here", mom: "Mom, sign here", both: "Mom & Dad, sign here" }[who] || "Sign here";
-      if (!MESSAGES[who]) return closeOverlay(); // Custom: no message
-      if (!DONE) $("tagline").textContent = TAGLINES[who];
+    // ---- "Who are you?" menu → message → theme → intro → story ----
+    const NAMES = { dad: "Dad", mom: "Mom", both: "Mom & Dad" };
+    const INTRO_QA = [
+      ["What is it?", "A site I built with one job: getting me the AirPods Max 2. It counts the days since I asked, counts down to my birthday, and keeps every reason in one place."],
+      ["What is it for?", "Instead of nagging you every day, the whole pitch lives here: why I need them, what changes, what it costs, your questions answered, and my side of the deal."],
+      ["Why not just ask again?", "I did, on Tuesday, September 29. Pitches can be hit or miss. This one doesn't forget anything, and you can read it at your own pace."],
+      ["How does it work?", "It's a story in 8 short steps. Read from top to bottom and it ends with one simple question."]
+    ];
+    const viewer = { who: null, name: "" };
+    const el = (tag, cls, text) => {
+      const e = document.createElement(tag);
+      if (cls) e.className = cls;
+      if (text != null) e.textContent = text;
+      return e;
+    };
+    const actionBtn = (act, label, primary) => {
+      const b = el("button", "btn" + (primary ? " primary" : ""), label);
+      b.dataset.act = act;
+      return b;
+    };
+    function showScreen(...nodes) {
       const modal = $("modal");
-      modal.innerHTML = "";
-      const h = document.createElement("h2");
-      h.textContent = HEADINGS[who];
-      const p = document.createElement("p");
-      p.textContent = DONE ? DONE_MESSAGES[who] : MESSAGES[who];
-      const hint = document.createElement("p");
-      hint.className = "hint";
-      hint.textContent = REASONS_HINT;
-      if (DONE) hint.hidden = true;
-      const go = document.createElement("button");
-      go.className = "btn primary";
-      go.dataset.close = "1";
-      go.textContent = "Show me the timer";
-      modal.append(h, p, hint, go);
+      modal.replaceChildren(...nodes);
+      modal.scrollTop = 0;
       modal.style.animation = "none";
       void modal.offsetWidth;
       modal.style.animation = "";
+    }
+    function closeOverlay() {
+      const o = $("overlay");
+      if (!o) return;
+      o.classList.add("closing");
+      setTimeout(() => o.remove(), 300);
+      startBubbles(viewer.who);
+    }
+
+    function nameScreen() {
+      const input = el("input", "name-input");
+      input.id = "nameInput";
+      input.placeholder = "Your name";
+      input.maxLength = 40;
+      input.autocomplete = "given-name";
+      const go = actionBtn("name", "Continue", true);
+      input.addEventListener("keydown", e => { if (e.key === "Enter") go.click(); });
+      showScreen(el("h2", null, "What's your name? 👋"), el("p", null, "So I know who I'm talking to."), input, go);
+      input.focus();
+    }
+
+    function messageScreen() {
+      const { who, name } = viewer;
+      const heading = HEADINGS[who] || `Hey ${name} 👋`;
+      const msg = DONE
+        ? (DONE_MESSAGES[who] || `Party, woo! It's all done. We got it! Thanks for checking in, ${name}. 🎉`)
+        : (MESSAGES[who] || `Hey ${name}! 👋 Thanks for stopping by. I'm trying to get the AirPods Max 2, and this site is how I'm making my case. If you know my parents, you might be able to help. 😉`);
+      const hint = el("p", "hint", REASONS_HINT);
+      hint.hidden = !!DONE;
+      showScreen(el("h2", null, heading), el("p", null, msg), hint, actionBtn("toTheme", "Next: pick a theme 🎨", true));
+    }
+
+    function themeScreen() {
+      const choices = el("div", "choices");
+      const std = el("button", "btn", "Standard");
+      std.dataset.theme = "standard";
+      std.append(el("small", null, "Blue and modern, the original look"));
+      const cls = el("button", "btn", "Classic");
+      cls.dataset.theme = "classic";
+      cls.append(el("small", null, "Old parchment, like the U.S. Constitution 📜"));
+      choices.append(std, cls);
+      showScreen(el("h2", null, "Pick a theme 🎨"), el("p", null, "This page starts plain. How do you want to read it?"), choices);
+    }
+
+    function introScreen() {
+      if (DONE) return closeOverlay(); // nothing left to pitch
+      const qa = el("div", "qa");
+      INTRO_QA.forEach(([q, a], i) => {
+        const d = el("div");
+        d.style.animationDelay = (0.15 + i * 0.25) + "s";
+        d.append(el("b", null, q), el("p", null, a));
+        qa.append(d);
+      });
+      showScreen(
+        el("h2", null, `Hey, ${viewer.name} 👋`),
+        el("p", null, "Let me run a few things to show why this site exists."),
+        qa,
+        actionBtn("close", "Start the story 📖", true)
+      );
+    }
+
+    // Reveal the chosen theme with an animation, then move on to the intro
+    function applyTheme(theme, x, y) {
+      const swap = () => {
+        document.body.classList.remove("theme-plain", "theme-standard", "theme-classic");
+        document.body.classList.add("theme-" + theme);
+      };
+      if (matchMedia("(prefers-reduced-motion: reduce)").matches || !Element.prototype.animate) {
+        swap();
+        return introScreen();
+      }
+      const w = el("div", "theme-wipe " + theme);
+      const inner = el("div");
+      inner.append(
+        el("div", "w-ico", theme === "classic" ? "📜" : "🎧"),
+        el("div", "w-title", theme === "classic" ? "We the People" : "Standard"),
+        el("div", "w-sub", theme === "classic" ? "Classic theme" : "Theme")
+      );
+      w.append(inner);
+      document.body.append(w);
+      const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+      const frames = theme === "classic"
+        ? [{ clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)" }]   // unrolls like a scroll
+        : [{ clipPath: `circle(0px at ${x}px ${y}px)` }, { clipPath: `circle(${r}px at ${x}px ${y}px)` }];
+      w.animate(frames, { duration: 900, easing: "cubic-bezier(.7, 0, .3, 1)", fill: "forwards" }).finished.then(() => {
+        swap();
+        introScreen();
+        setTimeout(() => {
+          w.animate([{ opacity: 1 }, { opacity: 0, transform: "scale(1.04)" }], { duration: 600, delay: 500, easing: "ease", fill: "forwards" })
+            .finished.then(() => w.remove());
+        });
+      });
+    }
+
+    $("modal").addEventListener("click", e => {
+      const btn = e.target.closest("button");
+      if (!btn) return;
+      if (btn.dataset.who) {
+        const who = btn.dataset.who;
+        viewer.who = who;
+        if (who === "custom") return nameScreen();
+        viewer.name = NAMES[who];
+        return setViewer();
+      }
+      if (btn.dataset.theme) return applyTheme(btn.dataset.theme, e.clientX || innerWidth / 2, e.clientY || innerHeight / 2);
+      const act = btn.dataset.act;
+      if (act === "name") {
+        const input = $("nameInput");
+        const name = input.value.trim();
+        if (!name) { input.focus(); input.placeholder = "Type your name first 🙂"; return; }
+        viewer.name = name;
+        return setViewer();
+      }
+      if (act === "toTheme") return themeScreen();
+      if (act === "close") return closeOverlay();
     });
+
+    function setViewer() {
+      const { who, name } = viewer;
+      $("parentWord").textContent = NAMES[who] || name;
+      $("signName").placeholder = `${name}, sign here`;
+      if (!DONE) $("tagline").textContent = TAGLINES[who] || `${name}, help me make this happen 🙏`;
+      messageScreen();
+    }
 
     // ---- Collapsible reasons banner (remembers choice) ----
     function setReasons(collapsed) {
@@ -1288,11 +1501,13 @@
     }
 
     // ---- The Math (cost calculator) ----
+    const DEFAULT_PRICE = "549"; // Apple's max price for AirPods Max 2
     const money = (n, cents) => "$" + n.toLocaleString("en-US", { minimumFractionDigits: cents ? 2 : 0, maximumFractionDigits: cents ? 2 : 0 });
     function calc() {
       const price = parseFloat($("price").value.replace(/[^0-9.]/g, "")) || 0;
       const q1 = parseFloat($("q1").value.replace(/[^0-9.]/g, "")) || 0;
       try { localStorage.setItem("calc", JSON.stringify([$("price").value, $("q1").value])); } catch (e) {}
+      const isApplePrice = price === +DEFAULT_PRICE;
       if (!price) {
         ["yourShare", "perDay", "perHour"].forEach(id => $(id).textContent = "$—");
         $("calcNote").innerHTML = "Used every day, the cost per day gets <strong>tiny</strong>. Try it.";
@@ -1308,10 +1523,11 @@
       $("calcNote").innerHTML = q1
         ? `My Q1 money covers <strong>${Math.round(Math.min(100, q1 / price * 100))}%</strong>. Your part works out to about <strong>${cents}¢ a day</strong>. Less than a snack. 🍪`
         : `That's about <strong>${cents}¢ a day</strong> for something I use every single day. 🍪`;
+      if (isApplePrice) $("calcNote").innerHTML += ` <br><small>Using <strong>$549</strong>, Apple's max price. Most sellers are cheaper.</small>`;
     }
     try {
       const saved = JSON.parse(localStorage.getItem("calc") || "null");
-      if (saved) { $("price").value = saved[0] || ""; $("q1").value = saved[1] || ""; }
+      if (saved) { $("price").value = saved[0] || DEFAULT_PRICE; $("q1").value = saved[1] || ""; }
     } catch (e) {}
     let calcCounted = false;
     $("price").addEventListener("input", () => { if (!calcCounted && $("price").value) { calcCounted = true; addConvinced(15); } });
