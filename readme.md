@@ -16,7 +16,7 @@ After the "Who are you?" menu (My dad / My mom / Both of us / Custom), the page 
 8. **The ask**: the Convinced-o-meter and **"Please buy me them. 🙏"** with YES / (runaway) No.
 
 Also on the page:
-- **Persuasion bubbles** with a pop sound, tailored to who's viewing. The 🔔 button (top-right) turns bubbles and sound off (🔕) or back on. Edit them in the `BUBBLES` list in `index.html`.
+- **Persuasion bubbles** with a pop sound, tailored to who's viewing. The 🔔 button (top-right) turns them on (🔔) or off (🔕); they start off by default. Edit them in the `BUBBLES` list in `index.html`.
 - A floating **🛒 Compare sellers** button opens the retailers spreadsheet (`RETAILERS_URL` in `config.js`).
 - Dark mode toggle, animated background, and a reading-progress bar at the top.
 - **Party mode** once a completion date is set: confetti, "Party, woo! It's all done. We got it!", and only the timers and Key Dates stay.
