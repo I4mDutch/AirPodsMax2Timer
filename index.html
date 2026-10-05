@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AirPods Max 2 Tracker</title>
+  <script>
+    // Apply saved/system theme before paint to avoid a flash
+    (function () {
+      let t = null;
+      try { t = localStorage.getItem("theme"); } catch (e) {}
+      if (!t) t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
   <style>
     :root {
       --blue: #2563eb;
@@ -11,39 +20,123 @@
       --blue-text: #1e40af;
       --orange: #f59e0b;
       --red: #dc2626;
+      --green: #16a34a;
+      --green-soft: #dcfce7;
       --bg: #f1f5f9;
-      --card: #ffffff;
+      --blob1: rgba(37, 99, 235, 0.18);
+      --blob2: rgba(245, 158, 11, 0.14);
+      --blob3: rgba(220, 38, 38, 0.10);
+      --card: rgba(255, 255, 255, 0.86);
       --border: #e2e8f0;
       --row: #f1f5f9;
       --text: #0f172a;
       --muted: #64748b;
+      --heading: #475569;
+      --overlay: rgba(15, 23, 42, 0.55);
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
     }
+    :root[data-theme="dark"] {
+      --blue: #3b82f6;
+      --blue-soft: #1e3a8a;
+      --blue-text: #bfdbfe;
+      --orange: #fbbf24;
+      --red: #f87171;
+      --green: #4ade80;
+      --green-soft: #14532d;
+      --bg: #0b1120;
+      --blob1: rgba(59, 130, 246, 0.22);
+      --blob2: rgba(251, 191, 36, 0.10);
+      --blob3: rgba(248, 113, 113, 0.10);
+      --card: rgba(15, 23, 42, 0.82);
+      --border: #1e293b;
+      --row: #1e293b;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --heading: #cbd5e1;
+      --overlay: rgba(2, 6, 23, 0.7);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
       padding: 36px 16px;
+      overflow-x: hidden;
+      transition: background 0.4s, color 0.4s;
     }
-    .wrap { max-width: 940px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+
+    /* Slowly drifting background blobs */
+    .bg { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+    .bg span {
+      position: absolute;
+      width: 60vmax; height: 60vmax;
+      border-radius: 50%;
+      filter: blur(70px);
+      animation: drift 28s ease-in-out infinite alternate;
+    }
+    .bg span:nth-child(1) { background: var(--blob1); top: -20vmax; left: -15vmax; }
+    .bg span:nth-child(2) { background: var(--blob2); bottom: -25vmax; right: -15vmax; animation-duration: 34s; animation-delay: -8s; }
+    .bg span:nth-child(3) { background: var(--blob3); top: 30%; left: 40%; width: 40vmax; height: 40vmax; animation-duration: 40s; animation-delay: -15s; }
+    @keyframes drift {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(8vmax, 6vmax) scale(1.1); }
+      100% { transform: translate(-6vmax, 10vmax) scale(0.95); }
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 16px; right: 16px;
+      z-index: 20;
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      font-size: 22px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+      transition: transform 0.3s, background 0.4s;
+    }
+    .theme-toggle:hover { transform: rotate(20deg) scale(1.08); }
+
+    .wrap { max-width: 1040px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
 
     header {
-      background: var(--blue);
+      background: linear-gradient(120deg, #2563eb, #1d4ed8, #3b82f6, #2563eb);
+      background-size: 300% 300%;
+      animation: shimmer 12s ease infinite;
       color: #fff;
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 30px 20px;
       text-align: center;
+      box-shadow: var(--shadow);
     }
+    @keyframes shimmer { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
     header h1 { font-size: 34px; font-weight: 800; letter-spacing: -0.5px; }
     header .clock { font-size: 22px; margin-top: 6px; font-variant-numeric: tabular-nums; opacity: 0.95; }
 
     .card {
       background: var(--card);
       border: 2px solid var(--border);
-      border-radius: 12px;
-      padding: 40px 32px;
+      border-radius: 14px;
+      padding: 36px 28px;
       text-align: center;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      transition: transform 0.25s, box-shadow 0.25s, background 0.4s, border-color 0.4s;
+      animation: rise 0.6s ease both;
     }
+    .card:hover { transform: translateY(-3px); }
+    .grid .card:nth-child(2) { animation-delay: 0.1s; }
+    .list { animation-delay: 0.2s; }
+    @keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
     .badge {
       display: inline-block;
       background: var(--blue-soft);
@@ -51,95 +144,178 @@
       font-weight: 700;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      font-size: 17px;
-      padding: 6px 18px;
+      font-size: 15px;
+      padding: 6px 16px;
       border-radius: 6px;
     }
     .status {
-      margin-top: 18px;
+      margin-top: 16px;
       font-weight: 700;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      font-size: 18px;
+      font-size: 16px;
       color: var(--orange);
     }
     .status.red { color: var(--red); }
-    .card h2 { font-size: 44px; font-weight: 800; margin-top: 10px; letter-spacing: -0.5px; }
+    .status.green { color: var(--green); }
+    .card h2 { font-size: 32px; font-weight: 800; margin-top: 8px; letter-spacing: -0.5px; }
     .big {
-      font-size: 96px;
+      font-size: 88px;
       font-weight: 800;
       color: var(--blue);
       line-height: 1.1;
-      margin-top: 10px;
+      margin-top: 8px;
       font-variant-numeric: tabular-nums;
+      animation: pulse 3s ease-in-out infinite;
     }
     .big.red { color: var(--red); }
-    .sub { font-size: 22px; color: var(--muted); margin-top: 8px; font-variant-numeric: tabular-nums; }
+    .big.green { color: var(--green); animation: none; }
+    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+    .sub { font-size: 17px; color: var(--muted); margin-top: 8px; font-variant-numeric: tabular-nums; }
 
-    .bar { height: 12px; background: var(--border); border-radius: 99px; margin-top: 32px; overflow: hidden; }
-    .bar > div { height: 100%; width: 0; background: var(--blue); border-radius: 99px; transition: width 0.5s; }
-    .bar-labels { display: flex; justify-content: space-between; margin-top: 8px; font-size: 14px; color: var(--muted); }
+    .bar { height: 10px; background: var(--border); border-radius: 99px; margin-top: 24px; overflow: hidden; }
+    .bar > div {
+      height: 100%; width: 0; border-radius: 99px;
+      background: linear-gradient(90deg, var(--blue), #60a5fa, var(--blue));
+      background-size: 200% 100%;
+      animation: flow 2.5s linear infinite;
+      transition: width 0.5s;
+    }
+    @keyframes flow { from { background-position: 200% 0; } to { background-position: 0 0; } }
+    .bar-labels { display: flex; justify-content: space-between; margin-top: 8px; font-size: 13px; color: var(--muted); }
+
+    .done-banner {
+      display: none;
+      background: var(--green-soft);
+      color: var(--green);
+      border: 2px solid var(--green);
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 800;
+      animation: rise 0.6s ease both;
+    }
+    body.is-done .done-banner { display: block; }
 
     .list { text-align: left; }
     .list h3 {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: #475569;
-      margin-bottom: 16px;
+      color: var(--heading);
+      margin-bottom: 14px;
     }
     .row {
       display: flex;
       justify-content: space-between;
       gap: 12px;
       background: var(--row);
-      border-radius: 6px;
-      padding: 16px 20px;
-      font-size: 21px;
+      border-radius: 8px;
+      padding: 15px 20px;
+      font-size: 19px;
       margin-top: 8px;
+      transition: transform 0.2s, background 0.4s;
     }
+    .row:hover { transform: translateX(4px); }
     .row span:last-child { font-weight: 600; text-align: right; }
 
     .ended { display: none; }
     body.is-ended .live { display: none; }
     body.is-ended .ended { display: block; }
 
+    /* "Who are you?" menu */
+    .overlay {
+      position: fixed; inset: 0; z-index: 50;
+      background: var(--overlay);
+      backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 16px;
+      animation: fade 0.3s ease both;
+    }
+    .overlay.closing { animation: fadeOut 0.3s ease both; }
+    @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeOut { to { opacity: 0; } }
+    .modal {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 18px;
+      padding: 36px 30px;
+      width: 100%; max-width: 460px;
+      text-align: center;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+      animation: pop 0.4s cubic-bezier(.2, 1.4, .4, 1) both;
+    }
+    @keyframes pop { from { opacity: 0; transform: scale(0.9) translateY(10px); } to { opacity: 1; transform: none; } }
+    .modal h2 { font-size: 32px; font-weight: 800; margin-bottom: 22px; }
+    .modal p { font-size: 19px; line-height: 1.5; margin-bottom: 24px; }
+    .choices { display: flex; flex-direction: column; gap: 12px; }
+    .btn {
+      font: inherit;
+      font-size: 19px;
+      font-weight: 700;
+      padding: 14px 18px;
+      border-radius: 10px;
+      border: 2px solid var(--blue);
+      background: transparent;
+      color: var(--blue);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, transform 0.15s;
+    }
+    .btn:hover { background: var(--blue); color: #fff; transform: translateY(-2px); }
+    .btn.primary { background: var(--blue); color: #fff; }
+    .btn small { display: block; font-size: 13px; font-weight: 500; opacity: 0.8; margin-top: 2px; }
+
+    @media (max-width: 760px) {
+      .grid { grid-template-columns: 1fr; }
+    }
     @media (max-width: 600px) {
       header h1 { font-size: 26px; }
       .card { padding: 28px 18px; }
-      .card h2 { font-size: 30px; }
+      .card h2 { font-size: 26px; }
       .big { font-size: 64px; }
-      .sub, .row { font-size: 17px; }
+      .row { font-size: 16px; }
+      .done-banner { font-size: 19px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
     }
   </style>
 </head>
 <body>
+  <div class="bg"><span></span><span></span><span></span></div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+
   <div class="wrap">
     <header>
       <h1>AirPods Max 2 Tracker</h1>
       <div class="clock" id="clock">--:--:-- --</div>
     </header>
 
-    <!-- Timer 1: days since the ask -->
-    <section class="card live">
-      <span class="badge">"I'm working on it"</span>
-      <div class="status red">Still waiting</div>
-      <h2>Days Since I Asked</h2>
-      <div class="big red" id="sinceDays">0</div>
-      <div class="sub" id="sinceExact">Since Tuesday, September 29, 2026</div>
-    </section>
+    <div class="done-banner" id="doneBanner"></div>
 
-    <!-- Timer 2: countdown to birthday -->
-    <section class="card live">
-      <span class="badge">Birthday Countdown</span>
-      <div class="status">Coming up</div>
-      <h2>Days Until My Birthday</h2>
-      <div class="big" id="untilDays">0</div>
-      <div class="sub" id="untilExact">--</div>
-      <div class="bar"><div id="progress"></div></div>
-      <div class="bar-labels"><span>Sep 29</span><span id="progressPct">0%</span><span>Nov 12</span></div>
-    </section>
+    <div class="grid live">
+      <!-- Timer 1: days since the ask -->
+      <section class="card">
+        <span class="badge">"I'm working on it"</span>
+        <div class="status red" id="sinceStatus">Still waiting</div>
+        <h2>Days Since I Asked</h2>
+        <div class="big red" id="sinceDays">0</div>
+        <div class="sub" id="sinceExact">Since Tuesday, September 29, 2026</div>
+      </section>
+
+      <!-- Timer 2: countdown to birthday -->
+      <section class="card">
+        <span class="badge">Birthday Countdown</span>
+        <div class="status">Coming up</div>
+        <h2>Days Until My Birthday</h2>
+        <div class="big" id="untilDays">0</div>
+        <div class="sub" id="untilExact">--</div>
+        <div class="bar"><div id="progress"></div></div>
+        <div class="bar-labels"><span>Sep 29</span><span id="progressPct">0%</span><span>Nov 12</span></div>
+      </section>
+    </div>
 
     <!-- Shown once Nov 12, 2026 arrives -->
     <section class="card ended">
@@ -149,24 +325,55 @@
       <div class="sub" id="finalSummary"></div>
     </section>
 
-    <!-- Timer 3: details -->
     <section class="card list">
       <h3>Key Dates</h3>
       <div class="row"><span>Asked Dad to start the process</span><span>Tue, 9/29/2026</span></div>
       <div class="row"><span>My Birthday</span><span>11/12</span></div>
       <div class="row"><span>Days Dad has been "working on it"</span><span id="rowSince">0</span></div>
       <div class="row"><span>Days left to deliver</span><span id="rowUntil">0</span></div>
+      <div class="row"><span>Completed on</span><span id="rowDone">Not yet</span></div>
     </section>
   </div>
 
+  <!-- "Who are you?" menu: shown on every visit -->
+  <div class="overlay" id="overlay">
+    <div class="modal" id="modal">
+      <h2>Who are you?</h2>
+      <div class="choices">
+        <button class="btn" data-who="dad">My dad</button>
+        <button class="btn" data-who="mom">My mom</button>
+        <button class="btn" data-who="custom">Custom<small>Someone else, not my mom or my dad</small></button>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // ============================================================
+    //  MARK AS COMPLETED: when the AirPods Max 2 arrive, set this to
+    //  the date as "YYYY-MM-DD", e.g. "2026-10-20". Leave it as null
+    //  while still waiting.
+    // ============================================================
+    const COMPLETED_ON = null;
+
     // Local midnight of each date
     const START = new Date(2026, 8, 29);  // Sep 29, 2026
     const BDAY  = new Date(2026, 10, 12); // Nov 12, 2026 (app stops here)
     const DAY = 86400000;
 
+    const MESSAGES = {
+      dad: "Hey, this is a timer to show how long I've been waiting, because the AirPods Max 2s are really important to me.",
+      mom: "Hey, this is how long my dad has been taking to get the AirPods Max 2s. If I pitch this to you, you might not want to get them for me."
+    };
+
     const $ = id => document.getElementById(id);
     const pad = n => String(n).padStart(2, "0");
+
+    function parseDate(s) {
+      const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || "");
+      return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
+    }
+    const DONE = parseDate(COMPLETED_ON);
+    const fmtDate = d => d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
 
     // Calendar-day difference, safe across DST changes
     function dayDiff(a, b) {
@@ -175,14 +382,69 @@
       return Math.round((ub - ua) / DAY);
     }
 
+    // ---- Theme toggle ----
+    const root = document.documentElement;
+    function syncToggle() { $("themeToggle").textContent = root.dataset.theme === "dark" ? "☀️" : "🌙"; }
+    $("themeToggle").addEventListener("click", () => {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      try { localStorage.setItem("theme", root.dataset.theme); } catch (e) {}
+      syncToggle();
+    });
+    syncToggle();
+
+    // ---- "Who are you?" menu ----
+    function closeOverlay() {
+      const o = $("overlay");
+      o.classList.add("closing");
+      setTimeout(() => o.remove(), 300);
+    }
+    $("modal").addEventListener("click", e => {
+      const btn = e.target.closest("button");
+      if (!btn) return;
+      if (btn.dataset.close) return closeOverlay();
+      const msg = MESSAGES[btn.dataset.who];
+      if (!msg) return closeOverlay(); // Custom: no message
+      const modal = $("modal");
+      modal.innerHTML = "";
+      const h = document.createElement("h2");
+      h.textContent = btn.dataset.who === "dad" ? "Hey Dad 👋" : "Hey Mom 👋";
+      const p = document.createElement("p");
+      p.textContent = msg;
+      const go = document.createElement("button");
+      go.className = "btn primary";
+      go.dataset.close = "1";
+      go.textContent = "Show me the timer";
+      modal.append(h, p, go);
+      modal.style.animation = "none";
+      void modal.offsetWidth;
+      modal.style.animation = "";
+    });
+
+    // ---- Completion state ----
+    if (DONE) {
+      document.body.classList.add("is-done");
+      const took = Math.max(0, dayDiff(START, DONE));
+      $("doneBanner").textContent = `Hey, it's done on ${fmtDate(DONE)}. 🎧`;
+      $("sinceStatus").textContent = "Delivered";
+      $("sinceStatus").className = "status green";
+      $("sinceDays").className = "big green";
+      $("sinceDays").textContent = took;
+      $("sinceExact").textContent = `It took ${took} day${took === 1 ? "" : "s"}, done on ${DONE.toLocaleDateString("en-US")}`;
+      $("rowSince").textContent = took;
+      $("rowDone").textContent = DONE.toLocaleDateString("en-US");
+    }
+
+    // ---- Timers ----
     let timer;
     function tick() {
       const now = new Date();
       $("clock").textContent = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
 
       if (now >= BDAY) {
-        const total = dayDiff(START, BDAY);
-        $("finalSummary").textContent = `It took ${total} days of "I'm working on it" to reach this day.`;
+        const total = dayDiff(START, DONE || BDAY);
+        $("finalSummary").textContent = DONE
+          ? `The AirPods Max 2 arrived on ${fmtDate(DONE)}, after ${total} days.`
+          : `It took ${total} days of "I'm working on it" to reach this day.`;
         $("rowSince").textContent = total;
         $("rowUntil").textContent = 0;
         document.body.classList.add("is-ended");
@@ -190,26 +452,27 @@
         return;
       }
 
-      // Timer 1: days since
-      const since = Math.max(0, dayDiff(START, now));
-      const el = now - START;
-      $("sinceDays").textContent = since;
-      $("sinceExact").textContent = el > 0
-        ? `${since}d ${pad(Math.floor(el / 3600000) % 24)}h ${pad(Math.floor(el / 60000) % 60)}m ${pad(Math.floor(el / 1000) % 60)}s since Tue, Sep 29, 2026`
-        : "Since Tuesday, September 29, 2026";
+      // Timer 1: days since (frozen once completed)
+      if (!DONE) {
+        const since = Math.max(0, dayDiff(START, now));
+        const el = now - START;
+        $("sinceDays").textContent = since;
+        $("sinceExact").textContent = el > 0
+          ? `${since}d ${pad(Math.floor(el / 3600000) % 24)}h ${pad(Math.floor(el / 60000) % 60)}m ${pad(Math.floor(el / 1000) % 60)}s since Tue, Sep 29`
+          : "Since Tuesday, September 29, 2026";
+        $("rowSince").textContent = since;
+      }
 
-      // Timer 2: days until
+      // Timer 2: days until birthday
       const until = dayDiff(now, BDAY);
       const left = BDAY - now;
       $("untilDays").textContent = until;
       $("untilExact").textContent =
-        `${Math.floor(left / DAY)}d ${pad(Math.floor(left / 3600000) % 24)}h ${pad(Math.floor(left / 60000) % 60)}m ${pad(Math.floor(left / 1000) % 60)}s — Thursday, November 12`;
+        `${Math.floor(left / DAY)}d ${pad(Math.floor(left / 3600000) % 24)}h ${pad(Math.floor(left / 60000) % 60)}m ${pad(Math.floor(left / 1000) % 60)}s until Thu, Nov 12`;
 
-      const pct = Math.min(100, Math.max(0, (el / (BDAY - START)) * 100));
+      const pct = Math.min(100, Math.max(0, ((now - START) / (BDAY - START)) * 100));
       $("progress").style.width = pct + "%";
       $("progressPct").textContent = pct.toFixed(1) + "% of the way";
-
-      $("rowSince").textContent = since;
       $("rowUntil").textContent = until;
     }
 
