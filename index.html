@@ -833,7 +833,7 @@
     <!-- The Deal -->
     <section class="card left live">
       <div class="sec-title">📝 The Deal</div>
-      <div class="sec-sub">Pick what I throw in. Then make it official.</div>
+      <div class="sec-sub">Here's everything I'm putting on the table. Make it official.</div>
       <div class="deal">
         <ul class="offers" id="offers"></ul>
         <div class="contract" id="contract">
@@ -967,7 +967,7 @@
         "My IEMs are for gaming at home, and the cord is SO long. Not school-friendly at all. 😩",
         "Look at the Before/After on the page. Which version of my school day do you want for me? 🥺",
         "{school} days without real headphones at school. That's a lot of half-heard lessons. 📚",
-        "I even offered extra chores in The Deal. Go see. 🧽",
+        "I promised good Q2 grades AND no asking for stuff until my birthday. It's in The Deal. 📝",
         "One signature, one click on the sellers list, and you're the hero of this story. 🦸‍♀️"
       ],
       both: [
@@ -1311,12 +1311,10 @@
     // Things I offer on top. Edit freely; checked ones go into the agreement.
     const OFFERS = [
       ["Put my Q1 grade money toward the cost", true, true],
-      ["Take care of them and keep them in the custom case", true, true],
-      ["Use them every day (that's the whole point)", true, true],
-      ["Do the dishes for a week", false],
-      ["Take out the trash for two weeks", false],
-      ["Keep my grades up all of Q2", false],
-      ["Stop asking about headphones. Forever. 😇", false]
+      ["Take care of them", true, true],
+      ["Use them daily", true, true],
+      ["Get good Q2 / Semester 1 grades", true, true],
+      ["Stop asking for stuff, for real, until my birthday", true, true]
     ];
     function renderTerms() {
       $("contractTerms").innerHTML = "";
@@ -1331,7 +1329,7 @@
       li.innerHTML = '<label><input type="checkbox"><span></span></label>';
       const c = li.querySelector("input");
       c.checked = checked; c.disabled = !!locked; c.dataset.text = text;
-      li.querySelector("span").textContent = text + (locked ? " (included)" : "");
+      li.querySelector("span").textContent = text;
       c.addEventListener("change", () => { renderTerms(); if (c.checked) addConvinced(5); });
       $("offers").appendChild(li);
     });

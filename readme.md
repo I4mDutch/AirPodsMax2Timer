@@ -13,7 +13,7 @@ This simple application shows how many days have passed since last Tuesday. As I
 - **Right Now vs. With AirPods Max 2**: a before/after comparison.
 - **Excuse Busters**: 14 common objections, each with an answer.
 - **Would You?**: a 4-question quiz with obvious answers.
-- **The Deal**: pick extra offers (chores, grades...) and the parent signs an official agreement, which gets an APPROVED stamp. Edit the offers in the `OFFERS` list in `index.html`.
+- **The Deal**: five promises (Q1 money, take care of them, use them daily, good Q2/Semester 1 grades, stop asking for stuff until my birthday); the parent signs and it gets an APPROVED stamp. Edit them in the `OFFERS` list in `index.html`.
 - **Convinced-o-meter**: fills up as they bust excuses, use The Math, open the sellers list, and answer bubbles. At 100% it points them to YES.
 - **Decision Time**: "So... can we order them?" The YES button celebrates; the No button runs away.
 - **Menu** also has *Both of us* for when Mom and Dad look together.
