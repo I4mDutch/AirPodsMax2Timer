@@ -307,7 +307,7 @@
       margin-bottom: 18px;
     }
     .list h3::after { content: ""; flex: 1; height: 3px; border-radius: 3px; background: linear-gradient(90deg, var(--blue), transparent); }
-    .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
+    .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
     .tile {
       position: relative;
       display: flex; flex-direction: column; gap: 6px;
@@ -393,6 +393,96 @@
     @keyframes dot { 0%, 60%, 100% { opacity: 0.3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-3px); } }
     body.is-done .bubbles, body.is-ended .bubbles { display: none; }
 
+    /* Floating "compare sellers" quick link (bottom-right) */
+    .shop-fab {
+      position: fixed; right: 16px; bottom: 16px; z-index: 30;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 20px;
+      border-radius: 99px;
+      background: linear-gradient(120deg, #16a34a, #22c55e);
+      color: #fff; font-weight: 800; font-size: 16px;
+      text-decoration: none;
+      box-shadow: 0 12px 28px rgba(22, 163, 74, 0.45);
+      transition: transform 0.2s;
+      animation: nudge 6s ease-in-out infinite;
+    }
+    .shop-fab:hover { transform: translateY(-3px) scale(1.04); }
+    @keyframes nudge { 0%, 88%, 100% { transform: none; } 91% { transform: rotate(-4deg) scale(1.05); } 94% { transform: rotate(4deg) scale(1.05); } 97% { transform: rotate(-2deg); } }
+    body.is-done .shop-fab, body.is-ended .shop-fab { display: none; }
+    .shop-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 18px; border-radius: 10px;
+      background: var(--green); color: #fff;
+      font-weight: 800; text-decoration: none;
+      transition: transform 0.2s, filter 0.2s;
+    }
+    :root[data-theme="dark"] .shop-btn { color: #052e16; }
+    .shop-btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
+    .reasons-cta { margin-top: 14px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 15px; color: var(--muted); }
+
+    /* Section titles shared by new cards */
+    .sec-title { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
+    .sec-sub { color: var(--muted); font-size: 15px; margin-bottom: 18px; }
+    .grid .card.left { text-align: left; }
+
+    /* Cost calculator */
+    .calc-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    .calc-inputs label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); }
+    .money { display: flex; align-items: center; background: var(--row); border: 2px solid var(--border); border-radius: 10px; padding: 0 12px; transition: border-color 0.2s; }
+    .money:focus-within { border-color: var(--blue); }
+    .money span { font-weight: 800; color: var(--muted); }
+    .money input { all: unset; width: 100%; padding: 12px 6px; font-size: 20px; font-weight: 800; color: var(--text); }
+    .calc-out { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .stat { background: var(--row); border-radius: 10px; padding: 12px; text-align: center; }
+    .stat b { display: block; font-size: 24px; font-weight: 800; color: var(--green); font-variant-numeric: tabular-nums; }
+    .stat small { font-size: 12px; color: var(--muted); font-weight: 600; }
+    .calc-note { margin-top: 14px; font-size: 15px; line-height: 1.5; }
+    .calc-note strong { color: var(--green); }
+
+    /* Promises */
+    .promises { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .promises li {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: var(--row); border-radius: 10px; padding: 12px 14px;
+      font-size: 16px; line-height: 1.4;
+      opacity: 0; animation: rise 0.5s ease both;
+    }
+    .promises li::before { content: "✔"; flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--green); color: #fff; display: grid; place-items: center; font-size: 13px; font-weight: 900; }
+    .promises li:nth-child(1) { animation-delay: 0.3s; }
+    .promises li:nth-child(2) { animation-delay: 0.45s; }
+    .promises li:nth-child(3) { animation-delay: 0.6s; }
+    .promises li:nth-child(4) { animation-delay: 0.75s; }
+    .promises li:nth-child(5) { animation-delay: 0.9s; }
+    .signature { margin-top: 14px; text-align: right; font-family: "Segoe Script", "Brush Script MT", cursive; font-size: 24px; color: var(--blue); }
+
+    /* Decision card with the runaway "No" */
+    .decide h2 { font-size: 36px; }
+    .decide .sub { margin-bottom: 26px; }
+    .decide-zone { position: relative; height: 150px; display: flex; justify-content: center; align-items: center; gap: 18px; }
+    .yes {
+      font: inherit; font-size: 24px; font-weight: 900; white-space: nowrap;
+      padding: 16px 40px; border: none; border-radius: 14px; cursor: pointer;
+      background: linear-gradient(120deg, #16a34a, #22c55e); color: #fff;
+      box-shadow: 0 10px 24px rgba(22, 163, 74, 0.4);
+      transition: transform 0.2s;
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+    .yes:hover { transform: scale(1.06); }
+    .no {
+      font: inherit; font-size: 16px; font-weight: 700;
+      padding: 12px 22px; border-radius: 12px; cursor: pointer;
+      border: 2px solid var(--border); background: var(--card); color: var(--muted);
+      transition: left 0.25s ease, top 0.25s ease, transform 0.25s;
+    }
+    .no.loose { position: absolute; }
+    .decided { display: none; margin-top: 10px; }
+    .decide.is-yes .decide-zone, .decide.is-yes .sub, .decide.is-yes .ask { display: none; }
+    .decide.is-yes .decided { display: block; animation: pop 0.5s cubic-bezier(.2, 1.4, .4, 1) both; }
+    .decided p { font-size: 20px; margin: 10px 0 20px; }
+    body.is-done .decide { display: none; }
+    .burst { position: fixed; z-index: 60; pointer-events: none; width: 10px; height: 14px; border-radius: 2px; animation: burst 1.4s ease-out forwards; }
+    @keyframes burst { to { transform: translate(var(--bx), var(--by)) rotate(var(--rot)); opacity: 0; } }
+
     .ended { display: none; }
     body.is-ended .live { display: none; }
     body.is-ended .ended { display: block; }
@@ -449,7 +539,13 @@
     .btn small { display: block; font-size: 13px; font-weight: 500; opacity: 0.8; margin-top: 2px; }
 
     @media (max-width: 760px) {
-      .grid, .reasons ul { grid-template-columns: 1fr; }
+      .grid, .reasons ul, .calc-out { grid-template-columns: 1fr; }
+      .tiles { grid-template-columns: 1fr 1fr; }
+      .decide-zone { height: 230px; }
+      .yes { padding: 14px 28px; font-size: 20px; }
+      .decide h2 { font-size: 28px; }
+      .shop-fab { padding: 12px 16px; font-size: 14px; }
+      .bubbles { bottom: 76px; }
     }
     @media (max-width: 600px) {
       body { padding-top: 76px; }
@@ -489,6 +585,10 @@
         <li><span class="ico">💵</span><span><b>No extra money lost.</b>Getting the AirPods Max 2 and a custom case from Amazon now only shifts the date. Any money I get from my Q1 grades goes toward the cost, so you're not fully out of pocket.</span></li>
         <li><span class="ico">🔋</span><span><b>A daily driver.</b>I'll use them every day, running the battery from 20 hours down to 0%, so you'll see the investment being used constantly.</span></li>
       </ul>
+        <div class="reasons-cta">
+          <a class="shop-btn retail-link" href="#" target="_blank" rel="noopener">🛒 Compare sellers</a>
+          <span>All the good retailers, side by side, with links.</span>
+        </div>
       </div>
     </section>
 
@@ -516,6 +616,54 @@
       </section>
     </div>
 
+    <div class="grid live">
+      <!-- The math: cost per day -->
+      <section class="card left">
+        <div class="sec-title">🧮 The Math</div>
+        <div class="sec-sub">Type the price from the sellers spreadsheet. It does the rest.</div>
+        <div class="calc-inputs">
+          <label>Price<span class="money"><span>$</span><input id="price" inputmode="decimal" placeholder="0"></span></label>
+          <label>My Q1 money<span class="money"><span>$</span><input id="q1" inputmode="decimal" placeholder="0"></span></label>
+        </div>
+        <div class="calc-out">
+          <div class="stat"><b id="yourShare">$—</b><small>What you actually pay</small></div>
+          <div class="stat"><b id="perDay">$—</b><small>Per day (over 2 years)</small></div>
+          <div class="stat"><b id="perHour">$—</b><small>Per hour of use</small></div>
+        </div>
+        <div class="calc-note" id="calcNote">Used every day, the cost per day gets <strong>tiny</strong>. Try it.</div>
+      </section>
+
+      <!-- Promises -->
+      <section class="card left">
+        <div class="sec-title">🤝 My Promises</div>
+        <div class="sec-sub">If we get them, here's what you get from me:</div>
+        <ul class="promises">
+          <li>I'll put my Q1 grade money toward the cost.</li>
+          <li>I'll take care of them. That's what the custom case is for.</li>
+          <li>I'll use them every single day, not let them collect dust.</li>
+          <li>No more broken-earbud excuses for missing audio at school.</li>
+          <li>I'll stop asking. This whole page retires itself. 😇</li>
+        </ul>
+        <div class="signature">— your kid 🎧</div>
+      </section>
+    </div>
+
+    <!-- The big question -->
+    <section class="card decide live" id="decide">
+      <div class="sec-title" style="justify-content:center">🗳️ Decision Time</div>
+      <h2 class="ask">So... can we order them? 🥺</h2>
+      <div class="sub">Only one right answer here.</div>
+      <div class="decide-zone" id="decideZone">
+        <button class="yes" id="yesBtn">YES! 🎉</button>
+        <button class="no" id="noBtn">No</button>
+      </div>
+      <div class="decided">
+        <h2>BEST. PARENTS. EVER. 💙</h2>
+        <p>Thank you!! Here's where to grab them:</p>
+        <a class="shop-btn retail-link" href="#" target="_blank" rel="noopener">🛒 Open the sellers list</a>
+      </div>
+    </section>
+
     <!-- Shown once Nov 12, 2026 arrives -->
     <section class="card ended">
       <span class="badge">November 12, 2026</span>
@@ -530,6 +678,7 @@
         <div class="tile"><span class="t-ico">📅</span><span class="t-label">Asked Dad to start (Tue)</span><span class="t-val">9/29/2026</span></div>
         <div class="tile cake"><span class="t-ico">🎂</span><span class="t-label">My Birthday</span><span class="t-val">11/12</span></div>
         <div class="tile hot"><span class="t-ico">⏳</span><span class="t-label">Days Dad's been "working on it"</span><span class="t-val" id="rowSince">0</span></div>
+        <div class="tile hot"><span class="t-ico">🏫</span><span class="t-label">School days with one earbud</span><span class="t-val" id="schoolDays">0</span></div>
         <div class="tile" id="rowUntilWrap"><span class="t-ico">⌛</span><span class="t-label">Days left to deliver</span><span class="t-val" id="rowUntil">0</span></div>
         <div class="tile mystery" id="doneTile"><span class="t-ico">✅</span><span class="t-label">Completed on</span><span class="t-val" id="rowDone">???</span></div>
       </div>
@@ -538,6 +687,7 @@
 
   <!-- Persuasion bubbles appear here after the menu closes -->
   <div class="bubbles" id="bubbles" aria-live="polite"></div>
+  <a class="shop-fab retail-link" href="#" target="_blank" rel="noopener">🛒 Compare sellers</a>
 
   <!-- "Who are you?" menu: shown on every visit -->
   <div class="overlay" id="overlay">
@@ -546,6 +696,7 @@
       <div class="choices">
         <button class="btn" data-who="dad">My dad</button>
         <button class="btn" data-who="mom">My mom</button>
+        <button class="btn" data-who="both">Both of us<small>Mom and Dad, together</small></button>
         <button class="btn" data-who="custom">Custom<small>Someone else, not my mom or my dad</small></button>
       </div>
     </div>
@@ -562,12 +713,14 @@
     const REASONS_HINT = "Forgot some of the reasons I want the AirPods Max 2? See the banner at the top!";
     const MESSAGES = {
       dad: "Hey Dad, could you please hurry up a little? 🙏 I know, I know, you're \"working on it.\" But the counter below is literally ticking, and it's not getting any smaller. Love you, but... tick tock. ⏰",
-      mom: "Hey, can I please get this? PLEEEASE? 🥺 Pitches can be hit or miss, so instead of another one, this timer is here to show you that this investment is really worth it, and you know it. I didn't want to annoy you, so this is how I'm presenting it. Pretty please? 🙏"
+      mom: "Hey, can I please get this? PLEEEASE? 🥺 Pitches can be hit or miss, so instead of another one, this timer is here to show you that this investment is really worth it, and you know it. I didn't want to annoy you, so this is how I'm presenting it. Pretty please? 🙏",
+      both: "Hey Mom and Dad! 👋 Since you're both here... can we PLEASE make this happen? 🥺 Dad's been \"working on it,\" Mom could help him cross the finish line, and I'm chipping in my Q1 money. Teamwork makes the dream work. 🤝"
     };
-    const HEADINGS = { dad: "Hey Dad 👋", mom: "Hey Mom 🥺" };
+    const HEADINGS = { dad: "Hey Dad 👋", mom: "Hey Mom 🥺", both: "Hey Mom & Dad 👋👋" };
     const TAGLINES = {
       dad: "Dad, could you please hurry up a little? ⏰",
-      mom: "Mom, can I please get this? PLEEEASE 🥺"
+      mom: "Mom, can I please get this? PLEEEASE 🥺",
+      both: "Mom & Dad, can we please make this happen? 🙏"
     };
 
     // Little chat bubbles shown in the corner, one at a time. {since} = days waited so far.
@@ -577,30 +730,56 @@
         "Imagine asking for something and hearing \"I'm working on it\" for {since} days. Would you be patient? 😅",
         "At school I need audio for videos and assignments. One working bud means I'm missing half of it. Could we fix that a little faster?",
         "If you got them today, this counter stops forever and you never have to see this page again. Tempting, right? 👀",
-        "What's the hold-up, honestly? I'll put my Q1 grade money toward it. Deal? 🤝"
+        "What's the hold-up, honestly? I'll put my Q1 grade money toward it. Deal? 🤝",
+        "That's {school} school days I've done with one earbud. Would you sit through {school} days of meetings with one ear? 🫠",
+        "You always say buy quality once instead of cheap twice. Isn't this exactly that? 💯",
+        "Real talk: is it \"working on it\" or \"waiting it out\"? 😏 Either way, the sellers list is one click away.",
+        "Every day you wait, this number goes up and you have to look at it. Every. Single. Day. 📈",
+        "Ordering takes about 2 minutes. You've spent longer reading these bubbles. 😂",
+        "Picture my face when they show up. Now picture the counter turning into confetti. 🎉 Worth it?"
       ],
       mom: [
         "Wouldn't it be annoying to hear everything with just one ear? That's my life right now. 😩",
         "At school, a broken bud means I can't hear class videos properly. You want my grades to stay good, right? 📚",
         "I'm putting my Q1 grade money toward it. Isn't that a pretty fair deal? 💵",
         "20 hours of battery, used down to 0% every day. Isn't something used every single day worth it? 🔋",
-        "Could you maybe give Dad a tiny nudge? It's been {since} days... 👉👈"
+        "Could you maybe give Dad a tiny nudge? It's been {since} days... 👉👈",
+        "You know I'll actually use them. Not a phase, not a drawer item. Every day. 🥺",
+        "Over-ear headphones are also way easier to not lose than tiny earbuds. Fewer replacements later! 🧠",
+        "I made a whole website instead of whining. That's growth, right? 📈😇",
+        "{school} school days with one earbud so far. Can we not make it {school_plus}? 🙏",
+        "You and Dad could split the \"best parent\" title. I'll make a trophy. 🏆",
+        "PLEEEEASE? I'll even stop sending you these bubbles. Promise. 🫶"
+      ],
+      both: [
+        "Two parents, one tiny decision, {since} days. We can do this! 🤝",
+        "Dad's \"working on it.\" Mom, you can be the closer. 🏁",
+        "I'm covering part of it with my Q1 money. That's three of us splitting it. Totally fair, right? 💵",
+        "Wouldn't it be nice to never hear me mention earbuds again? One order fixes that. 🙉",
+        "{school} school days with one working earbud. Both of you would've fixed that for yourselves by now. 😅",
+        "Used every day, from 20 hours of battery to 0%. That's the opposite of a waste. 🔋",
+        "Fun fact: tapping the green button takes you straight to the sellers list. Just saying. 🛒",
+        "Imagine the group hug when they arrive. 🫂 Now imagine scrolling past this counter instead."
       ],
       custom: [
         "Wouldn't it be frustrating if only one of your earbuds worked? That's me right now. 🎧",
         "It's been {since} days of \"I'm working on it.\" Would you wait that long? ⏳",
-        "Something used every day, from 20 hours of battery to 0%, is worth it. Don't you think? 🔋"
+        "Something used every day, from 20 hours of battery to 0%, is worth it. Don't you think? 🔋",
+        "{school} school days with one working earbud. Rough, right? 🏫",
+        "If you know my parents, feel free to give them a little nudge. 😉"
       ]
     };
     const REPLIES = [
-      ["Yeah, that would suck 😬", "Fair point"],
+      ["Fair point 🤔", "🛒 Show me the sellers"],
       ["Okay, okay 😅", "Hmm..."],
-      ["You're right", "I'll think about it"]
+      ["You're right 😂", "🛒 Where do I buy?"],
+      ["Can't argue with that", "Nice try 😏"]
     ];
 
     const DONE_MESSAGES = {
       dad: "Party, woo! It's all done. We got it! Thank you, Dad. 🎉",
-      mom: "Party, woo! It's all done. We got it! Thank you, Mom. 🎉"
+      mom: "Party, woo! It's all done. We got it! Thank you, Mom. 🎉",
+      both: "Party, woo! It's all done. We got it! Thank you, Mom and Dad. 🎉"
     };
 
     const $ = id => document.getElementById(id);
@@ -629,6 +808,23 @@
       const ub = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
       return Math.round((ub - ua) / DAY);
     }
+
+    // Weekdays from the ask through today (school days with one earbud)
+    function schoolDays(now) {
+      let n = 0;
+      for (let d = new Date(START); d <= now; d.setDate(d.getDate() + 1)) {
+        const w = d.getDay();
+        if (w !== 0 && w !== 6) n++;
+      }
+      return n;
+    }
+
+    // ---- Retailer links ----
+    const SHOP = typeof RETAILERS_URL !== "undefined" ? RETAILERS_URL : "";
+    document.querySelectorAll(".retail-link").forEach(a => {
+      if (SHOP) a.href = SHOP; else a.hidden = true;
+    });
+    const openShop = () => SHOP && window.open(SHOP, "_blank", "noopener");
 
     // ---- Theme toggle ----
     const root = document.documentElement;
@@ -699,7 +895,11 @@
     function showBubble(list) {
       const box = $("bubbles");
       while (box.children.length >= 2) dismiss(box.firstElementChild);
-      const text = list[bubbleIdx % list.length].replace("{since}", currentSince());
+      const sd = schoolDays(new Date());
+      const text = list[bubbleIdx % list.length]
+        .replaceAll("{since}", currentSince())
+        .replaceAll("{school_plus}", sd + 1)
+        .replaceAll("{school}", sd);
       const replies = REPLIES[bubbleIdx % REPLIES.length];
       bubbleIdx++;
 
@@ -719,7 +919,7 @@
         replies.forEach(label => {
           const btn = document.createElement("button");
           btn.textContent = label;
-          btn.onclick = () => dismiss(b);
+          btn.onclick = () => { if (label.startsWith("🛒")) openShop(); dismiss(b); };
           r.appendChild(btn);
         });
         b.querySelector(".body").appendChild(r);
@@ -733,6 +933,82 @@
       setTimeout(() => showBubble(list), 3500);
       bubbleTimer = setInterval(() => showBubble(list), 18000);
     }
+
+    // ---- The Math (cost calculator) ----
+    const money = (n, cents) => "$" + n.toLocaleString("en-US", { minimumFractionDigits: cents ? 2 : 0, maximumFractionDigits: cents ? 2 : 0 });
+    function calc() {
+      const price = parseFloat($("price").value.replace(/[^0-9.]/g, "")) || 0;
+      const q1 = parseFloat($("q1").value.replace(/[^0-9.]/g, "")) || 0;
+      try { localStorage.setItem("calc", JSON.stringify([$("price").value, $("q1").value])); } catch (e) {}
+      if (!price) {
+        ["yourShare", "perDay", "perHour"].forEach(id => $(id).textContent = "$—");
+        $("calcNote").innerHTML = "Used every day, the cost per day gets <strong>tiny</strong>. Try it.";
+        return;
+      }
+      const share = Math.max(0, price - q1);
+      const days = 730;                 // 2 years of daily use
+      const hours = days * 20;          // 20 hours of battery, used up every day
+      $("yourShare").textContent = money(share);
+      $("perDay").textContent = money(share / days, true);
+      $("perHour").textContent = money(share / hours, true);
+      const cents = Math.max(1, Math.round((share / days) * 100));
+      $("calcNote").innerHTML = q1
+        ? `My Q1 money covers <strong>${Math.round(Math.min(100, q1 / price * 100))}%</strong>. Your part works out to about <strong>${cents}¢ a day</strong>. Less than a snack. 🍪`
+        : `That's about <strong>${cents}¢ a day</strong> for something I use every single day. 🍪`;
+    }
+    try {
+      const saved = JSON.parse(localStorage.getItem("calc") || "null");
+      if (saved) { $("price").value = saved[0] || ""; $("q1").value = saved[1] || ""; }
+    } catch (e) {}
+    $("price").addEventListener("input", calc);
+    $("q1").addEventListener("input", calc);
+    calc();
+
+    // ---- Decision card: YES celebrates, "No" runs away ----
+    const NO_LINES = ["No", "Are you sure? 🥺", "Really?", "Think of the TV mornings...", "One earbud... 😢", "Can't catch me 😅", "Just press YES 💙"];
+    let noCount = 0;
+    function dodge() {
+      const zone = $("decideZone"), no = $("noBtn");
+      noCount++;
+      no.textContent = NO_LINES[Math.min(noCount, NO_LINES.length - 1)];
+      no.classList.add("loose");
+      const maxX = zone.clientWidth - no.offsetWidth, maxY = zone.clientHeight - no.offsetHeight;
+      const z = zone.getBoundingClientRect(), y = $("yesBtn").getBoundingClientRect();
+      const pad = 12;
+      let x = 0, top = 0;
+      for (let tries = 0; tries < 40; tries++) {
+        x = Math.random() * maxX; top = Math.random() * maxY;
+        const l = z.left + x, t = z.top + top, r = l + no.offsetWidth, b = t + no.offsetHeight;
+        const hitsYes = l < y.right + pad && r > y.left - pad && t < y.bottom + pad && b > y.top - pad;
+        if (!hitsYes) break;
+      }
+      no.style.left = x + "px";
+      no.style.top = top + "px";
+      if (noCount >= 7) { no.textContent = "YES 🎉"; no.onclick = sayYes; no.className = "yes"; no.style.cssText = ""; }
+    }
+    $("noBtn").addEventListener("mouseenter", () => noCount < 7 && dodge());
+    $("noBtn").addEventListener("click", e => { if (noCount < 7) { e.preventDefault(); dodge(); } });
+    function burst(x, y) {
+      const colors = ["#ec4899", "#a855f7", "#3b82f6", "#facc15", "#22c55e", "#f97316"];
+      for (let i = 0; i < 70; i++) {
+        const c = document.createElement("i");
+        c.className = "burst";
+        c.style.left = x + "px"; c.style.top = y + "px";
+        c.style.background = colors[i % colors.length];
+        const a = Math.random() * Math.PI * 2, r = 120 + Math.random() * 260;
+        c.style.setProperty("--bx", Math.cos(a) * r + "px");
+        c.style.setProperty("--by", Math.sin(a) * r + 120 + "px");
+        c.style.setProperty("--rot", Math.random() * 720 + "deg");
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 1500);
+      }
+    }
+    function sayYes(e) {
+      const r = (e && e.currentTarget || $("yesBtn")).getBoundingClientRect();
+      burst(r.left + r.width / 2, r.top + r.height / 2);
+      $("decide").classList.add("is-yes");
+    }
+    $("yesBtn").addEventListener("click", sayYes);
 
     function makeConfetti() {
       const box = document.createElement("div");
@@ -771,6 +1047,7 @@
       $("rowSince").textContent = took;
       $("rowDone").textContent = DONE.toLocaleDateString("en-US");
       $("doneTile").className = "tile won";
+      $("schoolDays").textContent = schoolDays(new Date(DONE.getTime() - 1));
     }
 
     // ---- Timers ----
@@ -800,6 +1077,7 @@
           ? `${since}d ${pad(Math.floor(el / 3600000) % 24)}h ${pad(Math.floor(el / 60000) % 60)}m ${pad(Math.floor(el / 1000) % 60)}s since Tue, Sep 29`
           : "Since Tuesday, September 29, 2026";
         $("rowSince").textContent = since;
+        $("schoolDays").textContent = schoolDays(now);
       }
 
       // Timer 2: days until birthday

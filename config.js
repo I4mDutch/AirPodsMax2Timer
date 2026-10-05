@@ -8,3 +8,6 @@
 // ================================================================
 
 const COMPLETED_ON = "";
+
+// Link to the spreadsheet of good retailers (opens from the "Compare sellers" buttons)
+const RETAILERS_URL = "https://docs.google.com/spreadsheets/d/1i00pbICeLpvFAjvWfAHUl8JXieh1ul-NXyUi7Vzltug/edit?usp=sharing";
