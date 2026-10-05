@@ -6,7 +6,7 @@
   <title>AirPods Max 2 Tracker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,800;1,400&family=IM+Fell+English+SC&family=Pinyon+Script&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;0,800;1,400&family=IM+Fell+English+SC&family=Pinyon+Script&display=swap" rel="stylesheet">
   <script>
     // Apply saved/system theme before paint to avoid a flash
     (function () {
@@ -348,6 +348,88 @@
     :root body.theme-classic .bubble { background: var(--card); }
     body.theme-classic .modal h2 { font-family: "Pinyon Script", "IM Fell English SC", cursive; font-weight: 400; font-size: 44px; }
 
+    /* Apple: tokens from the Apple design language guide (clarity, deference, depth) */
+    :root body.theme-apple {
+      --blue: #007AFF; --blue-soft: rgba(0, 122, 255, 0.12); --blue-text: #0062CC;
+      --orange: #FF9500; --red: #FF3B30; --green: #34C759; --green-soft: rgba(52, 199, 89, 0.14);
+      --bg: #F2F2F7; --card: #FFFFFF; --border: transparent; --row: #F2F2F7;
+      --text: #000000; --muted: rgba(60, 60, 67, 0.6); --heading: #000000;
+      --sep: #C6C6C8;
+      --glass: rgba(255, 255, 255, 0.62);
+      --overlay: rgba(0, 0, 0, 0.22);
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.06);
+      --ease: cubic-bezier(.32, .72, 0, 1);
+    }
+    :root[data-theme="dark"] body.theme-apple {
+      --blue: #0A84FF; --blue-soft: rgba(10, 132, 255, 0.18); --blue-text: #64B5FF;
+      --orange: #FF9F0A; --red: #FF453A; --green: #30D158; --green-soft: rgba(48, 209, 88, 0.16);
+      --bg: #000000; --card: #1C1C1E; --row: #2C2C2E;
+      --text: #FFFFFF; --muted: rgba(235, 235, 245, 0.6); --heading: #FFFFFF;
+      --sep: #38383A;
+      --glass: rgba(44, 44, 46, 0.6);
+      --overlay: rgba(0, 0, 0, 0.5);
+      --shadow: none;
+    }
+    body.theme-apple {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, "Segoe UI", sans-serif;
+      letter-spacing: -0.01em;
+      -webkit-font-smoothing: antialiased;
+    }
+    body.theme-apple .bg { display: none; }
+    body.theme-apple:not(.is-done) header { background: none; color: var(--text); box-shadow: none; animation: none; padding: 32px 16px 8px; }
+    body.theme-apple:not(.is-done) header h1 {
+      font-size: 52px; font-weight: 700; letter-spacing: -0.035em;
+      background: linear-gradient(90deg, var(--text) 25%, var(--blue) 65%, #AF52DE);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    body.theme-apple:not(.is-done) header .clock, body.theme-apple:not(.is-done) .tagline { color: var(--muted); }
+    body.theme-apple .card, body.theme-apple .reasons { border: none; border-radius: 26px; animation: rise 0.6s var(--ease) both; }
+    body.theme-apple .card:hover { transform: none; }
+    body.theme-apple .big, body.theme-apple .yes, body.theme-apple .ba-arrow, body.theme-apple .tile.mystery .t-val { animation: none; }
+    body.theme-apple .big { font-weight: 700; letter-spacing: -0.04em; }
+    body.theme-apple .badge, body.theme-apple .status, body.theme-apple .kicker, body.theme-apple .sec-title,
+    body.theme-apple .list h3, body.theme-apple .t-label, body.theme-apple .reasons-toggle, body.theme-apple .meter-top, body.theme-apple .ba-col h4 {
+      text-transform: none; letter-spacing: -0.01em;
+    }
+    body.theme-apple .kicker { font-size: 15px; font-weight: 600; }
+    body.theme-apple .lead { font-weight: 700; letter-spacing: -0.02em; }
+    body.theme-apple .badge { border-radius: 999px; font-weight: 600; }
+    body.theme-apple .list h3::after { display: none; }
+    body.theme-apple .step { box-shadow: none; font-weight: 700; }
+    body.theme-apple .tile { border: none; border-radius: 18px; }
+    body.theme-apple .tile.mystery { border: 1.5px dashed var(--sep); }
+    body.theme-apple .excuse { border: none; border-radius: 14px; }
+    body.theme-apple .excuse[open] { box-shadow: inset 0 0 0 2px var(--green); }
+    body.theme-apple .excuse summary::after { border-radius: 999px; border-width: 1px; }
+    body.theme-apple .ba-col { border: none; border-radius: 18px; }
+    body.theme-apple .money { border: none; border-radius: 12px; }
+    body.theme-apple .money:focus-within { box-shadow: 0 0 0 2px var(--blue); }
+    body.theme-apple .stat { border-radius: 14px; }
+    body.theme-apple .bar, body.theme-apple .meter-bar { background: var(--row); }
+    body.theme-apple .bar > div { background: var(--blue); animation: none; }
+    body.theme-apple .btn { min-height: 50px; border-radius: 999px; border: none; font-weight: 600; background: var(--blue-soft); color: var(--blue); transition: transform 0.4s var(--ease), filter 0.2s; }
+    body.theme-apple .btn:hover { background: var(--blue-soft); color: var(--blue); filter: brightness(0.96); transform: scale(0.99); }
+    body.theme-apple .btn.primary, body.theme-apple .btn.primary:hover { background: var(--blue); color: #fff; }
+    body.theme-apple .yes { border-radius: 999px; background: var(--green); box-shadow: none; }
+    body.theme-apple .no { border-radius: 999px; border: none; background: var(--row); }
+    body.theme-apple .toast { background: var(--glass); color: var(--text); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); font-weight: 600; }
+    /* Liquid Glass: only on the control layer (buttons, sheets, bubbles), never on content */
+    body.theme-apple .theme-toggle, body.theme-apple .modal, :root body.theme-apple .bubble, body.theme-apple .theme-menu, body.theme-apple .rail {
+      background: var(--glass);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 0.5px solid rgba(255, 255, 255, 0.35);
+    }
+    body.theme-apple .modal { border-radius: 32px; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.18); animation-timing-function: var(--ease); }
+    body.theme-apple .modal h2 { font-weight: 700; letter-spacing: -0.03em; }
+    body.theme-apple .modal p.hint { color: var(--blue-text); background: var(--blue-soft); border-radius: 14px; }
+    body.theme-apple .qa div { border: none; border-radius: 16px; }
+    body.theme-apple .qa b { font-weight: 600; }
+    body.theme-apple .bubble { border-radius: 22px 22px 22px 6px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12); }
+    body.theme-apple .bubble .replies button { border: none; background: var(--blue-soft); }
+    body.theme-apple .name-input { border: none; border-radius: 14px; }
+    body.theme-apple .name-input:focus { box-shadow: 0 0 0 2px var(--blue); }
+
     /* Theme reveal animation */
     .theme-wipe {
       position: fixed; inset: 0; z-index: 80;
@@ -364,7 +446,66 @@
       color: #2f2214;
       font-family: "IM Fell English SC", Georgia, serif;
     }
+    .theme-wipe.apple { background: #000; color: #fff; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Inter, sans-serif; }
+    .theme-wipe.apple .w-title {
+      font-size: 96px; font-weight: 700; letter-spacing: -0.04em;
+      background: linear-gradient(90deg, #fff 10%, #0A84FF 55%, #AF52DE 90%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .theme-wipe.apple .w-sub { text-transform: none; letter-spacing: 0; font-size: 18px; color: rgba(235, 235, 245, 0.6); }
     .theme-wipe.classic .w-title { font-family: "Pinyon Script", cursive; font-weight: 400; font-size: 64px; }
+
+    /* Theme switcher (top-right) */
+    .palette-toggle { right: 124px; }
+    .theme-menu {
+      position: fixed; top: 70px; right: 16px; z-index: 45;
+      display: flex; flex-direction: column; gap: 4px;
+      background: var(--card); border: 2px solid var(--border); border-radius: 16px;
+      padding: 8px; box-shadow: var(--shadow); min-width: 220px;
+      animation: pop 0.25s ease both;
+    }
+    .theme-menu[hidden] { display: none; }
+    .theme-menu .m-title { font-size: 12px; font-weight: 700; color: var(--muted); padding: 6px 10px 4px; letter-spacing: 0.5px; }
+    .theme-menu button {
+      font: inherit; font-size: 15px; font-weight: 600; text-align: left;
+      display: flex; align-items: center; gap: 10px;
+      min-height: 44px; padding: 8px 10px; border: none; border-radius: 10px;
+      background: transparent; color: var(--text); cursor: pointer;
+    }
+    .theme-menu button:hover { background: var(--row); }
+    .theme-menu button[aria-checked="true"]::after { content: "✓"; margin-left: auto; color: var(--blue); font-weight: 800; }
+    body.theme-plain .palette-toggle, body.theme-plain .rail { display: none; }
+
+    /* Chapter navigator: a quiet rail on wide screens, nothing on phones */
+    .rail {
+      position: fixed; right: 16px; top: 50%; z-index: 25;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 2px;
+      background: var(--card); border: 2px solid var(--border); border-radius: 999px;
+      padding: 8px 6px; box-shadow: var(--shadow);
+    }
+    .rail a {
+      position: relative;
+      width: 32px; height: 32px; border-radius: 50%;
+      display: grid; place-items: center;
+      font-size: 13px; font-weight: 800; text-decoration: none;
+      color: var(--muted);
+      transition: background 0.2s, color 0.2s;
+    }
+    .rail a:hover, .rail a.on { background: var(--blue); color: #fff; }
+    .rail a span {
+      position: absolute; right: 42px; white-space: nowrap;
+      background: var(--text); color: var(--bg);
+      font-size: 13px; font-weight: 600; padding: 5px 10px; border-radius: 8px;
+      opacity: 0; pointer-events: none; transform: translateX(6px);
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .rail a:hover span, .rail a:focus-visible span { opacity: 1; transform: none; }
+    @media (max-width: 1179px) { .rail { display: none; } }
+    body.is-done .rail, body.is-ended .rail { display: none; }
+
+    .btn.link { border: none; background: none; font-size: 15px; font-weight: 600; color: var(--muted); padding: 8px; margin-top: 4px; }
+    .btn.link:hover { background: none; color: var(--text); transform: none; }
 
     /* Intro Q&A inside the menu */
     .modal { max-height: calc(100vh - 32px); overflow-y: auto; }
@@ -792,6 +933,14 @@
   <div class="bg"><span></span><span></span><span></span></div>
   <div class="scroll-bar" id="scrollBar"></div>
   <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+  <button class="theme-toggle palette-toggle" id="paletteToggle" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" title="Theme">🎨</button>
+  <div class="theme-menu" id="themeMenu" role="menu" hidden>
+    <div class="m-title">Theme</div>
+    <button role="menuitemradio" data-theme="standard">🎧 Standard</button>
+    <button role="menuitemradio" data-theme="classic">📜 Classic</button>
+    <button role="menuitemradio" data-theme="apple">🍎 Apple</button>
+  </div>
+  <nav class="rail" id="rail" aria-label="Story steps"></nav>
   <button class="theme-toggle sound-toggle" id="soundToggle" aria-label="Turn bubbles and sound on or off" title="Bubbles & sound">🔔</button>
 
   <div class="wrap">
@@ -1209,6 +1358,16 @@
       ["How does it work?", "It's a story in 8 short steps. Read from top to bottom and it ends with one simple question."]
     ];
     const viewer = { who: null, name: "" };
+    const WHO_SCREEN = $("modal").innerHTML;
+    const THEMES = {
+      standard: { ico: "🎧", title: "Standard", sub: "Theme", desc: "Blue and modern, the original look" },
+      classic: { ico: "📜", title: "We the People", sub: "Classic theme", desc: "Old parchment, like the U.S. Constitution 📜" },
+      apple: { ico: "", title: "hello.", sub: "Apple theme", desc: "Clean, glassy and simple, the Apple way" }
+    };
+    const store = {
+      get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
+      set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+    };
     const el = (tag, cls, text) => {
       const e = document.createElement(tag);
       if (cls) e.className = cls;
@@ -1261,13 +1420,12 @@
 
     function themeScreen() {
       const choices = el("div", "choices");
-      const std = el("button", "btn", "Standard");
-      std.dataset.theme = "standard";
-      std.append(el("small", null, "Blue and modern, the original look"));
-      const cls = el("button", "btn", "Classic");
-      cls.dataset.theme = "classic";
-      cls.append(el("small", null, "Old parchment, like the U.S. Constitution 📜"));
-      choices.append(std, cls);
+      Object.entries(THEMES).forEach(([key, t]) => {
+        const b = el("button", "btn", key[0].toUpperCase() + key.slice(1));
+        b.dataset.theme = key;
+        b.append(el("small", null, t.desc));
+        choices.append(b);
+      });
       showScreen(el("h2", null, "Pick a theme 🎨"), el("p", null, "This page starts plain. How do you want to read it?"), choices);
     }
 
@@ -1288,37 +1446,50 @@
       );
     }
 
-    // Reveal the chosen theme with an animation, then move on to the intro
-    function applyTheme(theme, x, y) {
-      const swap = () => {
-        document.body.classList.remove("theme-plain", "theme-standard", "theme-classic");
-        document.body.classList.add("theme-" + theme);
-      };
+    // Reveal the chosen theme with an animation, then run `after`
+    let currentTheme = "plain";
+    function setThemeClass(theme) {
+      document.body.classList.remove("theme-plain", "theme-standard", "theme-classic", "theme-apple");
+      document.body.classList.add("theme-" + theme);
+      currentTheme = theme;
+      document.querySelectorAll("#themeMenu [data-theme]").forEach(b => b.setAttribute("aria-checked", String(b.dataset.theme === theme)));
+      if (theme !== "plain") store.set("siteTheme", theme);
+    }
+    function applyTheme(theme, x, y, after) {
       if (matchMedia("(prefers-reduced-motion: reduce)").matches || !Element.prototype.animate) {
-        swap();
-        return introScreen();
+        setThemeClass(theme);
+        return after && after();
       }
+      const t = THEMES[theme];
       const w = el("div", "theme-wipe " + theme);
       const inner = el("div");
-      inner.append(
-        el("div", "w-ico", theme === "classic" ? "📜" : "🎧"),
-        el("div", "w-title", theme === "classic" ? "We the People" : "Standard"),
-        el("div", "w-sub", theme === "classic" ? "Classic theme" : "Theme")
-      );
+      inner.append(el("div", "w-ico", t.ico), el("div", "w-title", t.title), el("div", "w-sub", t.sub));
       w.append(inner);
       document.body.append(w);
       const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
       const frames = theme === "classic"
         ? [{ clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)" }]   // unrolls like a scroll
         : [{ clipPath: `circle(0px at ${x}px ${y}px)` }, { clipPath: `circle(${r}px at ${x}px ${y}px)` }];
-      w.animate(frames, { duration: 900, easing: "cubic-bezier(.7, 0, .3, 1)", fill: "forwards" }).finished.then(() => {
-        swap();
-        introScreen();
-        setTimeout(() => {
-          w.animate([{ opacity: 1 }, { opacity: 0, transform: "scale(1.04)" }], { duration: 600, delay: 500, easing: "ease", fill: "forwards" })
-            .finished.then(() => w.remove());
-        });
+      const easing = theme === "apple" ? "cubic-bezier(.32, .72, 0, 1)" : "cubic-bezier(.7, 0, .3, 1)";
+      w.animate(frames, { duration: 900, easing, fill: "forwards" }).finished.then(() => {
+        setThemeClass(theme);
+        if (after) after();
+        w.animate([{ opacity: 1 }, { opacity: 0, transform: "scale(1.04)" }], { duration: 600, delay: 500, easing: "ease", fill: "forwards" })
+          .finished.then(() => w.remove());
       });
+    }
+
+    // Returning visitors skip straight to the story
+    function welcomeBackScreen(saved) {
+      const choices = el("div", "choices");
+      const restart = actionBtn("restart", `Not ${saved.name}? Start over`);
+      restart.className = "btn link";
+      choices.append(actionBtn("resume", `Continue as ${saved.name}`, true), restart);
+      showScreen(
+        el("h2", null, `Welcome back, ${saved.name} 👋`),
+        el("p", null, "Pick up where you left off. Same theme, no intro."),
+        choices
+      );
     }
 
     $("modal").addEventListener("click", e => {
@@ -1331,7 +1502,7 @@
         viewer.name = NAMES[who];
         return setViewer();
       }
-      if (btn.dataset.theme) return applyTheme(btn.dataset.theme, e.clientX || innerWidth / 2, e.clientY || innerHeight / 2);
+      if (btn.dataset.theme) return applyTheme(btn.dataset.theme, e.clientX || innerWidth / 2, e.clientY || innerHeight / 2, introScreen);
       const act = btn.dataset.act;
       if (act === "name") {
         const input = $("nameInput");
@@ -1341,15 +1512,62 @@
         return setViewer();
       }
       if (act === "toTheme") return themeScreen();
+      if (act === "resume") {
+        const saved = store.get("viewer");
+        Object.assign(viewer, { who: saved.who, name: saved.name });
+        setViewer(true);
+        return applyTheme(store.get("siteTheme") || "standard", e.clientX || innerWidth / 2, e.clientY || innerHeight / 2, closeOverlay);
+      }
+      if (act === "restart") return showScreen(...new DOMParser().parseFromString(WHO_SCREEN, "text/html").body.childNodes);
       if (act === "close") return closeOverlay();
     });
 
-    function setViewer() {
+    function setViewer(quiet) {
       const { who, name } = viewer;
+      store.set("viewer", { who, name });
       $("parentWord").textContent = NAMES[who] || name;
       $("signName").placeholder = `${name}, sign here`;
       if (!DONE) $("tagline").textContent = TAGLINES[who] || `${name}, help me make this happen 🙏`;
-      messageScreen();
+      if (!quiet) messageScreen();
+    }
+    {
+      const saved = store.get("viewer");
+      if (saved && saved.who && saved.name) welcomeBackScreen(saved);
+    }
+
+    // ---- Theme switcher (any time after the menu) ----
+    function toggleThemeMenu(open) {
+      $("themeMenu").hidden = !open;
+      $("paletteToggle").setAttribute("aria-expanded", String(open));
+    }
+    $("paletteToggle").addEventListener("click", e => { e.stopPropagation(); toggleThemeMenu($("themeMenu").hidden); });
+    $("themeMenu").addEventListener("click", e => {
+      const b = e.target.closest("[data-theme]");
+      if (!b) return;
+      toggleThemeMenu(false);
+      if (b.dataset.theme !== currentTheme) applyTheme(b.dataset.theme, e.clientX || innerWidth - 60, e.clientY || 40);
+    });
+    document.addEventListener("click", e => { if (!e.target.closest("#themeMenu")) toggleThemeMenu(false); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape") toggleThemeMenu(false); });
+
+    // ---- Chapter navigator: jump to any step, highlights where you are ----
+    {
+      const chapters = [...document.querySelectorAll(".chapter")].filter(c => c.querySelector(".step"));
+      chapters.forEach((c, i) => {
+        c.id = c.id || "step-" + (i + 1);
+        const a = el("a", null, c.querySelector(".step").textContent);
+        a.href = "#" + c.id;
+        a.append(el("span", null, c.querySelector(".kicker").textContent));
+        a.addEventListener("click", ev => { ev.preventDefault(); c.scrollIntoView({ behavior: "smooth", block: "start" }); });
+        $("rail").append(a);
+      });
+      const links = [...$("rail").children];
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(en => {
+          if (en.isIntersecting) links.forEach((l, i) => l.classList.toggle("on", chapters[i] === en.target));
+        });
+      }, { rootMargin: "-45% 0px -50% 0px" });
+      chapters.forEach(c => io.observe(c));
     }
 
     // ---- Collapsible reasons banner (remembers choice) ----

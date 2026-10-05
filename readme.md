@@ -8,7 +8,7 @@ The page opens in a plain black-and-white look with the "Who are you?" menu:
 
 1. **Who are you?** My dad / My mom / Both of us / Custom. **Custom** asks for their name.
 2. **The message**: a personal message for that person.
-3. **Pick a theme**: **Standard** (the original blue look) or **Classic** (old parchment, like the U.S. Constitution). An animation reveals the chosen theme.
+3. **Pick a theme**: **Standard** (the original blue look), **Classic** (old parchment, like the U.S. Constitution) or **Apple** (built from Apple's design language: San Francisco type, one blue tint, rounded cards, Liquid Glass controls, light and dark). An animation reveals the chosen theme.
 4. **The intro**: "Hey, [name], let me run a few things to show why this site exists," followed by quick answers to *What is it?*, *What is it for?*, *Why not just ask again?* and *How does it work?*
 5. **Start the story**, which leads into the page, one numbered step at a time:
 
@@ -21,7 +21,11 @@ The page opens in a plain black-and-white look with the "Who are you?" menu:
 7. **My side of the deal**: my promises and a contract the parent can sign.
 8. **The ask**: the Convinced-o-meter and **"Please buy me them. 🙏"** with YES / (runaway) No.
 
+**Returning visitors** see "Welcome back, [name]" with one button that skips straight to the story in their last theme, or "Start over" to pick again.
+
 Also on the page:
+- **🎨 Theme button** (top-right): switch between Standard, Classic and Apple at any time.
+- **Step navigator** (right edge, wide screens only): numbered dots for the 8 steps. Hover to see each step's name, click to jump, and the current step is highlighted.
 - **Persuasion bubbles** with a pop sound, tailored to who's viewing. The 🔔 button (top-right) turns them on (🔔) or off (🔕); they start off by default. Edit them in the `BUBBLES` list in `index.html`.
 - A floating **🛒 Compare sellers** button opens the retailers spreadsheet (`RETAILERS_URL` in `config.js`).
 - Dark mode toggle, animated background, and a reading-progress bar at the top.
