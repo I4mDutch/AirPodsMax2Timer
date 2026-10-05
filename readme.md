@@ -2,25 +2,24 @@
 
 This simple application shows how many days have passed since last Tuesday. As I write this on Monday, October 5, it indicates the number of days it took my dad to get me the AirPods Max 2 early. It also includes a second timer counting down to my birthday, showing the actual time remaining. When November 12, 2026 arrives, the application stops working.
 
-## Features
+## How the page flows
 
-- **"Who are you?" menu** every time the page opens: *My dad*, *My mom*, or *Custom* (someone who is neither). Dad and Mom each get a short message plus a reminder to check the reasons banner; Custom goes straight to the timer.
-- **Reasons banner** at the top with a soft glowing pulse: why the AirPods Max 2 are worth it. Click its title to collapse/expand (remembered).
-- **Persuasion bubbles** (with a pop sound) pop up in the bottom-left corner every ~18 seconds, tailored to Dad, Mom, or anyone else. Edit them in the `BUBBLES` list in `index.html`. The 🔔 button (top-right) turns bubbles and sound off (🔕) or back on.
-- **Compare sellers**: a floating green button (bottom-right) plus buttons in the reasons banner and decision card open the retailers spreadsheet. Change the link in `config.js` (`RETAILERS_URL`).
-- **The Math**: type the price and your Q1 money; it shows what your parents actually pay, per day over 2 years, and per hour of use.
-- **My Promises**: what you commit to if you get them.
-- **Right Now vs. With AirPods Max 2**: a before/after comparison.
-- **Excuse Busters**: 14 common objections, each with an answer.
-- **Would You?**: a 4-question quiz with obvious answers.
-- **The Deal**: five promises (Q1 money, take care of them, use them daily, good Q2/Semester 1 grades, stop asking for stuff until my birthday); the parent signs and it gets an APPROVED stamp. Edit them in the `OFFERS` list in `index.html`.
-- **Convinced-o-meter**: fills up as they bust excuses, use The Math, open the sellers list, and answer bubbles. At 100% it points them to YES.
-- **Decision Time**: "So... can we order them?" The YES button celebrates; the No button runs away.
-- **Menu** also has *Both of us* for when Mom and Dad look together.
-- **Key Dates** shown as tiles, including days without real headphones at school; "Completed on" shows **???** until it's done.
-- **Days Since I Asked** and **Days Until My Birthday** side by side (stacked on phones).
-- Animated background, and a dark mode toggle in the top-right corner (remembers your choice).
-- **Party mode** once a completion date is set: confetti, party colors, and "Party, woo! It's all done. We got it!"
+After the "Who are you?" menu (My dad / My mom / Both of us / Custom), the page reads like a story, one numbered step at a time:
+
+1. **Why I need them**: the reasons (collapsible).
+2. **What it changes**: right now vs. with AirPods Max 2.
+3. **How long it's been**: days since I asked, birthday countdown, and Key Dates.
+4. **The cost**: The Math. Type the price and Q1 money to get cost per day/hour.
+5. **Your questions**: Excuse Busters, 14 objections answered.
+6. **Gut check**: the "Would You?" quiz.
+7. **My side of the deal**: my promises and a contract the parent can sign.
+8. **The ask**: the Convinced-o-meter and **"Please buy me them. 🙏"** with YES / (runaway) No.
+
+Also on the page:
+- **Persuasion bubbles** with a pop sound, tailored to who's viewing. The 🔔 button (top-right) turns bubbles and sound off (🔕) or back on. Edit them in the `BUBBLES` list in `index.html`.
+- A floating **🛒 Compare sellers** button opens the retailers spreadsheet (`RETAILERS_URL` in `config.js`).
+- Dark mode toggle, animated background, and a reading-progress bar at the top.
+- **Party mode** once a completion date is set: confetti, "Party, woo! It's all done. We got it!", and only the timers and Key Dates stay.
 
 ## Marking it as completed
 
