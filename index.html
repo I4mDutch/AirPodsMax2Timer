@@ -63,7 +63,7 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
-      padding: 36px 16px;
+      padding: 36px 16px 200px;
       overflow-x: hidden;
       transition: background 0.4s, color 0.4s;
     }
@@ -212,14 +212,34 @@
       0%, 100% { box-shadow: var(--shadow), 0 0 0 0 rgba(245, 158, 11, 0); border-color: var(--orange); }
       50%      { box-shadow: var(--shadow), 0 0 18px 2px rgba(245, 158, 11, 0.35); border-color: rgba(245, 158, 11, 0.45); }
     }
-    .reasons h3 {
+    .reasons-toggle {
+      all: unset;
+      box-sizing: border-box;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      cursor: pointer;
       font-size: 14px;
       font-weight: 800;
       letter-spacing: 1.5px;
       text-transform: uppercase;
       color: var(--orange);
-      margin-bottom: 10px;
     }
+    .reasons-toggle:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; border-radius: 4px; }
+    .reasons-toggle .chev {
+      font-size: 12px;
+      letter-spacing: 0;
+      text-transform: none;
+      font-weight: 700;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .reasons-toggle .chev i { font-style: normal; display: inline-block; transition: transform 0.3s; }
+    .reasons.collapsed .reasons-toggle .chev i { transform: rotate(-90deg); }
+    .reasons-body { display: grid; grid-template-rows: 1fr; transition: grid-template-rows 0.35s ease, opacity 0.35s, margin 0.35s; margin-top: 12px; }
+    .reasons-body > ul { overflow: hidden; min-height: 0; }
+    .reasons.collapsed .reasons-body { grid-template-rows: 0fr; opacity: 0; margin-top: 0; }
     .reasons ul { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
     .reasons li { display: flex; gap: 10px; font-size: 15px; line-height: 1.45; }
     .reasons li b { display: block; }
@@ -278,27 +298,100 @@
 
     .list { text-align: left; }
     .list h3 {
-      font-size: 20px;
-      font-weight: 700;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 22px;
+      font-weight: 800;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: var(--heading);
-      margin-bottom: 14px;
+      color: var(--text);
+      margin-bottom: 18px;
     }
-    .row {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
+    .list h3::after { content: ""; flex: 1; height: 3px; border-radius: 3px; background: linear-gradient(90deg, var(--blue), transparent); }
+    .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
+    .tile {
+      position: relative;
+      display: flex; flex-direction: column; gap: 6px;
       background: var(--row);
-      border-radius: 8px;
-      padding: 15px 20px;
-      font-size: 19px;
-      margin-top: 8px;
-      transition: transform 0.2s, background 0.4s;
+      border: 2px solid var(--border);
+      border-top: 5px solid var(--accent, var(--blue));
+      border-radius: 12px;
+      padding: 16px 16px 18px;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.4s;
     }
-    .row[hidden] { display: none; }
-    .row:hover { transform: translateX(4px); }
-    .row span:last-child { font-weight: 600; text-align: right; }
+    .tile:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .tile[hidden] { display: none; }
+    .t-ico { font-size: 26px; }
+    .t-label { font-size: 13px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--muted); }
+    .t-val { font-size: 28px; font-weight: 800; color: var(--accent, var(--text)); font-variant-numeric: tabular-nums; line-height: 1.15; }
+    .tile.hot { --accent: var(--red); }
+    .tile.cake { --accent: var(--orange); }
+    .tile.mystery { --accent: var(--muted); border-style: dashed; border-top-style: solid; }
+    .tile.mystery .t-val { animation: wobble 2.4s ease-in-out infinite; display: inline-block; }
+    .tile.won { --accent: var(--green); }
+    @keyframes wobble { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-4deg); } 75% { transform: rotate(4deg); } }
+
+    .tagline { font-size: 18px; font-weight: 700; margin-top: 10px; opacity: 0.95; }
+    .tagline:empty { display: none; }
+
+    /* ---- Persuasion chat bubbles (bottom-left corner) ---- */
+    .bubbles {
+      position: fixed;
+      left: 16px; bottom: 16px;
+      z-index: 30;
+      width: min(340px, calc(100vw - 32px));
+      display: flex; flex-direction: column; gap: 10px;
+      pointer-events: none;
+    }
+    .bubble {
+      pointer-events: auto;
+      position: relative;
+      display: flex; gap: 10px; align-items: flex-start;
+      background: var(--card);
+      border: 2px solid var(--blue);
+      border-radius: 18px 18px 18px 4px;
+      padding: 14px 34px 14px 14px;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(14px);
+      font-size: 15px;
+      line-height: 1.45;
+      animation: bubbleIn 0.45s cubic-bezier(.2, 1.4, .4, 1) both;
+    }
+    :root:not([data-theme="dark"]) .bubble { background: #fff; }
+    .bubble.out { animation: bubbleOut 0.35s ease both; }
+    @keyframes bubbleIn { from { opacity: 0; transform: translateY(16px) scale(0.92); } to { opacity: 1; transform: none; } }
+    @keyframes bubbleOut { to { opacity: 0; transform: translateX(-30px); } }
+    .bubble .av {
+      flex: none;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--blue);
+      display: grid; place-items: center;
+      font-size: 18px;
+    }
+    .bubble .who { font-size: 12px; font-weight: 800; color: var(--blue); letter-spacing: 0.5px; margin-bottom: 2px; }
+    .bubble .x {
+      all: unset;
+      position: absolute; top: 8px; right: 10px;
+      cursor: pointer; color: var(--muted); font-size: 18px; line-height: 1;
+    }
+    .bubble .x:hover { color: var(--text); }
+    .bubble .replies { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .bubble .replies button {
+      font: inherit; font-size: 13px; font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 99px;
+      border: 2px solid var(--blue);
+      background: transparent; color: var(--blue);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .bubble .replies button:hover { background: var(--blue); color: #fff; }
+    .typing { display: inline-flex; gap: 4px; padding: 6px 0; }
+    .typing span { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); animation: dot 1s infinite; }
+    .typing span:nth-child(2) { animation-delay: 0.15s; }
+    .typing span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes dot { 0%, 60%, 100% { opacity: 0.3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-3px); } }
+    body.is-done .bubbles, body.is-ended .bubbles { display: none; }
 
     .ended { display: none; }
     body.is-ended .live { display: none; }
@@ -359,11 +452,13 @@
       .grid, .reasons ul { grid-template-columns: 1fr; }
     }
     @media (max-width: 600px) {
+      body { padding-top: 76px; }
       header h1 { font-size: 26px; }
+      .bubble { font-size: 14px; }
       .card { padding: 28px 18px; }
       .card h2 { font-size: 26px; }
       .big { font-size: 64px; }
-      .row { font-size: 16px; }
+      .t-val { font-size: 24px; }
       .done-banner, body.is-done .done-banner { font-size: 20px; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -379,16 +474,22 @@
     <header>
       <h1 id="title">AirPods Max 2 Tracker</h1>
       <div class="clock" id="clock">--:--:-- --</div>
+      <div class="tagline" id="tagline"></div>
     </header>
 
     <!-- Reasons banner (hidden once completed) -->
     <section class="reasons" id="reasons">
-      <h3>Why the AirPods Max 2 are worth it</h3>
+      <button class="reasons-toggle" id="reasonsToggle" aria-expanded="true" aria-controls="reasonsBody">
+        <span>Why the AirPods Max 2 are worth it</span>
+        <span class="chev"><span id="reasonsHint">Hide</span><i>▼</i></span>
+      </button>
+      <div class="reasons-body" id="reasonsBody">
       <ul>
         <li><span class="ico">🎧</span><span><b>My AirPods Pro 3 are broken.</b>One of the buds doesn't work anymore.</span></li>
         <li><span class="ico">💵</span><span><b>No money lost.</b>Getting the AirPods Max 2 and a custom case from Amazon now only shifts the date. Any money I get from my Q1 grades goes toward the cost, so you're not fully out of pocket.</span></li>
         <li><span class="ico">🔋</span><span><b>A daily driver.</b>I'll use them every day, running the battery from 20 hours down to 0%, so you'll see the investment being used constantly.</span></li>
       </ul>
+      </div>
     </section>
 
     <div class="done-banner" id="doneBanner"></div>
@@ -424,14 +525,19 @@
     </section>
 
     <section class="card list">
-      <h3>Key Dates</h3>
-      <div class="row"><span>Asked Dad to start the process</span><span>Tue, 9/29/2026</span></div>
-      <div class="row"><span>My Birthday</span><span>11/12</span></div>
-      <div class="row"><span>Days Dad has been "working on it"</span><span id="rowSince">0</span></div>
-      <div class="row" id="rowUntilWrap"><span>Days left to deliver</span><span id="rowUntil">0</span></div>
-      <div class="row"><span>Completed on</span><span id="rowDone">Not yet</span></div>
+      <h3>📌 Key Dates</h3>
+      <div class="tiles">
+        <div class="tile"><span class="t-ico">📅</span><span class="t-label">Asked Dad to start (Tue)</span><span class="t-val">9/29/2026</span></div>
+        <div class="tile cake"><span class="t-ico">🎂</span><span class="t-label">My Birthday</span><span class="t-val">11/12</span></div>
+        <div class="tile hot"><span class="t-ico">⏳</span><span class="t-label">Days Dad's been "working on it"</span><span class="t-val" id="rowSince">0</span></div>
+        <div class="tile" id="rowUntilWrap"><span class="t-ico">⌛</span><span class="t-label">Days left to deliver</span><span class="t-val" id="rowUntil">0</span></div>
+        <div class="tile mystery" id="doneTile"><span class="t-ico">✅</span><span class="t-label">Completed on</span><span class="t-val" id="rowDone">???</span></div>
+      </div>
     </section>
   </div>
+
+  <!-- Persuasion bubbles appear here after the menu closes -->
+  <div class="bubbles" id="bubbles" aria-live="polite"></div>
 
   <!-- "Who are you?" menu: shown on every visit -->
   <div class="overlay" id="overlay">
@@ -455,9 +561,43 @@
 
     const REASONS_HINT = "Forgot some of the reasons I want the AirPods Max 2? See the banner at the top!";
     const MESSAGES = {
-      dad: "Hey, this is a timer to show how long I've been waiting, because the AirPods Max 2s are really important to me.",
-      mom: "Pitches can be hit or miss, so instead of another one, this timer is here to show you that this investment is really worth it, and you know it. That's what it is. I didn't want to annoy you, so this is the way I'm presenting it to you."
+      dad: "Hey Dad, could you please hurry up a little? 🙏 I know, I know, you're \"working on it.\" But the counter below is literally ticking, and it's not getting any smaller. Love you, but... tick tock. ⏰",
+      mom: "Hey, can I please get this? PLEEEASE? 🥺 Pitches can be hit or miss, so instead of another one, this timer is here to show you that this investment is really worth it, and you know it. I didn't want to annoy you, so this is how I'm presenting it. Pretty please? 🙏"
     };
+    const HEADINGS = { dad: "Hey Dad 👋", mom: "Hey Mom 🥺" };
+    const TAGLINES = {
+      dad: "Dad, could you please hurry up a little? ⏰",
+      mom: "Mom, can I please get this? PLEEEASE 🥺"
+    };
+
+    // Little chat bubbles shown in the corner, one at a time. {since} = days waited so far.
+    const BUBBLES = {
+      dad: [
+        "Wouldn't it suck if the one AirPod you use for the TV on weekend mornings died, so you couldn't hear anything without waking up Mom? That's me at school, every single day.",
+        "Imagine asking for something and hearing \"I'm working on it\" for {since} days. Would you be patient? 😅",
+        "At school I need audio for videos and assignments. One working bud means I'm missing half of it. Could we fix that a little faster?",
+        "If you got them today, this counter stops forever and you never have to see this page again. Tempting, right? 👀",
+        "What's the hold-up, honestly? I'll put my Q1 grade money toward it. Deal? 🤝"
+      ],
+      mom: [
+        "Wouldn't it be annoying to hear everything with just one ear? That's my life right now. 😩",
+        "At school, a broken bud means I can't hear class videos properly. You want my grades to stay good, right? 📚",
+        "I'm putting my Q1 grade money toward it. Isn't that a pretty fair deal? 💵",
+        "20 hours of battery, used down to 0% every day. Isn't something used every single day worth it? 🔋",
+        "Could you maybe give Dad a tiny nudge? It's been {since} days... 👉👈"
+      ],
+      custom: [
+        "Wouldn't it be frustrating if only one of your earbuds worked? That's me right now. 🎧",
+        "It's been {since} days of \"I'm working on it.\" Would you wait that long? ⏳",
+        "Something used every day, from 20 hours of battery to 0%, is worth it. Don't you think? 🔋"
+      ]
+    };
+    const REPLIES = [
+      ["Yeah, that would suck 😬", "Fair point"],
+      ["Okay, okay 😅", "Hmm..."],
+      ["You're right", "I'll think about it"]
+    ];
+
     const DONE_MESSAGES = {
       dad: "Party, woo! It's all done. We got it! Thank you, Dad. 🎉",
       mom: "Party, woo! It's all done. We got it! Thank you, Mom. 🎉"
@@ -511,11 +651,13 @@
       if (!btn) return;
       if (btn.dataset.close) return closeOverlay();
       const who = btn.dataset.who;
+      startBubbles(who);
       if (!MESSAGES[who]) return closeOverlay(); // Custom: no message
+      if (!DONE) $("tagline").textContent = TAGLINES[who];
       const modal = $("modal");
       modal.innerHTML = "";
       const h = document.createElement("h2");
-      h.textContent = who === "dad" ? "Hey Dad 👋" : "Hey Mom 👋";
+      h.textContent = HEADINGS[who];
       const p = document.createElement("p");
       p.textContent = DONE ? DONE_MESSAGES[who] : MESSAGES[who];
       const hint = document.createElement("p");
@@ -531,6 +673,66 @@
       void modal.offsetWidth;
       modal.style.animation = "";
     });
+
+    // ---- Collapsible reasons banner (remembers choice) ----
+    function setReasons(collapsed) {
+      $("reasons").classList.toggle("collapsed", collapsed);
+      $("reasonsToggle").setAttribute("aria-expanded", String(!collapsed));
+      $("reasonsHint").textContent = collapsed ? "Show" : "Hide";
+    }
+    try { setReasons(localStorage.getItem("reasonsCollapsed") === "1"); } catch (e) {}
+    $("reasonsToggle").addEventListener("click", () => {
+      const collapsed = !$("reasons").classList.contains("collapsed");
+      setReasons(collapsed);
+      try { localStorage.setItem("reasonsCollapsed", collapsed ? "1" : "0"); } catch (e) {}
+    });
+
+    // ---- Persuasion bubbles ----
+    const AVATAR = "🎧";
+    let bubbleIdx = 0, bubbleTimer = null;
+    function currentSince() { return Math.max(0, dayDiff(START, new Date())); }
+    function dismiss(b) {
+      if (!b.isConnected || b.classList.contains("out")) return;
+      b.classList.add("out");
+      setTimeout(() => b.remove(), 350);
+    }
+    function showBubble(list) {
+      const box = $("bubbles");
+      while (box.children.length >= 2) dismiss(box.firstElementChild);
+      const text = list[bubbleIdx % list.length].replace("{since}", currentSince());
+      const replies = REPLIES[bubbleIdx % REPLIES.length];
+      bubbleIdx++;
+
+      const b = document.createElement("div");
+      b.className = "bubble";
+      b.innerHTML = '<div class="av"></div><div class="body"><div class="who">Me</div><div class="msg"><span class="typing"><span></span><span></span><span></span></span></div></div><button class="x" aria-label="Dismiss">×</button>';
+      b.querySelector(".av").textContent = AVATAR;
+      b.querySelector(".x").onclick = () => dismiss(b);
+      box.appendChild(b);
+
+      // "typing..." then the message and quick replies
+      setTimeout(() => {
+        if (!b.isConnected) return;
+        b.querySelector(".msg").textContent = text;
+        const r = document.createElement("div");
+        r.className = "replies";
+        replies.forEach(label => {
+          const btn = document.createElement("button");
+          btn.textContent = label;
+          btn.onclick = () => dismiss(b);
+          r.appendChild(btn);
+        });
+        b.querySelector(".body").appendChild(r);
+      }, 1400);
+      setTimeout(() => dismiss(b), 22000);
+    }
+    function startBubbles(who) {
+      if (DONE || new Date() >= BDAY) return;
+      const list = BUBBLES[who] || BUBBLES.custom;
+      clearInterval(bubbleTimer);
+      setTimeout(() => showBubble(list), 3500);
+      bubbleTimer = setInterval(() => showBubble(list), 18000);
+    }
 
     function makeConfetti() {
       const box = document.createElement("div");
@@ -568,6 +770,7 @@
       $("sinceExact").textContent = `It took ${took} day${took === 1 ? "" : "s"}, done on ${DONE.toLocaleDateString("en-US")}`;
       $("rowSince").textContent = took;
       $("rowDone").textContent = DONE.toLocaleDateString("en-US");
+      $("doneTile").className = "tile won";
     }
 
     // ---- Timers ----

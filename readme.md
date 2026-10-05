@@ -5,7 +5,9 @@ This simple application shows how many days have passed since last Tuesday. As I
 ## Features
 
 - **"Who are you?" menu** every time the page opens: *My dad*, *My mom*, or *Custom* (someone who is neither). Dad and Mom each get a short message plus a reminder to check the reasons banner; Custom goes straight to the timer.
-- **Reasons banner** at the top with a soft glowing pulse: why the AirPods Max 2 are worth it.
+- **Reasons banner** at the top with a soft glowing pulse: why the AirPods Max 2 are worth it. Click its title to collapse/expand (remembered).
+- **Persuasion bubbles** pop up in the bottom-left corner every ~18 seconds, tailored to Dad, Mom, or anyone else. Edit them in the `BUBBLES` list in `index.html`.
+- **Key Dates** shown as tiles; "Completed on" shows **???** until it's done.
 - **Days Since I Asked** and **Days Until My Birthday** side by side (stacked on phones).
 - Animated background, and a dark mode toggle in the top-right corner (remembers your choice).
 - **Party mode** once a completion date is set: confetti, party colors, and "Party, woo! It's all done. We got it!"
