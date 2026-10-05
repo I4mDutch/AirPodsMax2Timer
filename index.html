@@ -1153,8 +1153,8 @@
     });
 
     // ---- Bubble sound (generated, no files needed) ----
-    let audioCtx = null, soundOn = true;
-    try { soundOn = localStorage.getItem("sound") !== "0"; } catch (e) {}
+    let audioCtx = null, soundOn = false;
+    try { soundOn = localStorage.getItem("sound") === "1"; } catch (e) {}
     function unlockAudio() {
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
