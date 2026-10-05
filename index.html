@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AirPods Max 2 Tracker</title>
+  <style>
+    :root {
+      --blue: #2563eb;
+      --blue-soft: #dbeafe;
+      --blue-text: #1e40af;
+      --orange: #f59e0b;
+      --red: #dc2626;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --border: #e2e8f0;
+      --row: #f1f5f9;
+      --text: #0f172a;
+      --muted: #64748b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 36px 16px;
+    }
+    .wrap { max-width: 940px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+
+    header {
+      background: var(--blue);
+      color: #fff;
+      border-radius: 12px;
+      padding: 30px 20px;
+      text-align: center;
+    }
+    header h1 { font-size: 34px; font-weight: 800; letter-spacing: -0.5px; }
+    header .clock { font-size: 22px; margin-top: 6px; font-variant-numeric: tabular-nums; opacity: 0.95; }
+
+    .card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 40px 32px;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      background: var(--blue-soft);
+      color: var(--blue-text);
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-size: 17px;
+      padding: 6px 18px;
+      border-radius: 6px;
+    }
+    .status {
+      margin-top: 18px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-size: 18px;
+      color: var(--orange);
+    }
+    .status.red { color: var(--red); }
+    .card h2 { font-size: 44px; font-weight: 800; margin-top: 10px; letter-spacing: -0.5px; }
+    .big {
+      font-size: 96px;
+      font-weight: 800;
+      color: var(--blue);
+      line-height: 1.1;
+      margin-top: 10px;
+      font-variant-numeric: tabular-nums;
+    }
+    .big.red { color: var(--red); }
+    .sub { font-size: 22px; color: var(--muted); margin-top: 8px; font-variant-numeric: tabular-nums; }
+
+    .bar { height: 12px; background: var(--border); border-radius: 99px; margin-top: 32px; overflow: hidden; }
+    .bar > div { height: 100%; width: 0; background: var(--blue); border-radius: 99px; transition: width 0.5s; }
+    .bar-labels { display: flex; justify-content: space-between; margin-top: 8px; font-size: 14px; color: var(--muted); }
+
+    .list { text-align: left; }
+    .list h3 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #475569;
+      margin-bottom: 16px;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--row);
+      border-radius: 6px;
+      padding: 16px 20px;
+      font-size: 21px;
+      margin-top: 8px;
+    }
+    .row span:last-child { font-weight: 600; text-align: right; }
+
+    .ended { display: none; }
+    body.is-ended .live { display: none; }
+    body.is-ended .ended { display: block; }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 26px; }
+      .card { padding: 28px 18px; }
+      .card h2 { font-size: 30px; }
+      .big { font-size: 64px; }
+      .sub, .row { font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>AirPods Max 2 Tracker</h1>
+      <div class="clock" id="clock">--:--:-- --</div>
+    </header>
+
+    <!-- Timer 1: days since the ask -->
+    <section class="card live">
+      <span class="badge">"I'm working on it"</span>
+      <div class="status red">Still waiting</div>
+      <h2>Days Since I Asked</h2>
+      <div class="big red" id="sinceDays">0</div>
+      <div class="sub" id="sinceExact">Since Tuesday, September 29, 2026</div>
+    </section>
+
+    <!-- Timer 2: countdown to birthday -->
+    <section class="card live">
+      <span class="badge">Birthday Countdown</span>
+      <div class="status">Coming up</div>
+      <h2>Days Until My Birthday</h2>
+      <div class="big" id="untilDays">0</div>
+      <div class="sub" id="untilExact">--</div>
+      <div class="bar"><div id="progress"></div></div>
+      <div class="bar-labels"><span>Sep 29</span><span id="progressPct">0%</span><span>Nov 12</span></div>
+    </section>
+
+    <!-- Shown once Nov 12, 2026 arrives -->
+    <section class="card ended">
+      <span class="badge">November 12, 2026</span>
+      <div class="status">Timer ended</div>
+      <h2>Happy Birthday! 🎂</h2>
+      <div class="sub" id="finalSummary"></div>
+    </section>
+
+    <!-- Timer 3: details -->
+    <section class="card list">
+      <h3>Key Dates</h3>
+      <div class="row"><span>Asked Dad to start the process</span><span>Tue, 9/29/2026</span></div>
+      <div class="row"><span>My Birthday</span><span>11/12</span></div>
+      <div class="row"><span>Days Dad has been "working on it"</span><span id="rowSince">0</span></div>
+      <div class="row"><span>Days left to deliver</span><span id="rowUntil">0</span></div>
+    </section>
+  </div>
+
+  <script>
+    // Local midnight of each date
+    const START = new Date(2026, 8, 29);  // Sep 29, 2026
+    const BDAY  = new Date(2026, 10, 12); // Nov 12, 2026 (app stops here)
+    const DAY = 86400000;
+
+    const $ = id => document.getElementById(id);
+    const pad = n => String(n).padStart(2, "0");
+
+    // Calendar-day difference, safe across DST changes
+    function dayDiff(a, b) {
+      const ua = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+      const ub = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+      return Math.round((ub - ua) / DAY);
+    }
+
+    let timer;
+    function tick() {
+      const now = new Date();
+      $("clock").textContent = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+
+      if (now >= BDAY) {
+        const total = dayDiff(START, BDAY);
+        $("finalSummary").textContent = `It took ${total} days of "I'm working on it" to reach this day.`;
+        $("rowSince").textContent = total;
+        $("rowUntil").textContent = 0;
+        document.body.classList.add("is-ended");
+        clearInterval(timer);
+        return;
+      }
+
+      // Timer 1: days since
+      const since = Math.max(0, dayDiff(START, now));
+      const el = now - START;
+      $("sinceDays").textContent = since;
+      $("sinceExact").textContent = el > 0
+        ? `${since}d ${pad(Math.floor(el / 3600000) % 24)}h ${pad(Math.floor(el / 60000) % 60)}m ${pad(Math.floor(el / 1000) % 60)}s since Tue, Sep 29, 2026`
+        : "Since Tuesday, September 29, 2026";
+
+      // Timer 2: days until
+      const until = dayDiff(now, BDAY);
+      const left = BDAY - now;
+      $("untilDays").textContent = until;
+      $("untilExact").textContent =
+        `${Math.floor(left / DAY)}d ${pad(Math.floor(left / 3600000) % 24)}h ${pad(Math.floor(left / 60000) % 60)}m ${pad(Math.floor(left / 1000) % 60)}s — Thursday, November 12`;
+
+      const pct = Math.min(100, Math.max(0, (el / (BDAY - START)) * 100));
+      $("progress").style.width = pct + "%";
+      $("progressPct").textContent = pct.toFixed(1) + "% of the way";
+
+      $("rowSince").textContent = since;
+      $("rowUntil").textContent = until;
+    }
+
+    tick();
+    timer = setInterval(tick, 1000);
+  </script>
+</body>
+</html>
