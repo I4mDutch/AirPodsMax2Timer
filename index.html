@@ -198,6 +198,84 @@
     }
     body.is-done .done-banner { display: block; }
 
+    /* Reasons banner: soft "breathing" glow, not a hard blink */
+    .reasons {
+      background: var(--card);
+      border: 2px solid var(--orange);
+      border-radius: 14px;
+      padding: 16px 22px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      animation: rise 0.6s ease both, breathe 3.5s ease-in-out 0.6s infinite;
+    }
+    @keyframes breathe {
+      0%, 100% { box-shadow: var(--shadow), 0 0 0 0 rgba(245, 158, 11, 0); border-color: var(--orange); }
+      50%      { box-shadow: var(--shadow), 0 0 18px 2px rgba(245, 158, 11, 0.35); border-color: rgba(245, 158, 11, 0.45); }
+    }
+    .reasons h3 {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 10px;
+    }
+    .reasons ul { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .reasons li { display: flex; gap: 10px; font-size: 15px; line-height: 1.45; }
+    .reasons li b { display: block; }
+    .reasons .ico { font-size: 22px; line-height: 1.2; }
+    body.is-done .reasons { display: none; }
+
+    /* ---- Party theme (when COMPLETED_ON is set) ---- */
+    body.is-done {
+      --blue: #9333ea;
+      --blue-soft: #f3e8ff;
+      --blue-text: #6b21a8;
+      --blob1: rgba(236, 72, 153, 0.22);
+      --blob2: rgba(250, 204, 21, 0.22);
+      --blob3: rgba(147, 51, 234, 0.20);
+    }
+    :root[data-theme="dark"] body.is-done {
+      --blue: #c084fc;
+      --blue-soft: #581c87;
+      --blue-text: #f3e8ff;
+      --blob1: rgba(236, 72, 153, 0.25);
+      --blob2: rgba(250, 204, 21, 0.14);
+      --blob3: rgba(168, 85, 247, 0.25);
+    }
+    body.is-done header {
+      background: linear-gradient(120deg, #ec4899, #a855f7, #6366f1, #d946ef, #ec4899);
+      background-size: 400% 400%;
+      animation: shimmer 6s ease infinite;
+    }
+    body.is-done .done-banner {
+      background: linear-gradient(120deg, #fdf2f8, #faf5ff, #fefce8);
+      color: #7e22ce;
+      border-color: #d946ef;
+      font-size: 28px;
+      animation: rise 0.6s ease both, bounce 2s ease-in-out 0.6s infinite;
+    }
+    :root[data-theme="dark"] body.is-done .done-banner {
+      background: linear-gradient(120deg, #500724, #3b0764, #422006);
+      color: #f5d0fe;
+    }
+    .done-banner small { display: block; font-size: 17px; font-weight: 600; margin-top: 4px; opacity: 0.85; }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+    body.is-done .big.green { animation: pulse 1.6s ease-in-out infinite; }
+
+    .confetti { position: fixed; inset: 0; pointer-events: none; z-index: -1; overflow: hidden; }
+    .confetti i {
+      position: absolute;
+      top: -20px;
+      width: 10px; height: 16px;
+      border-radius: 2px;
+      opacity: 0.9;
+      animation: fall linear infinite;
+    }
+    @keyframes fall {
+      to { transform: translate3d(var(--dx), 110vh, 0) rotate(var(--rot)); }
+    }
+
     .list { text-align: left; }
     .list h3 {
       font-size: 20px;
@@ -218,6 +296,7 @@
       margin-top: 8px;
       transition: transform 0.2s, background 0.4s;
     }
+    .row[hidden] { display: none; }
     .row:hover { transform: translateX(4px); }
     .row span:last-child { font-weight: 600; text-align: right; }
 
@@ -242,14 +321,23 @@
       border: 2px solid var(--border);
       border-radius: 18px;
       padding: 36px 30px;
-      width: 100%; max-width: 460px;
+      width: 100%; max-width: 520px;
       text-align: center;
       box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
       animation: pop 0.4s cubic-bezier(.2, 1.4, .4, 1) both;
     }
     @keyframes pop { from { opacity: 0; transform: scale(0.9) translateY(10px); } to { opacity: 1; transform: none; } }
     .modal h2 { font-size: 32px; font-weight: 800; margin-bottom: 22px; }
-    .modal p { font-size: 19px; line-height: 1.5; margin-bottom: 24px; }
+    .modal p { font-size: 18px; line-height: 1.55; margin-bottom: 18px; }
+    .modal p.hint {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--orange);
+      background: rgba(245, 158, 11, 0.12);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 22px;
+    }
     .choices { display: flex; flex-direction: column; gap: 12px; }
     .btn {
       font: inherit;
@@ -268,7 +356,7 @@
     .btn small { display: block; font-size: 13px; font-weight: 500; opacity: 0.8; margin-top: 2px; }
 
     @media (max-width: 760px) {
-      .grid { grid-template-columns: 1fr; }
+      .grid, .reasons ul { grid-template-columns: 1fr; }
     }
     @media (max-width: 600px) {
       header h1 { font-size: 26px; }
@@ -276,7 +364,7 @@
       .card h2 { font-size: 26px; }
       .big { font-size: 64px; }
       .row { font-size: 16px; }
-      .done-banner { font-size: 19px; }
+      .done-banner, body.is-done .done-banner { font-size: 20px; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -289,18 +377,28 @@
 
   <div class="wrap">
     <header>
-      <h1>AirPods Max 2 Tracker</h1>
+      <h1 id="title">AirPods Max 2 Tracker</h1>
       <div class="clock" id="clock">--:--:-- --</div>
     </header>
+
+    <!-- Reasons banner (hidden once completed) -->
+    <section class="reasons" id="reasons">
+      <h3>Why the AirPods Max 2 are worth it</h3>
+      <ul>
+        <li><span class="ico">🎧</span><span><b>My AirPods Pro 3 are broken.</b>One of the buds doesn't work anymore.</span></li>
+        <li><span class="ico">💵</span><span><b>No money lost.</b>Getting the AirPods Max 2 and a custom case from Amazon now only shifts the date. Any money I get from my Q1 grades goes toward the cost, so you're not fully out of pocket.</span></li>
+        <li><span class="ico">🔋</span><span><b>A daily driver.</b>I'll use them every day, running the battery from 20 hours down to 0%, so you'll see the investment being used constantly.</span></li>
+      </ul>
+    </section>
 
     <div class="done-banner" id="doneBanner"></div>
 
     <div class="grid live">
       <!-- Timer 1: days since the ask -->
       <section class="card">
-        <span class="badge">"I'm working on it"</span>
+        <span class="badge" id="sinceBadge">"I'm working on it"</span>
         <div class="status red" id="sinceStatus">Still waiting</div>
-        <h2>Days Since I Asked</h2>
+        <h2 id="sinceTitle">Days Since I Asked</h2>
         <div class="big red" id="sinceDays">0</div>
         <div class="sub" id="sinceExact">Since Tuesday, September 29, 2026</div>
       </section>
@@ -330,7 +428,7 @@
       <div class="row"><span>Asked Dad to start the process</span><span>Tue, 9/29/2026</span></div>
       <div class="row"><span>My Birthday</span><span>11/12</span></div>
       <div class="row"><span>Days Dad has been "working on it"</span><span id="rowSince">0</span></div>
-      <div class="row"><span>Days left to deliver</span><span id="rowUntil">0</span></div>
+      <div class="row" id="rowUntilWrap"><span>Days left to deliver</span><span id="rowUntil">0</span></div>
       <div class="row"><span>Completed on</span><span id="rowDone">Not yet</span></div>
     </section>
   </div>
@@ -347,32 +445,42 @@
     </div>
   </div>
 
+  <!-- Completion date lives in config.js (the only file to edit) -->
+  <script src="config.js"></script>
   <script>
-    // ============================================================
-    //  MARK AS COMPLETED: when the AirPods Max 2 arrive, set this to
-    //  the date as "YYYY-MM-DD", e.g. "2026-10-20". Leave it as null
-    //  while still waiting.
-    // ============================================================
-    const COMPLETED_ON = null;
-
     // Local midnight of each date
     const START = new Date(2026, 8, 29);  // Sep 29, 2026
     const BDAY  = new Date(2026, 10, 12); // Nov 12, 2026 (app stops here)
     const DAY = 86400000;
 
+    const REASONS_HINT = "Forgot some of the reasons I want the AirPods Max 2? See the banner at the top!";
     const MESSAGES = {
       dad: "Hey, this is a timer to show how long I've been waiting, because the AirPods Max 2s are really important to me.",
-      mom: "Hey, this is how long my dad has been taking to get the AirPods Max 2s. If I pitch this to you, you might not want to get them for me."
+      mom: "Pitches can be hit or miss, so instead of another one, this timer is here to show you that this investment is really worth it, and you know it. That's what it is. I didn't want to annoy you, so this is the way I'm presenting it to you."
+    };
+    const DONE_MESSAGES = {
+      dad: "Party, woo! It's all done. We got it! Thank you, Dad. 🎉",
+      mom: "Party, woo! It's all done. We got it! Thank you, Mom. 🎉"
     };
 
     const $ = id => document.getElementById(id);
     const pad = n => String(n).padStart(2, "0");
 
+    // Accepts "10/20/2026", "2026-10-20", "October 20, 2026", etc.
     function parseDate(s) {
-      const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || "");
-      return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
+      s = String(s || "").trim();
+      if (!s) return null;
+      let m = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(s);
+      if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
+      m = /^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/.exec(s);
+      if (m) return new Date(m[3].length === 2 ? 2000 + +m[3] : +m[3], +m[1] - 1, +m[2]);
+      const d = new Date(s);
+      if (isNaN(d)) { console.warn("COMPLETED_ON: couldn't read date", s); return null; }
+      return new Date(d.getFullYear(), d.getMonth(), d.getDate());
     }
-    const DONE = parseDate(COMPLETED_ON);
+    // ?done=10/20/2026 in the URL previews the completed look without editing anything
+    const urlDone = new URLSearchParams(location.search).get("done");
+    const DONE = parseDate(urlDone || (typeof COMPLETED_ON !== "undefined" ? COMPLETED_ON : ""));
     const fmtDate = d => d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
 
     // Calendar-day difference, safe across DST changes
@@ -402,29 +510,57 @@
       const btn = e.target.closest("button");
       if (!btn) return;
       if (btn.dataset.close) return closeOverlay();
-      const msg = MESSAGES[btn.dataset.who];
-      if (!msg) return closeOverlay(); // Custom: no message
+      const who = btn.dataset.who;
+      if (!MESSAGES[who]) return closeOverlay(); // Custom: no message
       const modal = $("modal");
       modal.innerHTML = "";
       const h = document.createElement("h2");
-      h.textContent = btn.dataset.who === "dad" ? "Hey Dad 👋" : "Hey Mom 👋";
+      h.textContent = who === "dad" ? "Hey Dad 👋" : "Hey Mom 👋";
       const p = document.createElement("p");
-      p.textContent = msg;
+      p.textContent = DONE ? DONE_MESSAGES[who] : MESSAGES[who];
+      const hint = document.createElement("p");
+      hint.className = "hint";
+      hint.textContent = REASONS_HINT;
+      if (DONE) hint.hidden = true;
       const go = document.createElement("button");
       go.className = "btn primary";
       go.dataset.close = "1";
       go.textContent = "Show me the timer";
-      modal.append(h, p, go);
+      modal.append(h, p, hint, go);
       modal.style.animation = "none";
       void modal.offsetWidth;
       modal.style.animation = "";
     });
 
+    function makeConfetti() {
+      const box = document.createElement("div");
+      box.className = "confetti";
+      const colors = ["#ec4899", "#a855f7", "#3b82f6", "#facc15", "#22c55e", "#f97316"];
+      for (let i = 0; i < 60; i++) {
+        const c = document.createElement("i");
+        c.style.left = Math.random() * 100 + "vw";
+        c.style.background = colors[i % colors.length];
+        c.style.setProperty("--dx", (Math.random() * 30 - 15) + "vw");
+        c.style.setProperty("--rot", (Math.random() * 1440 - 720) + "deg");
+        c.style.animationDuration = 6 + Math.random() * 8 + "s";
+        c.style.animationDelay = -Math.random() * 14 + "s";
+        if (i % 3 === 0) c.style.borderRadius = "50%";
+        box.appendChild(c);
+      }
+      document.body.appendChild(box);
+    }
+
     // ---- Completion state ----
     if (DONE) {
       document.body.classList.add("is-done");
       const took = Math.max(0, dayDiff(START, DONE));
-      $("doneBanner").textContent = `Hey, it's done on ${fmtDate(DONE)}. 🎧`;
+      $("doneBanner").innerHTML = "🎉 Party, woo! It's all done. We got it! 🎧<small></small>";
+      $("doneBanner").querySelector("small").textContent = `Hey, it's done on ${fmtDate(DONE)}.`;
+      makeConfetti();
+      $("title").textContent = "🎉 We Got It! 🎉";
+      $("sinceBadge").textContent = "All done";
+      $("rowUntilWrap").hidden = true;
+      $("sinceTitle").textContent = "Days It Took";
       $("sinceStatus").textContent = "Delivered";
       $("sinceStatus").className = "status green";
       $("sinceDays").className = "big green";

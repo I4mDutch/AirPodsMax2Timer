@@ -4,23 +4,22 @@ This simple application shows how many days have passed since last Tuesday. As I
 
 ## Features
 
-- **"Who are you?" menu** every time the page opens: *My dad*, *My mom*, or *Custom* (someone who is neither). Dad and Mom each get a short message; Custom goes straight to the timer.
-- **Days Since I Asked** and **Days Until My Birthday** shown side by side (stacked on phones).
+- **"Who are you?" menu** every time the page opens: *My dad*, *My mom*, or *Custom* (someone who is neither). Dad and Mom each get a short message plus a reminder to check the reasons banner; Custom goes straight to the timer.
+- **Reasons banner** at the top with a soft glowing pulse: why the AirPods Max 2 are worth it.
+- **Days Since I Asked** and **Days Until My Birthday** side by side (stacked on phones).
 - Animated background, and a dark mode toggle in the top-right corner (remembers your choice).
+- **Party mode** once a completion date is set: confetti, party colors, and "Party, woo! It's all done. We got it!"
 
 ## Marking it as completed
 
-When the AirPods Max 2 arrive:
+Open **`config.js`** (not `index.html`) and put the date between the quotes:
 
-1. Open `index.html`.
-2. Near the top of the `<script>` section, find:
-   ```js
-   const COMPLETED_ON = null;
-   ```
-3. Change it to the date they arrived, in `"YYYY-MM-DD"` format:
-   ```js
-   const COMPLETED_ON = "2026-10-20";
-   ```
-4. Save (and commit/push if hosted).
+```js
+const COMPLETED_ON = "10/20/2026";
+```
 
-The page will then show **"Hey, it's done on [date]."** at the top, freeze the "Days Since I Asked" count at the number of days it took, and fill in "Completed on" in the Key Dates list. The birthday countdown keeps running until November 12.
+`"10/20/2026"`, `"2026-10-20"` and `"October 20, 2026"` all work. Save, then commit/push if hosted. On GitHub you can edit it right in the browser: open `config.js`, click the pencil icon, change the date, and commit.
+
+The page switches to party mode: it shows **"Hey, it's done on [date]."**, stops the count at the number of days it took, hides the reasons banner, and fills in "Completed on". The birthday countdown keeps running until November 12. To go back, set it to `""`.
+
+**Preview without editing anything:** add `?done=10/20/2026` to the end of the page URL.
