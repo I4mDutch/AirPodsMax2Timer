@@ -240,7 +240,7 @@
     .reasons-body { display: grid; grid-template-rows: 1fr; transition: grid-template-rows 0.35s ease, opacity 0.35s, margin 0.35s; margin-top: 12px; }
     .reasons-body > ul { overflow: hidden; min-height: 0; }
     .reasons.collapsed .reasons-body { grid-template-rows: 0fr; opacity: 0; margin-top: 0; }
-    .reasons ul { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .reasons ul { list-style: none; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
     .reasons li { display: flex; gap: 10px; font-size: 15px; line-height: 1.45; }
     .reasons li b { display: block; }
     .reasons .ico { font-size: 22px; line-height: 1.2; }
@@ -393,6 +393,57 @@
     @keyframes dot { 0%, 60%, 100% { opacity: 0.3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-3px); } }
     body.is-done .bubbles, body.is-ended .bubbles { display: none; }
 
+    .sound-toggle { right: 70px; }
+
+    /* Before / After */
+    .ba { display: grid; grid-template-columns: 1fr auto 1fr; gap: 18px; align-items: stretch; margin-top: 8px; }
+    .ba-col { border-radius: 12px; padding: 18px; }
+    .ba-col h4 { font-size: 15px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+    .ba-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .ba-col li { display: flex; gap: 10px; font-size: 16px; line-height: 1.4; }
+    .ba-now { background: rgba(220, 38, 38, 0.08); border: 2px solid rgba(220, 38, 38, 0.3); }
+    .ba-now h4 { color: var(--red); }
+    .ba-now li::before { content: "✖"; color: var(--red); font-weight: 900; }
+    .ba-then { background: rgba(22, 163, 74, 0.08); border: 2px solid rgba(22, 163, 74, 0.35); }
+    .ba-then h4 { color: var(--green); }
+    .ba-then li::before { content: "✔"; color: var(--green); font-weight: 900; }
+    .ba-arrow { display: grid; place-items: center; font-size: 34px; animation: slideR 1.6s ease-in-out infinite; }
+    @keyframes slideR { 0%, 100% { transform: translateX(-4px); } 50% { transform: translateX(6px); } }
+
+    /* Excuse busters (accordion) */
+    .excuses { display: flex; flex-direction: column; gap: 10px; }
+    .excuse { background: var(--row); border: 2px solid var(--border); border-radius: 12px; overflow: hidden; transition: border-color 0.2s; }
+    .excuse[open] { border-color: var(--green); }
+    .excuse summary {
+      list-style: none; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      padding: 14px 18px; font-size: 17px; font-weight: 700;
+    }
+    .excuse summary::-webkit-details-marker { display: none; }
+    .excuse summary::after { content: "BUSTED?"; flex: none; font-size: 11px; font-weight: 900; letter-spacing: 1px; color: var(--muted); border: 2px solid var(--border); border-radius: 6px; padding: 3px 8px; }
+    .excuse[open] summary::after { content: "BUSTED ✔"; color: #fff; background: var(--green); border-color: var(--green); }
+    .excuse p { padding: 0 18px 16px; font-size: 16px; line-height: 1.5; color: var(--text); animation: fade 0.3s ease both; }
+    .excuse p strong { color: var(--green); }
+
+    /* Convinced-o-meter */
+    .meter { max-width: 560px; margin: 0 auto 26px; text-align: left; }
+    .meter-top { display: flex; justify-content: space-between; font-size: 14px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .meter-top b { color: var(--green); font-size: 18px; letter-spacing: 0; }
+    .meter-bar { height: 16px; border-radius: 99px; background: var(--border); overflow: hidden; }
+    .meter-bar div { height: 100%; width: 0; border-radius: 99px; background: linear-gradient(90deg, #f59e0b, #22c55e); transition: width 0.6s cubic-bezier(.2, 1.2, .4, 1); }
+    .meter-hint { font-size: 13px; color: var(--muted); margin-top: 6px; }
+    .toast {
+      position: fixed; top: 20px; left: 50%; z-index: 70;
+      transform: translateX(-50%);
+      background: var(--green); color: #fff;
+      padding: 12px 20px; border-radius: 99px;
+      font-weight: 800; font-size: 15px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+      animation: toast 2.6s ease both;
+      pointer-events: none;
+    }
+    @keyframes toast { 0% { opacity: 0; transform: translate(-50%, -20px); } 12%, 85% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; transform: translate(-50%, -10px); } }
+
     /* Floating "compare sellers" quick link (bottom-right) */
     .shop-fab {
       position: fixed; right: 16px; bottom: 16px; z-index: 30;
@@ -423,7 +474,7 @@
     /* Section titles shared by new cards */
     .sec-title { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
     .sec-sub { color: var(--muted); font-size: 15px; margin-bottom: 18px; }
-    .grid .card.left { text-align: left; }
+    .card.left { text-align: left; }
 
     /* Cost calculator */
     .calc-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
@@ -540,7 +591,10 @@
 
     @media (max-width: 760px) {
       .grid, .reasons ul, .calc-out { grid-template-columns: 1fr; }
+      .sound-toggle { right: 70px; }
       .tiles { grid-template-columns: 1fr 1fr; }
+      .ba { grid-template-columns: 1fr; }
+      .ba-arrow { transform: rotate(90deg); animation: none; }
       .decide-zone { height: 230px; }
       .yes { padding: 14px 28px; font-size: 20px; }
       .decide h2 { font-size: 28px; }
@@ -565,6 +619,7 @@
 <body>
   <div class="bg"><span></span><span></span><span></span></div>
   <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+  <button class="theme-toggle sound-toggle" id="soundToggle" aria-label="Toggle bubble sounds">🔔</button>
 
   <div class="wrap">
     <header>
@@ -583,6 +638,7 @@
       <ul>
         <li><span class="ico">🎧</span><span><b>My AirPods Pro 3 are broken.</b>One of the buds doesn't work anymore.</span></li>
         <li><span class="ico">💵</span><span><b>No extra money lost.</b>Getting the AirPods Max 2 and a custom case from Amazon now only shifts the date. Any money I get from my Q1 grades goes toward the cost, so you're not fully out of pocket.</span></li>
+        <li><span class="ico">🎮</span><span><b>My IEMs don't work for school.</b>They're built for gaming and at-home use, and the cord is super long. Not something I can use in class.</span></li>
         <li><span class="ico">🔋</span><span><b>A daily driver.</b>I'll use them every day, running the battery from 20 hours down to 0%, so you'll see the investment being used constantly.</span></li>
       </ul>
         <div class="reasons-cta">
@@ -616,6 +672,33 @@
       </section>
     </div>
 
+    <!-- Before / After -->
+    <section class="card left live">
+      <div class="sec-title">🔄 Right Now vs. With AirPods Max 2</div>
+      <div class="sec-sub">Same kid, same school day. Very different experience.</div>
+      <div class="ba">
+        <div class="ba-col ba-now">
+          <h4>Right now</h4>
+          <ul>
+            <li>One AirPod Pro 3 bud works. The other is dead.</li>
+            <li>IEMs with a super long gaming cord. Not a school thing.</li>
+            <li>Class videos and assignments with half the audio.</li>
+            <li>Asking. Waiting. Hearing "I'm working on it."</li>
+          </ul>
+        </div>
+        <div class="ba-arrow">➡️</div>
+        <div class="ba-col ba-then">
+          <h4>With AirPods Max 2</h4>
+          <ul>
+            <li>Full sound in both ears, all day.</li>
+            <li>Wireless. No cord to tangle or snag in class.</li>
+            <li>Hard to lose, protected by a custom case.</li>
+            <li>No more asking. This page retires. 🎉</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
     <div class="grid live">
       <!-- The math: cost per day -->
       <section class="card left">
@@ -644,12 +727,32 @@
           <li>No more broken-earbud excuses for missing audio at school.</li>
           <li>I'll stop asking. This whole page retires itself. 😇</li>
         </ul>
-        <div class="signature">— your kid 🎧</div>
+        <div class="signature">— Caden, the best son 🎧</div>
       </section>
     </div>
 
+    <!-- Excuse busters -->
+    <section class="card left live">
+      <div class="sec-title">🛡️ Excuse Busters</div>
+      <div class="sec-sub">Every reason to wait, answered. Tap one.</div>
+      <div class="excuses" id="excuses">
+        <details class="excuse"><summary>"They're too expensive."</summary><p>My <strong>Q1 grade money</strong> goes toward it, and used every day it's <strong>cents per day</strong>. Check The Math above.</p></details>
+        <details class="excuse"><summary>"Just wait until your birthday."</summary><p>Buying now <strong>only shifts the date</strong>, it doesn't add cost. Waiting just means <strong>more school days</strong> without real headphones.</p></details>
+        <details class="excuse"><summary>"Just use your IEMs."</summary><p>They're <strong>built for gaming at home</strong> and the cord is <strong>super long</strong>. They don't work for school.</p></details>
+        <details class="excuse"><summary>"Use the AirPod that still works."</summary><p>One ear for a whole school day isn't the same. Half the audio, all day, every day. <strong>Would you do it?</strong></p></details>
+        <details class="excuse"><summary>"You'll lose them or break them."</summary><p>Over-ear headphones are <strong>way harder to lose</strong> than tiny earbuds, and the <strong>custom case</strong> protects them.</p></details>
+        <details class="excuse"><summary>"You won't actually use them."</summary><p>Daily driver. <strong>20 hours of battery, down to 0%, every day.</strong> You'll see them on me constantly.</p></details>
+        <details class="excuse"><summary>"I'm working on it."</summary><p>Awesome! The <strong>sellers list is one click away</strong>: the green 🛒 button, bottom-right. 😉</p></details>
+      </div>
+    </section>
+
     <!-- The big question -->
     <section class="card decide live" id="decide">
+      <div class="meter">
+        <div class="meter-top"><span>Convinced-o-meter</span><b id="meterPct">10%</b></div>
+        <div class="meter-bar"><div id="meterFill"></div></div>
+        <div class="meter-hint" id="meterHint">Bust excuses, try The Math, and answer bubbles to fill it up.</div>
+      </div>
       <div class="sec-title" style="justify-content:center">🗳️ Decision Time</div>
       <h2 class="ask">So... can we order them? 🥺</h2>
       <div class="sub">Only one right answer here.</div>
@@ -675,10 +778,10 @@
     <section class="card list">
       <h3>📌 Key Dates</h3>
       <div class="tiles">
-        <div class="tile"><span class="t-ico">📅</span><span class="t-label">Asked Dad to start (Tue)</span><span class="t-val">9/29/2026</span></div>
-        <div class="tile cake"><span class="t-ico">🎂</span><span class="t-label">My Birthday</span><span class="t-val">11/12</span></div>
+        <div class="tile"><span class="t-ico">📅</span><span class="t-label">Asked Dad to start (Tue)</span><span class="t-val">Sep 29</span></div>
+        <div class="tile cake"><span class="t-ico">🎂</span><span class="t-label">My Birthday</span><span class="t-val">Nov 12</span></div>
         <div class="tile hot"><span class="t-ico">⏳</span><span class="t-label">Days Dad's been "working on it"</span><span class="t-val" id="rowSince">0</span></div>
-        <div class="tile hot"><span class="t-ico">🏫</span><span class="t-label">School days with one earbud</span><span class="t-val" id="schoolDays">0</span></div>
+        <div class="tile hot"><span class="t-ico">🏫</span><span class="t-label">Days without REAL headphones at school</span><span class="t-val" id="schoolDays">0</span></div>
         <div class="tile" id="rowUntilWrap"><span class="t-ico">⌛</span><span class="t-label">Days left to deliver</span><span class="t-val" id="rowUntil">0</span></div>
         <div class="tile mystery" id="doneTile"><span class="t-ico">✅</span><span class="t-label">Completed on</span><span class="t-val" id="rowDone">???</span></div>
       </div>
@@ -731,12 +834,15 @@
         "At school I need audio for videos and assignments. One working bud means I'm missing half of it. Could we fix that a little faster?",
         "If you got them today, this counter stops forever and you never have to see this page again. Tempting, right? 👀",
         "What's the hold-up, honestly? I'll put my Q1 grade money toward it. Deal? 🤝",
-        "That's {school} school days I've done with one earbud. Would you sit through {school} days of meetings with one ear? 🫠",
+        "That's {school} days at school without real headphones. Would you sit through {school} days of meetings with one ear? 🫠",
         "You always say buy quality once instead of cheap twice. Isn't this exactly that? 💯",
         "Real talk: is it \"working on it\" or \"waiting it out\"? 😏 Either way, the sellers list is one click away.",
         "Every day you wait, this number goes up and you have to look at it. Every. Single. Day. 📈",
         "Ordering takes about 2 minutes. You've spent longer reading these bubbles. 😂",
-        "Picture my face when they show up. Now picture the counter turning into confetti. 🎉 Worth it?"
+        "Picture my face when they show up. Now picture the counter turning into confetti. 🎉 Worth it?",
+        "My IEMs are made for gaming at home. Would you wear a 6-foot cord around school all day? 🎮",
+        "You wouldn't take a desk phone to work. Why would I take gaming IEMs to school? 😂",
+        "Check the Excuse Busters on the page. I answered every one in advance. 🛡️"
       ],
       mom: [
         "Wouldn't it be annoying to hear everything with just one ear? That's my life right now. 😩",
@@ -747,25 +853,30 @@
         "You know I'll actually use them. Not a phase, not a drawer item. Every day. 🥺",
         "Over-ear headphones are also way easier to not lose than tiny earbuds. Fewer replacements later! 🧠",
         "I made a whole website instead of whining. That's growth, right? 📈😇",
-        "{school} school days with one earbud so far. Can we not make it {school_plus}? 🙏",
+        "{school} days without real headphones at school so far. Can we not make it {school_plus}? 🙏",
         "You and Dad could split the \"best parent\" title. I'll make a trophy. 🏆",
-        "PLEEEEASE? I'll even stop sending you these bubbles. Promise. 🫶"
+        "PLEEEEASE? I'll even stop sending you these bubbles. Promise. 🫶",
+        "My IEMs are for gaming at home, and the cord is SO long. Not school-friendly at all. 😩",
+        "Look at the Before/After on the page. Which version of my school day do you want for me? 🥺",
+        "{school} days without real headphones at school. That's a lot of half-heard lessons. 📚"
       ],
       both: [
         "Two parents, one tiny decision, {since} days. We can do this! 🤝",
         "Dad's \"working on it.\" Mom, you can be the closer. 🏁",
         "I'm covering part of it with my Q1 money. That's three of us splitting it. Totally fair, right? 💵",
         "Wouldn't it be nice to never hear me mention earbuds again? One order fixes that. 🙉",
-        "{school} school days with one working earbud. Both of you would've fixed that for yourselves by now. 😅",
+        "{school} days without real headphones at school. Both of you would've fixed that for yourselves by now. 😅",
         "Used every day, from 20 hours of battery to 0%. That's the opposite of a waste. 🔋",
         "Fun fact: tapping the green button takes you straight to the sellers list. Just saying. 🛒",
-        "Imagine the group hug when they arrive. 🫂 Now imagine scrolling past this counter instead."
+        "Imagine the group hug when they arrive. 🫂 Now imagine scrolling past this counter instead.",
+        "Gaming IEMs with a super long cord aren't school headphones. You both know that. 🎮",
+        "Check the Convinced-o-meter at the bottom. How full is it for you two? 📊"
       ],
       custom: [
         "Wouldn't it be frustrating if only one of your earbuds worked? That's me right now. 🎧",
         "It's been {since} days of \"I'm working on it.\" Would you wait that long? ⏳",
         "Something used every day, from 20 hours of battery to 0%, is worth it. Don't you think? 🔋",
-        "{school} school days with one working earbud. Rough, right? 🏫",
+        "{school} days without real headphones at school. Rough, right? 🏫",
         "If you know my parents, feel free to give them a little nudge. 😉"
       ]
     };
@@ -825,6 +936,7 @@
       if (SHOP) a.href = SHOP; else a.hidden = true;
     });
     const openShop = () => SHOP && window.open(SHOP, "_blank", "noopener");
+    document.querySelectorAll(".retail-link").forEach(a => a.addEventListener("click", () => typeof addConvinced === "function" && addConvinced(12)));
 
     // ---- Theme toggle ----
     const root = document.documentElement;
@@ -883,6 +995,74 @@
       try { localStorage.setItem("reasonsCollapsed", collapsed ? "1" : "0"); } catch (e) {}
     });
 
+    // ---- Bubble sound (generated, no files needed) ----
+    let audioCtx = null, soundOn = true;
+    try { soundOn = localStorage.getItem("sound") !== "0"; } catch (e) {}
+    function unlockAudio() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+      } catch (e) {}
+    }
+    function playPop() {
+      if (!soundOn || !audioCtx) return;
+      const t = audioCtx.currentTime;
+      [[880, 0], [1320, 0.09]].forEach(([f, d]) => {
+        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.type = "sine";
+        o.frequency.setValueAtTime(f, t + d);
+        o.frequency.exponentialRampToValueAtTime(f * 1.25, t + d + 0.08);
+        g.gain.setValueAtTime(0.0001, t + d);
+        g.gain.exponentialRampToValueAtTime(0.25, t + d + 0.015);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.18);
+        o.connect(g).connect(audioCtx.destination);
+        o.start(t + d);
+        o.stop(t + d + 0.2);
+      });
+    }
+    function syncSound() { $("soundToggle").textContent = soundOn ? "🔔" : "🔕"; }
+    $("soundToggle").addEventListener("click", () => {
+      soundOn = !soundOn;
+      try { localStorage.setItem("sound", soundOn ? "1" : "0"); } catch (e) {}
+      syncSound();
+      unlockAudio();
+      playPop();
+    });
+    syncSound();
+    // Browsers only allow sound after a click, so the menu click unlocks it
+    document.addEventListener("pointerdown", unlockAudio, { once: true });
+
+    // ---- Convinced-o-meter ----
+    let meter = 10;
+    const METER_HINTS = [[40, "Getting warmer... 🔥"], [70, "Almost there! 👀"], [100, "100% convinced. Press YES below! 🎉"]];
+    function toast(msg) {
+      document.querySelectorAll(".toast").forEach(x => x.remove());
+      const t = document.createElement("div");
+      t.className = "toast";
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 2700);
+    }
+    function addConvinced(n) {
+      if (meter >= 100) return;
+      meter = Math.min(100, meter + n);
+      $("meterPct").textContent = meter + "%";
+      $("meterFill").style.width = meter + "%";
+      const hint = METER_HINTS.find(([lim]) => meter < lim) || METER_HINTS[METER_HINTS.length - 1];
+      $("meterHint").textContent = meter >= 100 ? METER_HINTS[2][1] : hint[1];
+      if (meter >= 100) {
+        toast("Convinced-o-meter: 100%! Time to press YES 🎉");
+        $("decide").scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+    $("meterFill").style.width = meter + "%";
+    document.querySelectorAll(".excuse").forEach(d => {
+      let counted = false;
+      d.addEventListener("toggle", () => {
+        if (d.open && !counted) { counted = true; addConvinced(10); toast("Excuse busted ✔"); }
+      });
+    });
+
     // ---- Persuasion bubbles ----
     const AVATAR = "🎧";
     let bubbleIdx = 0, bubbleTimer = null;
@@ -905,21 +1085,28 @@
 
       const b = document.createElement("div");
       b.className = "bubble";
-      b.innerHTML = '<div class="av"></div><div class="body"><div class="who">Me</div><div class="msg"><span class="typing"><span></span><span></span><span></span></span></div></div><button class="x" aria-label="Dismiss">×</button>';
+      b.innerHTML = '<div class="av"></div><div class="body"><div class="who">Caden</div><div class="msg"><span class="typing"><span></span><span></span><span></span></span></div></div><button class="x" aria-label="Dismiss">×</button>';
       b.querySelector(".av").textContent = AVATAR;
       b.querySelector(".x").onclick = () => dismiss(b);
       box.appendChild(b);
+      playPop();
 
       // "typing..." then the message and quick replies
       setTimeout(() => {
         if (!b.isConnected) return;
         b.querySelector(".msg").textContent = text;
+        playPop();
         const r = document.createElement("div");
         r.className = "replies";
         replies.forEach(label => {
           const btn = document.createElement("button");
           btn.textContent = label;
-          btn.onclick = () => { if (label.startsWith("🛒")) openShop(); dismiss(b); };
+          btn.onclick = () => {
+            if (label.startsWith("🛒")) { openShop(); addConvinced(12); }
+            else if (/Hmm|Nice try/.test(label)) addConvinced(3);
+            else addConvinced(8);
+            dismiss(b);
+          };
           r.appendChild(btn);
         });
         b.querySelector(".body").appendChild(r);
@@ -960,6 +1147,8 @@
       const saved = JSON.parse(localStorage.getItem("calc") || "null");
       if (saved) { $("price").value = saved[0] || ""; $("q1").value = saved[1] || ""; }
     } catch (e) {}
+    let calcCounted = false;
+    $("price").addEventListener("input", () => { if (!calcCounted && $("price").value) { calcCounted = true; addConvinced(15); } });
     $("price").addEventListener("input", calc);
     $("q1").addEventListener("input", calc);
     calc();
@@ -1045,7 +1234,7 @@
       $("sinceDays").textContent = took;
       $("sinceExact").textContent = `It took ${took} day${took === 1 ? "" : "s"}, done on ${DONE.toLocaleDateString("en-US")}`;
       $("rowSince").textContent = took;
-      $("rowDone").textContent = DONE.toLocaleDateString("en-US");
+      $("rowDone").textContent = DONE.toLocaleDateString("en-US", { month: "short", day: "numeric" });
       $("doneTile").className = "tile won";
       $("schoolDays").textContent = schoolDays(new Date(DONE.getTime() - 1));
     }
