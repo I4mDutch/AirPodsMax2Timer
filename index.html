@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AirPods Max 2 Tracker</title>
+  <script>
+    // Apply saved/system theme before paint to avoid a flash
+    (function () {
+      let t = null;
+      try { t = localStorage.getItem("theme"); } catch (e) {}
+      if (!t) t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
+  <style>
+    :root {
+      --blue: #2563eb;
+      --blue-soft: #dbeafe;
+      --blue-text: #1e40af;
+      --orange: #f59e0b;
+      --red: #dc2626;
+      --green: #16a34a;
+      --green-soft: #dcfce7;
+      --bg: #f1f5f9;
+      --blob1: rgba(37, 99, 235, 0.18);
+      --blob2: rgba(245, 158, 11, 0.14);
+      --blob3: rgba(220, 38, 38, 0.10);
+      --card: rgba(255, 255, 255, 0.86);
+      --border: #e2e8f0;
+      --row: #f1f5f9;
+      --text: #0f172a;
+      --muted: #64748b;
+      --heading: #475569;
+      --overlay: rgba(15, 23, 42, 0.55);
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    }
+    :root[data-theme="dark"] {
+      --blue: #3b82f6;
+      --blue-soft: #1e3a8a;
+      --blue-text: #bfdbfe;
+      --orange: #fbbf24;
+      --red: #f87171;
+      --green: #4ade80;
+      --green-soft: #14532d;
+      --bg: #0b1120;
+      --blob1: rgba(59, 130, 246, 0.22);
+      --blob2: rgba(251, 191, 36, 0.10);
+      --blob3: rgba(248, 113, 113, 0.10);
+      --card: rgba(15, 23, 42, 0.82);
+      --border: #1e293b;
+      --row: #1e293b;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --heading: #cbd5e1;
+      --overlay: rgba(2, 6, 23, 0.7);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 36px 16px 200px;
+      overflow-x: hidden;
+      transition: background 0.4s, color 0.4s;
+    }
+
+    /* Slowly drifting background blobs */
+    .bg { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+    .bg span {
+      position: absolute;
+      width: 60vmax; height: 60vmax;
+      border-radius: 50%;
+      filter: blur(70px);
+      animation: drift 28s ease-in-out infinite alternate;
+    }
+    .bg span:nth-child(1) { background: var(--blob1); top: -20vmax; left: -15vmax; }
+    .bg span:nth-child(2) { background: var(--blob2); bottom: -25vmax; right: -15vmax; animation-duration: 34s; animation-delay: -8s; }
+    .bg span:nth-child(3) { background: var(--blob3); top: 30%; left: 40%; width: 40vmax; height: 40vmax; animation-duration: 40s; animation-delay: -15s; }
+    @keyframes drift {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(8vmax, 6vmax) scale(1.1); }
+      100% { transform: translate(-6vmax, 10vmax) scale(0.95); }
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 16px; right: 16px;
+      z-index: 20;
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      font-size: 22px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+      transition: transform 0.3s, background 0.4s;
+    }
+    .theme-toggle:hover { transform: rotate(20deg) scale(1.08); }
+
+    .wrap { max-width: 1040px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+
+    header {
+      background: linear-gradient(120deg, #2563eb, #1d4ed8, #3b82f6, #2563eb);
+      background-size: 300% 300%;
+      animation: shimmer 12s ease infinite;
+      color: #fff;
+      border-radius: 14px;
+      padding: 30px 20px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    @keyframes shimmer { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+    header h1 { font-size: 34px; font-weight: 800; letter-spacing: -0.5px; }
+    header .clock { font-size: 22px; margin-top: 6px; font-variant-numeric: tabular-nums; opacity: 0.95; }
+
+    .card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 36px 28px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      transition: transform 0.25s, box-shadow 0.25s, background 0.4s, border-color 0.4s;
+      animation: rise 0.6s ease both;
+    }
+    .card:hover { transform: translateY(-3px); }
+    .grid .card:nth-child(2) { animation-delay: 0.1s; }
+    .list { animation-delay: 0.2s; }
+    @keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+    .badge {
+      display: inline-block;
+      background: var(--blue-soft);
+      color: var(--blue-text);
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-size: 15px;
+      padding: 6px 16px;
+      border-radius: 6px;
+    }
+    .status {
+      margin-top: 16px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-size: 16px;
+      color: var(--orange);
+    }
+    .status.red { color: var(--red); }
+    .status.green { color: var(--green); }
+    .card h2 { font-size: 32px; font-weight: 800; margin-top: 8px; letter-spacing: -0.5px; }
+    .big {
+      font-size: 88px;
+      font-weight: 800;
+      color: var(--blue);
+      line-height: 1.1;
+      margin-top: 8px;
+      font-variant-numeric: tabular-nums;
+      animation: pulse 3s ease-in-out infinite;
+    }
+    .big.red { color: var(--red); }
+    .big.green { color: var(--green); animation: none; }
+    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+    .sub { font-size: 17px; color: var(--muted); margin-top: 8px; font-variant-numeric: tabular-nums; }
+
+    .bar { height: 10px; background: var(--border); border-radius: 99px; margin-top: 24px; overflow: hidden; }
+    .bar > div {
+      height: 100%; width: 0; border-radius: 99px;
+      background: linear-gradient(90deg, var(--blue), #60a5fa, var(--blue));
+      background-size: 200% 100%;
+      animation: flow 2.5s linear infinite;
+      transition: width 0.5s;
+    }
+    @keyframes flow { from { background-position: 200% 0; } to { background-position: 0 0; } }
+    .bar-labels { display: flex; justify-content: space-between; margin-top: 8px; font-size: 13px; color: var(--muted); }
+
+    .done-banner {
+      display: none;
+      background: var(--green-soft);
+      color: var(--green);
+      border: 2px solid var(--green);
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 800;
+      animation: rise 0.6s ease both;
+    }
+    body.is-done .done-banner { display: block; }
+
+    /* Reasons banner: soft "breathing" glow, not a hard blink */
+    .reasons {
+      background: var(--card);
+      border: 2px solid var(--orange);
+      border-radius: 14px;
+      padding: 16px 22px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      animation: rise 0.6s ease both, breathe 3.5s ease-in-out 0.6s infinite;
+    }
+    @keyframes breathe {
+      0%, 100% { box-shadow: var(--shadow), 0 0 0 0 rgba(245, 158, 11, 0); border-color: var(--orange); }
+      50%      { box-shadow: var(--shadow), 0 0 18px 2px rgba(245, 158, 11, 0.35); border-color: rgba(245, 158, 11, 0.45); }
+    }
+    .reasons-toggle {
+      all: unset;
+      box-sizing: border-box;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--orange);
+    }
+    .reasons-toggle:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; border-radius: 4px; }
+    .reasons-toggle .chev {
+      font-size: 12px;
+      letter-spacing: 0;
+      text-transform: none;
+      font-weight: 700;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .reasons-toggle .chev i { font-style: normal; display: inline-block; transition: transform 0.3s; }
+    .reasons.collapsed .reasons-toggle .chev i { transform: rotate(-90deg); }
+    .reasons-body { display: grid; grid-template-rows: 1fr; transition: grid-template-rows 0.35s ease, opacity 0.35s, margin 0.35s; margin-top: 12px; }
+    .reasons-body > ul { overflow: hidden; min-height: 0; }
+    .reasons.collapsed .reasons-body { grid-template-rows: 0fr; opacity: 0; margin-top: 0; }
+    .reasons ul { list-style: none; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; }
+    .reasons li { display: flex; gap: 10px; font-size: 15px; line-height: 1.45; }
+    .reasons li b { display: block; }
+    .reasons .ico { font-size: 22px; line-height: 1.2; }
+    body.is-done .reasons { display: none; }
+
+    /* ---- Party theme (when COMPLETED_ON is set) ---- */
+    body.is-done {
+      --blue: #9333ea;
+      --blue-soft: #f3e8ff;
+      --blue-text: #6b21a8;
+      --blob1: rgba(236, 72, 153, 0.22);
+      --blob2: rgba(250, 204, 21, 0.22);
+      --blob3: rgba(147, 51, 234, 0.20);
+    }
+    :root[data-theme="dark"] body.is-done {
+      --blue: #c084fc;
+      --blue-soft: #581c87;
+      --blue-text: #f3e8ff;
+      --blob1: rgba(236, 72, 153, 0.25);
+      --blob2: rgba(250, 204, 21, 0.14);
+      --blob3: rgba(168, 85, 247, 0.25);
+    }
+    body.is-done header {
+      background: linear-gradient(120deg, #ec4899, #a855f7, #6366f1, #d946ef, #ec4899);
+      background-size: 400% 400%;
+      animation: shimmer 6s ease infinite;
+    }
+    body.is-done .done-banner {
+      background: linear-gradient(120deg, #fdf2f8, #faf5ff, #fefce8);
+      color: #7e22ce;
+      border-color: #d946ef;
+      font-size: 28px;
+      animation: rise 0.6s ease both, bounce 2s ease-in-out 0.6s infinite;
+    }
+    :root[data-theme="dark"] body.is-done .done-banner {
+      background: linear-gradient(120deg, #500724, #3b0764, #422006);
+      color: #f5d0fe;
+    }
+    .done-banner small { display: block; font-size: 17px; font-weight: 600; margin-top: 4px; opacity: 0.85; }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+    body.is-done .big.green { animation: pulse 1.6s ease-in-out infinite; }
+
+    .confetti { position: fixed; inset: 0; pointer-events: none; z-index: -1; overflow: hidden; }
+    .confetti i {
+      position: absolute;
+      top: -20px;
+      width: 10px; height: 16px;
+      border-radius: 2px;
+      opacity: 0.9;
+      animation: fall linear infinite;
+    }
+    @keyframes fall {
+      to { transform: translate3d(var(--dx), 110vh, 0) rotate(var(--rot)); }
+    }
+
+    .list { text-align: left; }
+    .list h3 {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 18px;
+    }
+    .list h3::after { content: ""; flex: 1; height: 3px; border-radius: 3px; background: linear-gradient(90deg, var(--blue), transparent); }
+    .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .tile {
+      position: relative;
+      display: flex; flex-direction: column; gap: 6px;
+      background: var(--row);
+      border: 2px solid var(--border);
+      border-top: 5px solid var(--accent, var(--blue));
+      border-radius: 12px;
+      padding: 16px 16px 18px;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.4s;
+    }
+    .tile:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .tile[hidden] { display: none; }
+    .t-ico { font-size: 26px; }
+    .t-label { font-size: 13px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--muted); }
+    .t-val { font-size: 28px; font-weight: 800; color: var(--accent, var(--text)); font-variant-numeric: tabular-nums; line-height: 1.15; }
+    .tile.hot { --accent: var(--red); }
+    .tile.cake { --accent: var(--orange); }
+    .tile.mystery { --accent: var(--muted); border-style: dashed; border-top-style: solid; }
+    .tile.mystery .t-val { animation: wobble 2.4s ease-in-out infinite; display: inline-block; }
+    .tile.won { --accent: var(--green); }
+    @keyframes wobble { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-4deg); } 75% { transform: rotate(4deg); } }
+
+    .tagline { font-size: 18px; font-weight: 700; margin-top: 10px; opacity: 0.95; }
+    .tagline:empty { display: none; }
+
+    /* ---- Persuasion chat bubbles (bottom-left corner) ---- */
+    .bubbles {
+      position: fixed;
+      left: 16px; bottom: 16px;
+      z-index: 30;
+      width: min(340px, calc(100vw - 32px));
+      display: flex; flex-direction: column; gap: 10px;
+      pointer-events: none;
+    }
+    .bubble {
+      pointer-events: auto;
+      position: relative;
+      display: flex; gap: 10px; align-items: flex-start;
+      background: var(--card);
+      border: 2px solid var(--blue);
+      border-radius: 18px 18px 18px 4px;
+      padding: 14px 34px 14px 14px;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(14px);
+      font-size: 15px;
+      line-height: 1.45;
+      animation: bubbleIn 0.45s cubic-bezier(.2, 1.4, .4, 1) both;
+    }
+    :root:not([data-theme="dark"]) .bubble { background: #fff; }
+    .bubble.out { animation: bubbleOut 0.35s ease both; }
+    @keyframes bubbleIn { from { opacity: 0; transform: translateY(16px) scale(0.92); } to { opacity: 1; transform: none; } }
+    @keyframes bubbleOut { to { opacity: 0; transform: translateX(-30px); } }
+    .bubble .av {
+      flex: none;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--blue);
+      display: grid; place-items: center;
+      font-size: 18px;
+    }
+    .bubble .who { font-size: 12px; font-weight: 800; color: var(--blue); letter-spacing: 0.5px; margin-bottom: 2px; }
+    .bubble .x {
+      all: unset;
+      position: absolute; top: 8px; right: 10px;
+      cursor: pointer; color: var(--muted); font-size: 18px; line-height: 1;
+    }
+    .bubble .x:hover { color: var(--text); }
+    .bubble .replies { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .bubble .replies button {
+      font: inherit; font-size: 13px; font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 99px;
+      border: 2px solid var(--blue);
+      background: transparent; color: var(--blue);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .bubble .replies button:hover { background: var(--blue); color: #fff; }
+    .typing { display: inline-flex; gap: 4px; padding: 6px 0; }
+    .typing span { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); animation: dot 1s infinite; }
+    .typing span:nth-child(2) { animation-delay: 0.15s; }
+    .typing span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes dot { 0%, 60%, 100% { opacity: 0.3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-3px); } }
+    body.is-done .bubbles, body.is-ended .bubbles { display: none; }
+
+    .sound-toggle { right: 70px; }
+
+    /* Before / After */
+    .ba { display: grid; grid-template-columns: 1fr auto 1fr; gap: 18px; align-items: stretch; margin-top: 8px; }
+    .ba-col { border-radius: 12px; padding: 18px; }
+    .ba-col h4 { font-size: 15px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+    .ba-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .ba-col li { display: flex; gap: 10px; font-size: 16px; line-height: 1.4; }
+    .ba-now { background: rgba(220, 38, 38, 0.08); border: 2px solid rgba(220, 38, 38, 0.3); }
+    .ba-now h4 { color: var(--red); }
+    .ba-now li::before { content: "✖"; color: var(--red); font-weight: 900; }
+    .ba-then { background: rgba(22, 163, 74, 0.08); border: 2px solid rgba(22, 163, 74, 0.35); }
+    .ba-then h4 { color: var(--green); }
+    .ba-then li::before { content: "✔"; color: var(--green); font-weight: 900; }
+    .ba-arrow { display: grid; place-items: center; font-size: 34px; animation: slideR 1.6s ease-in-out infinite; }
+    @keyframes slideR { 0%, 100% { transform: translateX(-4px); } 50% { transform: translateX(6px); } }
+
+    /* Excuse busters (accordion) */
+    .excuses { display: flex; flex-direction: column; gap: 10px; }
+    .excuse { background: var(--row); border: 2px solid var(--border); border-radius: 12px; overflow: hidden; transition: border-color 0.2s; }
+    .excuse[open] { border-color: var(--green); }
+    .excuse summary {
+      list-style: none; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      padding: 14px 18px; font-size: 17px; font-weight: 700;
+    }
+    .excuse summary::-webkit-details-marker { display: none; }
+    .excuse summary::after { content: "BUSTED?"; flex: none; font-size: 11px; font-weight: 900; letter-spacing: 1px; color: var(--muted); border: 2px solid var(--border); border-radius: 6px; padding: 3px 8px; }
+    .excuse[open] summary::after { content: "BUSTED ✔"; color: #fff; background: var(--green); border-color: var(--green); }
+    .excuse p { padding: 0 18px 16px; font-size: 16px; line-height: 1.5; color: var(--text); animation: fade 0.3s ease both; }
+    .excuse p strong { color: var(--green); }
+
+    /* Convinced-o-meter */
+    .meter { max-width: 560px; margin: 0 auto 26px; text-align: left; }
+    .meter-top { display: flex; justify-content: space-between; font-size: 14px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .meter-top b { color: var(--green); font-size: 18px; letter-spacing: 0; }
+    .meter-bar { height: 16px; border-radius: 99px; background: var(--border); overflow: hidden; }
+    .meter-bar div { height: 100%; width: 0; border-radius: 99px; background: linear-gradient(90deg, #f59e0b, #22c55e); transition: width 0.6s cubic-bezier(.2, 1.2, .4, 1); }
+    .meter-hint { font-size: 13px; color: var(--muted); margin-top: 6px; }
+    .toast {
+      position: fixed; top: 20px; left: 50%; z-index: 70;
+      transform: translateX(-50%);
+      background: var(--green); color: #fff;
+      padding: 12px 20px; border-radius: 99px;
+      font-weight: 800; font-size: 15px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+      animation: toast 2.6s ease both;
+      pointer-events: none;
+    }
+    @keyframes toast { 0% { opacity: 0; transform: translate(-50%, -20px); } 12%, 85% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; transform: translate(-50%, -10px); } }
+
+    /* Would You? quiz */
+    .quiz { display: flex; flex-direction: column; gap: 12px; }
+    .q { background: var(--row); border: 2px solid var(--border); border-radius: 12px; padding: 14px 18px; transition: border-color 0.3s; }
+    .q.answered { border-color: var(--green); }
+    .q-text { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+    .q-btns { display: flex; gap: 8px; }
+    .q-btns button {
+      font: inherit; font-weight: 800; font-size: 15px;
+      padding: 8px 22px; border-radius: 8px; cursor: pointer;
+      border: 2px solid var(--blue); background: transparent; color: var(--blue);
+      transition: background 0.2s, color 0.2s;
+    }
+    .q-btns button:hover, .q-btns button.picked { background: var(--blue); color: #fff; }
+    .q.answered .q-btns button:not(.picked) { opacity: 0.4; }
+    .q-reply { margin-top: 10px; font-size: 15px; font-weight: 600; color: var(--green); animation: fade 0.3s ease both; }
+    .quiz-score { margin-top: 14px; font-size: 18px; font-weight: 800; text-align: center; }
+    .quiz-score:empty { display: none; }
+
+    /* The Deal (contract) */
+    .deal { display: grid; grid-template-columns: 1fr 1.2fr; gap: 22px; }
+    .offers { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .offers label {
+      display: flex; gap: 10px; align-items: center;
+      background: var(--row); border: 2px solid var(--border); border-radius: 10px;
+      padding: 11px 14px; font-size: 15px; cursor: pointer; transition: border-color 0.2s;
+    }
+    .offers label:has(input:checked) { border-color: var(--green); }
+    .offers input { width: 18px; height: 18px; accent-color: var(--green); flex: none; }
+    .contract {
+      position: relative;
+      background: #fffdf5; color: #1f2937;
+      border: 2px solid #e5d9b6; border-radius: 10px;
+      padding: 22px 22px 18px;
+      font-family: Georgia, "Times New Roman", serif;
+      box-shadow: inset 0 0 40px rgba(180, 150, 80, 0.12);
+    }
+    .contract h4 { text-align: center; font-size: 20px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+    .contract p { font-size: 15px; line-height: 1.55; margin-bottom: 8px; }
+    .contract ul { margin: 0 0 10px 20px; font-size: 15px; line-height: 1.5; }
+    .sign-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 12px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    .sign-row input[type=text] {
+      flex: 1; min-width: 160px;
+      font: inherit; font-size: 16px;
+      padding: 10px 12px; border-radius: 8px;
+      border: 2px solid #d6c99a; background: #fff; color: #111;
+    }
+    .sign-row label { display: flex; gap: 6px; align-items: center; font-size: 14px; font-weight: 600; }
+    .sign-btn {
+      font: inherit; font-weight: 900; font-size: 16px;
+      padding: 11px 20px; border: none; border-radius: 8px; cursor: pointer;
+      background: var(--green); color: #fff;
+    }
+    .sign-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .signed-line { display: none; margin-top: 14px; font-size: 15px; }
+    .signed-line .ink { font-family: "Segoe Script", "Brush Script MT", cursive; font-size: 28px; color: #1d4ed8; }
+    .contract.signed .sign-row { display: none; }
+    .contract.signed .signed-line { display: block; }
+    .stamp {
+      display: none;
+      position: absolute; bottom: 18px; right: 18px;
+      border: 4px solid #16a34a; color: #16a34a;
+      border-radius: 8px; padding: 4px 12px;
+      font: 900 22px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 2px;
+      transform: rotate(-12deg);
+    }
+    .contract.signed .stamp { display: block; animation: stamp 0.5s cubic-bezier(.2, 1.6, .4, 1) both; }
+    @keyframes stamp { from { opacity: 0; transform: rotate(-12deg) scale(2.4); } to { opacity: 0.9; transform: rotate(-12deg) scale(1); } }
+
+    /* Floating "compare sellers" quick link (bottom-right) */
+    .shop-fab {
+      position: fixed; right: 16px; bottom: 16px; z-index: 30;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 20px;
+      border-radius: 99px;
+      background: linear-gradient(120deg, #16a34a, #22c55e);
+      color: #fff; font-weight: 800; font-size: 16px;
+      text-decoration: none;
+      box-shadow: 0 12px 28px rgba(22, 163, 74, 0.45);
+      transition: transform 0.2s;
+      animation: nudge 6s ease-in-out infinite;
+    }
+    .shop-fab:hover { transform: translateY(-3px) scale(1.04); }
+    @keyframes nudge { 0%, 88%, 100% { transform: none; } 91% { transform: rotate(-4deg) scale(1.05); } 94% { transform: rotate(4deg) scale(1.05); } 97% { transform: rotate(-2deg); } }
+    body.is-done .shop-fab, body.is-ended .shop-fab { display: none; }
+    .shop-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 18px; border-radius: 10px;
+      background: var(--green); color: #fff;
+      font-weight: 800; text-decoration: none;
+      transition: transform 0.2s, filter 0.2s;
+    }
+    :root[data-theme="dark"] .shop-btn { color: #052e16; }
+    .shop-btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
+
+    /* Story chapters: numbered heads that walk from the reasons to the ask */
+    .chapter { display: flex; flex-direction: column; gap: 16px; }
+    .chapter + .chapter { margin-top: 18px; }
+    .chapter-head { display: flex; align-items: center; gap: 14px; padding: 0 4px; }
+    .step {
+      flex: none;
+      width: 42px; height: 42px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: var(--blue); color: #fff;
+      font-weight: 900; font-size: 18px;
+      box-shadow: 0 0 0 5px var(--blue-soft);
+    }
+    .kicker { font-size: 13px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--blue); }
+    .lead { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; }
+    body.is-done .chapter-head, body.is-ended .chapter-head { display: none; }
+    body.is-done .chapter.live { display: none; } /* persuasion is over once it's done */
+    .chapter:last-child .step { background: var(--green); box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.25); }
+    .scroll-bar { position: fixed; top: 0; left: 0; height: 4px; width: 0; z-index: 40; background: linear-gradient(90deg, var(--blue), var(--green)); }
+
+    /* Section titles shared by new cards */
+    .sec-title { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
+    .sec-sub { color: var(--muted); font-size: 15px; margin-bottom: 18px; }
+    .card.left { text-align: left; }
+
+    /* Cost calculator */
+    .calc-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    .calc-inputs label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); }
+    .money { display: flex; align-items: center; background: var(--row); border: 2px solid var(--border); border-radius: 10px; padding: 0 12px; transition: border-color 0.2s; }
+    .money:focus-within { border-color: var(--blue); }
+    .money span { font-weight: 800; color: var(--muted); }
+    .money input { all: unset; width: 100%; padding: 12px 6px; font-size: 20px; font-weight: 800; color: var(--text); }
+    .calc-out { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .stat { background: var(--row); border-radius: 10px; padding: 12px; text-align: center; }
+    .stat b { display: block; font-size: 24px; font-weight: 800; color: var(--green); font-variant-numeric: tabular-nums; }
+    .stat small { font-size: 12px; color: var(--muted); font-weight: 600; }
+    .calc-note { margin-top: 14px; font-size: 15px; line-height: 1.5; }
+    .calc-note strong { color: var(--green); }
+
+    .signature { margin-top: 14px; text-align: right; font-family: "Segoe Script", "Brush Script MT", cursive; font-size: 24px; color: var(--blue); }
+
+    /* Decision card with the runaway "No" */
+    .decide h2 { font-size: 40px; }
+    .decide .sub { margin-bottom: 26px; }
+    .decide-zone { position: relative; height: 150px; display: flex; justify-content: center; align-items: center; gap: 18px; }
+    .yes {
+      font: inherit; font-size: 24px; font-weight: 900; white-space: nowrap;
+      padding: 16px 40px; border: none; border-radius: 14px; cursor: pointer;
+      background: linear-gradient(120deg, #16a34a, #22c55e); color: #fff;
+      box-shadow: 0 10px 24px rgba(22, 163, 74, 0.4);
+      transition: transform 0.2s;
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+    .yes:hover { transform: scale(1.06); }
+    .no {
+      font: inherit; font-size: 16px; font-weight: 700;
+      padding: 12px 22px; border-radius: 12px; cursor: pointer;
+      border: 2px solid var(--border); background: var(--card); color: var(--muted);
+      transition: left 0.25s ease, top 0.25s ease, transform 0.25s;
+    }
+    .no.loose { position: absolute; }
+    .decided { display: none; margin-top: 10px; }
+    .decide.is-yes .decide-zone, .decide.is-yes .sub, .decide.is-yes .ask { display: none; }
+    .decide.is-yes .decided { display: block; animation: pop 0.5s cubic-bezier(.2, 1.4, .4, 1) both; }
+    .decided p { font-size: 20px; margin: 10px 0 20px; }
+    body.is-done .decide { display: none; }
+    .burst { position: fixed; z-index: 60; pointer-events: none; width: 10px; height: 14px; border-radius: 2px; animation: burst 1.4s ease-out forwards; }
+    @keyframes burst { to { transform: translate(var(--bx), var(--by)) rotate(var(--rot)); opacity: 0; } }
+
+    .ended { display: none; }
+    body.is-ended .live { display: none; }
+    body.is-ended .ended { display: block; }
+
+    /* "Who are you?" menu */
+    .overlay {
+      position: fixed; inset: 0; z-index: 50;
+      background: var(--overlay);
+      backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 16px;
+      animation: fade 0.3s ease both;
+    }
+    .overlay.closing { animation: fadeOut 0.3s ease both; }
+    @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeOut { to { opacity: 0; } }
+    .modal {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 18px;
+      padding: 36px 30px;
+      width: 100%; max-width: 520px;
+      text-align: center;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+      animation: pop 0.4s cubic-bezier(.2, 1.4, .4, 1) both;
+    }
+    @keyframes pop { from { opacity: 0; transform: scale(0.9) translateY(10px); } to { opacity: 1; transform: none; } }
+    .modal h2 { font-size: 32px; font-weight: 800; margin-bottom: 22px; }
+    .modal p { font-size: 18px; line-height: 1.55; margin-bottom: 18px; }
+    .modal p.hint {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--orange);
+      background: rgba(245, 158, 11, 0.12);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 22px;
+    }
+    .choices { display: flex; flex-direction: column; gap: 12px; }
+    .btn {
+      font: inherit;
+      font-size: 19px;
+      font-weight: 700;
+      padding: 14px 18px;
+      border-radius: 10px;
+      border: 2px solid var(--blue);
+      background: transparent;
+      color: var(--blue);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, transform 0.15s;
+    }
+    .btn:hover { background: var(--blue); color: #fff; transform: translateY(-2px); }
+    .btn.primary { background: var(--blue); color: #fff; }
+    .btn small { display: block; font-size: 13px; font-weight: 500; opacity: 0.8; margin-top: 2px; }
+
+    @media (max-width: 760px) {
+      .grid, .reasons ul, .calc-out { grid-template-columns: 1fr; }
+      .sound-toggle { right: 70px; }
+      .tiles { grid-template-columns: 1fr 1fr; }
+      .ba, .deal { grid-template-columns: 1fr; }
+      .ba-arrow { transform: rotate(90deg); animation: none; }
+      .decide-zone { height: 230px; }
+      .yes { padding: 14px 28px; font-size: 20px; }
+      .decide h2 { font-size: 28px; }
+      .lead { font-size: 18px; }
+      .step { width: 36px; height: 36px; font-size: 16px; }
+      .shop-fab { padding: 12px 16px; font-size: 14px; }
+      .bubbles { bottom: 76px; }
+    }
+    @media (max-width: 600px) {
+      body { padding-top: 76px; }
+      header h1 { font-size: 26px; }
+      .bubble { font-size: 14px; }
+      .card { padding: 28px 18px; }
+      .card h2 { font-size: 26px; }
+      .big { font-size: 64px; }
+      .t-val { font-size: 24px; }
+      .done-banner, body.is-done .done-banner { font-size: 20px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg"><span></span><span></span><span></span></div>
+  <div class="scroll-bar" id="scrollBar"></div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+  <button class="theme-toggle sound-toggle" id="soundToggle" aria-label="Turn bubbles and sound on or off" title="Bubbles & sound">🔔</button>
+
+  <div class="wrap">
+    <header>
+      <h1 id="title">AirPods Max 2 Tracker</h1>
+      <div class="clock" id="clock">--:--:-- --</div>
+      <div class="tagline" id="tagline"></div>
+    </header>
+
+    <div class="done-banner" id="doneBanner"></div>
+
+    <!-- Shown once Nov 12, 2026 arrives -->
+    <section class="card ended">
+      <span class="badge">November 12, 2026</span>
+      <div class="status">Timer ended</div>
+      <h2>Happy Birthday! 🎂</h2>
+      <div class="sub" id="finalSummary"></div>
+    </section>
+
+    <!-- ===== 1. Why: the reasons (hidden once completed) ===== -->
+    <div class="chapter live">
+      <div class="chapter-head">
+        <span class="step">1</span>
+        <div><div class="kicker">Why I need them</div><div class="lead">It all starts with a broken earbud.</div></div>
+      </div>
+      <section class="reasons" id="reasons">
+        <button class="reasons-toggle" id="reasonsToggle" aria-expanded="true" aria-controls="reasonsBody">
+          <span>Why the AirPods Max 2 are worth it</span>
+          <span class="chev"><span id="reasonsHint">Hide</span><i>▼</i></span>
+        </button>
+        <div class="reasons-body" id="reasonsBody">
+  <ul>
+        <li><span class="ico">🎧</span><span><b>My AirPods Pro 3 are broken.</b>One of the buds doesn't work anymore.</span></li>
+        <li><span class="ico">💵</span><span><b>No extra money lost.</b>Getting the AirPods Max 2 and a custom case from Amazon now only shifts the date. Any money I get from my Q1 grades goes toward the cost, so you're not fully out of pocket.</span></li>
+        <li><span class="ico">🎮</span><span><b>My IEMs don't work for school.</b>They're built for gaming and at-home use, and the cord is super long. Not something I can use in class.</span></li>
+        <li><span class="ico">🔋</span><span><b>A daily driver.</b>I'll use them every day, running the battery from 20 hours down to 0%, so you'll see the investment being used constantly.</span></li>
+      </ul>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===== 2. What changes ===== -->
+    <div class="chapter live">
+      <div class="chapter-head">
+        <span class="step">2</span>
+        <div><div class="kicker">What it changes</div><div class="lead">Here's my school day right now, and what it could be.</div></div>
+      </div>
+      <section class="card left">
+        <div class="sec-title">🔄 Right Now vs. With AirPods Max 2</div>
+        <div class="sec-sub">Same kid, same school day. Very different experience.</div>
+      <div class="ba">
+        <div class="ba-col ba-now">
+          <h4>Right now</h4>
+          <ul>
+            <li>One AirPod Pro 3 bud works. The other is dead.</li>
+            <li>IEMs with a super long gaming cord. Not a school thing.</li>
+            <li>Class videos and assignments with half the audio.</li>
+            <li>Asking. Waiting. Hearing "I'm working on it."</li>
+          </ul>
+        </div>
+        <div class="ba-arrow">➡️</div>
+        <div class="ba-col ba-then">
+          <h4>With AirPods Max 2</h4>
+          <ul>
+            <li>Full sound in both ears, all day.</li>
+            <li>Wireless. No cord to tangle or snag in class.</li>
+            <li>Hard to lose, protected by a custom case.</li>
+            <li>No more asking. This page retires. 🎉</li>
+          </ul>
+        </div>
+      </div>
+      </section>
+    </div>
+
+    <!-- ===== 3. How long it's been (key dates stay visible after it's done) ===== -->
+    <div class="chapter">
+      <div class="chapter-head">
+        <span class="step">3</span>
+        <div><div class="kicker">How long it's been</div><div class="lead">Meanwhile, the clock keeps ticking.</div></div>
+      </div>
+      <div class="grid live">
+      <!-- Timer 1: days since the ask -->
+      <section class="card">
+        <span class="badge" id="sinceBadge">"I'm working on it"</span>
+        <div class="status red" id="sinceStatus">Still waiting</div>
+        <h2 id="sinceTitle">Days Since I Asked</h2>
+        <div class="big red" id="sinceDays">0</div>
+        <div class="sub" id="sinceExact">Since Tuesday, September 29, 2026</div>
+      </section>
+
+      <!-- Timer 2: countdown to birthday -->
+      <section class="card">
+        <span class="badge">Birthday Countdown</span>
+        <div class="status">Coming up</div>
+        <h2>Days Until My Birthday</h2>
+        <div class="big" id="untilDays">0</div>
+        <div class="sub" id="untilExact">--</div>
+        <div class="bar"><div id="progress"></div></div>
+        <div class="bar-labels"><span>Sep 29</span><span id="progressPct">0%</span><span>Nov 12</span></div>
+      </section>
+      </div>
+      <section class="card list">
+        <h3>📌 Key Dates</h3>
+      <div class="tiles">
+        <div class="tile"><span class="t-ico">📅</span><span class="t-label">Asked Dad to start (Tue)</span><span class="t-val">Sep 29</span></div>
+        <div class="tile cake"><span class="t-ico">🎂</span><span class="t-label">My Birthday</span><span class="t-val">Nov 12</span></div>
+        <div class="tile hot"><span class="t-ico">⏳</span><span class="t-label">Days Dad's been "working on it"</span><span class="t-val" id="rowSince">0</span></div>
+        <div class="tile hot"><span class="t-ico">🏫</span><span class="t-label">Days without REAL headphones at school</span><span class="t-val" id="schoolDays">0</span></div>
+        <div class="tile" id="rowUntilWrap"><span class="t-ico">⌛</span><span class="t-label">Days left to deliver</span><span class="t-val" id="rowUntil">0</span></div>
+        <div class="tile mystery" id="doneTile"><span class="t-ico">✅</span><span class="t-label">Completed on</span><span class="t-val" id="rowDone">???</span></div>
+      </div>
+      </section>
+    </div>
+
+    <!-- ===== 4. The cost ===== -->
+    <div class="chapter live">
+      <div class="chapter-head">
+        <span class="step">4</span>
+        <div><div class="kicker">The cost</div><div class="lead">So is it worth the money? Let's do the math.</div></div>
+      </div>
+      <section class="card left">
+        <div class="sec-title">🧮 The Math</div>
+        <div class="sec-sub">Type the price from the sellers spreadsheet. It does the rest.</div>
+        <div class="calc-inputs">
+          <label>Price<span class="money"><span>$</span><input id="price" inputmode="decimal" placeholder="0"></span></label>
+          <label>My Q1 money<span class="money"><span>$</span><input id="q1" inputmode="decimal" placeholder="0"></span></label>
+        </div>
+        <div class="calc-out">
+          <div class="stat"><b id="yourShare">$—</b><small>What you actually pay</small></div>
+          <div class="stat"><b id="perDay">$—</b><small>Per day (over 2 years)</small></div>
+          <div class="stat"><b id="perHour">$—</b><small>Per hour of use</small></div>
+        </div>
+        <div class="calc-note" id="calcNote">Used every day, the cost per day gets <strong>tiny</strong>. Try it.</div>
+      </section>
+    </div>
+
+    <!-- ===== 5. Objections ===== -->
+    <div class="chapter live">
+      <div class="chapter-head">
+        <span class="step">5</span>
+        <div><div class="kicker">Your questions</div><div class="lead">Still have doubts? Every one of them, answered.</div></div>
+      </div>
+      <section class="card left">
+        <div class="sec-title">🛡️ Excuse Busters</div>
+        <div class="sec-sub">Every reason to wait, answered. Tap one.</div>
+      <div class="excuses" id="excuses">
+        <details class="excuse"><summary>"They're too expensive."</summary><p>My <strong>Q1 grade money</strong> goes toward it, and used every day it's <strong>cents per day</strong>. Check The Math above.</p></details>
+        <details class="excuse"><summary>"Just wait until your birthday."</summary><p>Buying now <strong>only shifts the date</strong>, it doesn't add cost. Waiting just means <strong>more school days</strong> without real headphones.</p></details>
+        <details class="excuse"><summary>"Just use your IEMs."</summary><p>They're <strong>built for gaming at home</strong> and the cord is <strong>super long</strong>. They don't work for school.</p></details>
+        <details class="excuse"><summary>"Use the AirPod that still works."</summary><p>One ear for a whole school day isn't the same. Half the audio, all day, every day. <strong>Would you do it?</strong></p></details>
+        <details class="excuse"><summary>"You'll lose them or break them."</summary><p>Over-ear headphones are <strong>way harder to lose</strong> than tiny earbuds, and the <strong>custom case</strong> protects them.</p></details>
+        <details class="excuse"><summary>"You won't actually use them."</summary><p>Daily driver. <strong>20 hours of battery, down to 0%, every day.</strong> You'll see them on me constantly.</p></details>
+        <details class="excuse"><summary>"We'll get them later."</summary><p>Later costs the <strong>exact same</strong>. The only thing that changes is <strong>how many more school days</strong> I go without real headphones. Now is strictly better.</p></details>
+        <details class="excuse"><summary>"Just get cheaper headphones."</summary><p>Buy cheap, buy twice. Cheap ones break or get replaced, and that adds up. <strong>Buying once, the right one, is the cheaper move long-term.</strong></p></details>
+        <details class="excuse"><summary>"Just replace the broken AirPod."</summary><p>That puts money back into <strong>tiny earbuds that are easy to lose and break</strong>. Same money goes further toward <strong>something built to last</strong>.</p></details>
+        <details class="excuse"><summary>"You already have enough tech."</summary><p>This doesn't <strong>add</strong> to my stuff, it <strong>replaces</strong> what's broken. One dead earbud and a gaming cord aren't "enough", they're <strong>nothing usable at school</strong>.</p></details>
+        <details class="excuse"><summary>"Why do you even need headphones at school?"</summary><p><strong>Class videos, assignments, and focusing</strong> in loud rooms. Teachers expect us to have them. Right now I can't do that properly.</p></details>
+        <details class="excuse"><summary>"It's a lot of money at once."</summary><p>Not all from you: <strong>my Q1 money comes off the top</strong>. And spread over daily use it's <strong>cents per day</strong>. One purchase, years of use.</p></details>
+        <details class="excuse"><summary>"We already said no."</summary><p>Then why is Dad <strong>"working on it"</strong>? 😏 Sounds like a yes that's <strong>still loading</strong>.</p></details>
+        <details class="excuse"><summary>"I'm working on it."</summary><p>Awesome! The <strong>sellers list is one click away</strong>: the green 🛒 button, bottom-right. 😉</p></details>
+      </div>
+      </section>
+    </div>
+
+    <!-- ===== 6. Gut check ===== -->
+    <div class="chapter live">
+      <div class="chapter-head">
+        <span class="step">6</span>
+        <div><div class="kicker">Gut check</div><div class="lead">Now put yourself in my shoes for a second.</div></div>
+      </div>
+      <section class="card left">
+        <div class="sec-title">🤔 Would You?</div>
+        <div class="sec-sub">Four quick questions. Be honest.</div>
+        <div class="quiz" id="quiz"></div>
+        <div class="quiz-score" id="quizScore"></div>
+      </section>
+    </div>
+
+    <!-- ===== 7. My side of the deal ===== -->
+    <div class="chapter live">
+      <div class="chapter-head">
+        <span class="step">7</span>
+        <div><div class="kicker">My side of the deal</div><div class="lead">I'm not just asking. Here's what I'm giving back.</div></div>
+      </div>
+      <section class="card left">
+        <div class="sec-title">📝 The Deal</div>
+        <div class="sec-sub">Everything I'm putting on the table. Sign it to make it official.</div>
+        <div class="deal">
+          <div>
+            <ul class="offers" id="offers"></ul>
+            <div class="signature">— Caden, the best son 🎧</div>
+          </div>
+          <div class="contract" id="contract">
+            <div class="stamp">APPROVED</div>
+            <h4>Official Agreement</h4>
+            <p>I, <b>Caden</b>, agree to:</p>
+            <ul id="contractTerms"></ul>
+            <p>In return, <b id="parentWord">my parent</b> agrees to get me the <b>AirPods Max 2</b> and a <b>custom case</b>, ordered from the sellers list.</p>
+            <div class="sign-row">
+              <input type="text" id="signName" placeholder="Sign here" autocomplete="off">
+              <label><input type="checkbox" id="signAgree"> I agree</label>
+              <button class="sign-btn" id="signBtn" disabled>Sign the deal ✍️</button>
+            </div>
+            <div class="signed-line">Signed: <span class="ink" id="signedName"></span> &nbsp;·&nbsp; <span id="signedDate"></span><br>Witnessed by: <span class="ink">Caden</span></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===== 8. The ask (call to action) ===== -->
+    <div class="chapter live">
+      <div class="chapter-head">
+        <span class="step">8</span>
+        <div><div class="kicker">The ask</div><div class="lead">That's everything. One last step.</div></div>
+      </div>
+      <section class="card decide" id="decide">
+        <div class="meter">
+          <div class="meter-top"><span>Convinced-o-meter</span><b id="meterPct">10%</b></div>
+          <div class="meter-bar"><div id="meterFill"></div></div>
+          <div class="meter-hint" id="meterHint">Bust excuses, try The Math, and answer bubbles to fill it up.</div>
+        </div>
+        <h2 class="ask">Please buy me them. 🙏</h2>
+        <div class="sub">Reasons, math, answers, and a signed deal. Only one right answer left.</div>
+        <div class="decide-zone" id="decideZone">
+          <button class="yes" id="yesBtn">YES! 🎉</button>
+          <button class="no" id="noBtn">No</button>
+        </div>
+        <div class="decided">
+          <h2>BEST. PARENTS. EVER. 💙</h2>
+          <p>Thank you!! Here's where to grab them:</p>
+          <a class="shop-btn retail-link" href="#" target="_blank" rel="noopener">🛒 Open the sellers list</a>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Persuasion bubbles appear here after the menu closes -->
+  <div class="bubbles" id="bubbles" aria-live="polite"></div>
+  <a class="shop-fab retail-link" href="#" target="_blank" rel="noopener">🛒 Compare sellers</a>
+
+  <!-- "Who are you?" menu: shown on every visit -->
+  <div class="overlay" id="overlay">
+    <div class="modal" id="modal">
+      <h2>Who are you?</h2>
+      <div class="choices">
+        <button class="btn" data-who="dad">My dad</button>
+        <button class="btn" data-who="mom">My mom</button>
+        <button class="btn" data-who="both">Both of us<small>Mom and Dad, together</small></button>
+        <button class="btn" data-who="custom">Custom<small>Someone else, not my mom or my dad</small></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Completion date lives in config.js (the only file to edit) -->
+  <script src="config.js"></script>
+  <script>
+    // Local midnight of each date
+    const START = new Date(2026, 8, 29);  // Sep 29, 2026
+    const BDAY  = new Date(2026, 10, 12); // Nov 12, 2026 (app stops here)
+    const DAY = 86400000;
+
+    const REASONS_HINT = "Forgot some of the reasons I want the AirPods Max 2? See the banner at the top!";
+    const MESSAGES = {
+      dad: "Hey Dad, could you please hurry up a little? 🙏 I know, I know, you're \"working on it.\" But the counter below is literally ticking, and it's not getting any smaller. Love you, but... tick tock. ⏰",
+      mom: "Hey, can I please get this? PLEEEASE? 🥺 Pitches can be hit or miss, so instead of another one, this timer is here to show you that this investment is really worth it, and you know it. I didn't want to annoy you, so this is how I'm presenting it. Pretty please? 🙏",
+      both: "Hey Mom and Dad! 👋 Since you're both here... can we PLEASE make this happen? 🥺 Dad's been \"working on it,\" Mom could help him cross the finish line, and I'm chipping in my Q1 money. Teamwork makes the dream work. 🤝"
+    };
+    const HEADINGS = { dad: "Hey Dad 👋", mom: "Hey Mom 🥺", both: "Hey Mom & Dad 👋👋" };
+    const TAGLINES = {
+      dad: "Dad, could you please hurry up a little? ⏰",
+      mom: "Mom, can I please get this? PLEEEASE 🥺",
+      both: "Mom & Dad, can we please make this happen? 🙏"
+    };
+
+    // Little chat bubbles shown in the corner, one at a time. {since} = days waited so far.
+    const BUBBLES = {
+      dad: [
+        "Wouldn't it suck if the one AirPod you use for the TV on weekend mornings died, so you couldn't hear anything without waking up Mom? That's me at school, every single day.",
+        "Imagine asking for something and hearing \"I'm working on it\" for {since} days. Would you be patient? 😅",
+        "At school I need audio for videos and assignments. One working bud means I'm missing half of it. Could we fix that a little faster?",
+        "If you got them today, this counter stops forever and you never have to see this page again. Tempting, right? 👀",
+        "What's the hold-up, honestly? I'll put my Q1 grade money toward it. Deal? 🤝",
+        "That's {school} days at school without real headphones. Would you sit through {school} days of meetings with one ear? 🫠",
+        "You always say buy quality once instead of cheap twice. Isn't this exactly that? 💯",
+        "Real talk: is it \"working on it\" or \"waiting it out\"? 😏 Either way, the sellers list is one click away.",
+        "Every day you wait, this number goes up and you have to look at it. Every. Single. Day. 📈",
+        "Ordering takes about 2 minutes. You've spent longer reading these bubbles. 😂",
+        "Picture my face when they show up. Now picture the counter turning into confetti. 🎉 Worth it?",
+        "My IEMs are made for gaming at home. Would you wear a 6-foot cord around school all day? 🎮",
+        "You wouldn't take a desk phone to work. Why would I take gaming IEMs to school? 😂",
+        "Check the Excuse Busters on the page. I answered every one in advance. 🛡️",
+        "There's a contract on this page. It has a stamp. Just saying. ✍️",
+        "Take the \"Would You?\" quiz. I bet you agree with me 4/4. 😎"
+      ],
+      mom: [
+        "Wouldn't it be annoying to hear everything with just one ear? That's my life right now. 😩",
+        "At school, a broken bud means I can't hear class videos properly. You want my grades to stay good, right? 📚",
+        "I'm putting my Q1 grade money toward it. Isn't that a pretty fair deal? 💵",
+        "20 hours of battery, used down to 0% every day. Isn't something used every single day worth it? 🔋",
+        "Could you maybe give Dad a tiny nudge? It's been {since} days... 👉👈",
+        "You know I'll actually use them. Not a phase, not a drawer item. Every day. 🥺",
+        "Over-ear headphones are also way easier to not lose than tiny earbuds. Fewer replacements later! 🧠",
+        "I made a whole website instead of whining. That's growth, right? 📈😇",
+        "{school} days without real headphones at school so far. Can we not make it {school_plus}? 🙏",
+        "You and Dad could split the \"best parent\" title. I'll make a trophy. 🏆",
+        "PLEEEEASE? I'll even stop sending you these bubbles. Promise. 🫶",
+        "My IEMs are for gaming at home, and the cord is SO long. Not school-friendly at all. 😩",
+        "Look at the Before/After on the page. Which version of my school day do you want for me? 🥺",
+        "{school} days without real headphones at school. That's a lot of half-heard lessons. 📚",
+        "I promised good Q2 grades AND no asking for stuff until my birthday. It's in The Deal. 📝",
+        "One signature, one click on the sellers list, and you're the hero of this story. 🦸‍♀️"
+      ],
+      both: [
+        "Two parents, one tiny decision, {since} days. We can do this! 🤝",
+        "Dad's \"working on it.\" Mom, you can be the closer. 🏁",
+        "I'm covering part of it with my Q1 money. That's three of us splitting it. Totally fair, right? 💵",
+        "Wouldn't it be nice to never hear me mention earbuds again? One order fixes that. 🙉",
+        "{school} days without real headphones at school. Both of you would've fixed that for yourselves by now. 😅",
+        "Used every day, from 20 hours of battery to 0%. That's the opposite of a waste. 🔋",
+        "Fun fact: tapping the green button takes you straight to the sellers list. Just saying. 🛒",
+        "Imagine the group hug when they arrive. 🫂 Now imagine scrolling past this counter instead.",
+        "Gaming IEMs with a super long cord aren't school headphones. You both know that. 🎮",
+        "Check the Convinced-o-meter at the bottom. How full is it for you two? 📊"
+      ],
+      custom: [
+        "Wouldn't it be frustrating if only one of your earbuds worked? That's me right now. 🎧",
+        "It's been {since} days of \"I'm working on it.\" Would you wait that long? ⏳",
+        "Something used every day, from 20 hours of battery to 0%, is worth it. Don't you think? 🔋",
+        "{school} days without real headphones at school. Rough, right? 🏫",
+        "If you know my parents, feel free to give them a little nudge. 😉"
+      ]
+    };
+    const REPLIES = [
+      ["Fair point 🤔", "🛒 Show me the sellers"],
+      ["Okay, okay 😅", "Hmm..."],
+      ["You're right 😂", "🛒 Where do I buy?"],
+      ["Can't argue with that", "Nice try 😏"]
+    ];
+
+    const DONE_MESSAGES = {
+      dad: "Party, woo! It's all done. We got it! Thank you, Dad. 🎉",
+      mom: "Party, woo! It's all done. We got it! Thank you, Mom. 🎉",
+      both: "Party, woo! It's all done. We got it! Thank you, Mom and Dad. 🎉"
+    };
+
+    const $ = id => document.getElementById(id);
+    const pad = n => String(n).padStart(2, "0");
+
+    // Accepts "10/20/2026", "2026-10-20", "October 20, 2026", etc.
+    function parseDate(s) {
+      s = String(s || "").trim();
+      if (!s) return null;
+      let m = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(s);
+      if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
+      m = /^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/.exec(s);
+      if (m) return new Date(m[3].length === 2 ? 2000 + +m[3] : +m[3], +m[1] - 1, +m[2]);
+      const d = new Date(s);
+      if (isNaN(d)) { console.warn("COMPLETED_ON: couldn't read date", s); return null; }
+      return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    }
+    // ?done=10/20/2026 in the URL previews the completed look without editing anything
+    const urlDone = new URLSearchParams(location.search).get("done");
+    const DONE = parseDate(urlDone || (typeof COMPLETED_ON !== "undefined" ? COMPLETED_ON : ""));
+    const fmtDate = d => d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+
+    // Calendar-day difference, safe across DST changes
+    function dayDiff(a, b) {
+      const ua = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+      const ub = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+      return Math.round((ub - ua) / DAY);
+    }
+
+    // Weekdays from the ask through today (school days with one earbud)
+    function schoolDays(now) {
+      let n = 0;
+      for (let d = new Date(START); d <= now; d.setDate(d.getDate() + 1)) {
+        const w = d.getDay();
+        if (w !== 0 && w !== 6) n++;
+      }
+      return n;
+    }
+
+    // ---- Retailer links ----
+    const SHOP = typeof RETAILERS_URL !== "undefined" ? RETAILERS_URL : "";
+    document.querySelectorAll(".retail-link").forEach(a => {
+      if (SHOP) a.href = SHOP; else a.hidden = true;
+    });
+    const openShop = () => SHOP && window.open(SHOP, "_blank", "noopener");
+    document.querySelectorAll(".retail-link").forEach(a => a.addEventListener("click", () => typeof addConvinced === "function" && addConvinced(12)));
+
+    // ---- Reading progress bar ----
+    function onScroll() {
+      const max = document.documentElement.scrollHeight - innerHeight;
+      $("scrollBar").style.width = (max > 0 ? scrollY / max * 100 : 0) + "%";
+    }
+    addEventListener("scroll", onScroll, { passive: true });
+    addEventListener("resize", onScroll);
+
+    // ---- Theme toggle ----
+    const root = document.documentElement;
+    function syncToggle() { $("themeToggle").textContent = root.dataset.theme === "dark" ? "☀️" : "🌙"; }
+    $("themeToggle").addEventListener("click", () => {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      try { localStorage.setItem("theme", root.dataset.theme); } catch (e) {}
+      syncToggle();
+    });
+    syncToggle();
+
+    // ---- "Who are you?" menu ----
+    function closeOverlay() {
+      const o = $("overlay");
+      o.classList.add("closing");
+      setTimeout(() => o.remove(), 300);
+    }
+    $("modal").addEventListener("click", e => {
+      const btn = e.target.closest("button");
+      if (!btn) return;
+      if (btn.dataset.close) return closeOverlay();
+      const who = btn.dataset.who;
+      startBubbles(who);
+      $("parentWord").textContent = { dad: "Dad", mom: "Mom", both: "Mom & Dad" }[who] || "my parent";
+      $("signName").placeholder = { dad: "Dad, sign here", mom: "Mom, sign here", both: "Mom & Dad, sign here" }[who] || "Sign here";
+      if (!MESSAGES[who]) return closeOverlay(); // Custom: no message
+      if (!DONE) $("tagline").textContent = TAGLINES[who];
+      const modal = $("modal");
+      modal.innerHTML = "";
+      const h = document.createElement("h2");
+      h.textContent = HEADINGS[who];
+      const p = document.createElement("p");
+      p.textContent = DONE ? DONE_MESSAGES[who] : MESSAGES[who];
+      const hint = document.createElement("p");
+      hint.className = "hint";
+      hint.textContent = REASONS_HINT;
+      if (DONE) hint.hidden = true;
+      const go = document.createElement("button");
+      go.className = "btn primary";
+      go.dataset.close = "1";
+      go.textContent = "Show me the timer";
+      modal.append(h, p, hint, go);
+      modal.style.animation = "none";
+      void modal.offsetWidth;
+      modal.style.animation = "";
+    });
+
+    // ---- Collapsible reasons banner (remembers choice) ----
+    function setReasons(collapsed) {
+      $("reasons").classList.toggle("collapsed", collapsed);
+      $("reasonsToggle").setAttribute("aria-expanded", String(!collapsed));
+      $("reasonsHint").textContent = collapsed ? "Show" : "Hide";
+    }
+    try { setReasons(localStorage.getItem("reasonsCollapsed") === "1"); } catch (e) {}
+    $("reasonsToggle").addEventListener("click", () => {
+      const collapsed = !$("reasons").classList.contains("collapsed");
+      setReasons(collapsed);
+      try { localStorage.setItem("reasonsCollapsed", collapsed ? "1" : "0"); } catch (e) {}
+    });
+
+    // ---- Bubble sound (generated, no files needed) ----
+    let audioCtx = null, soundOn = true;
+    try { soundOn = localStorage.getItem("sound") !== "0"; } catch (e) {}
+    function unlockAudio() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+      } catch (e) {}
+    }
+    function playPop() {
+      if (!soundOn || !audioCtx) return;
+      const t = audioCtx.currentTime;
+      [[880, 0], [1320, 0.09]].forEach(([f, d]) => {
+        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.type = "sine";
+        o.frequency.setValueAtTime(f, t + d);
+        o.frequency.exponentialRampToValueAtTime(f * 1.25, t + d + 0.08);
+        g.gain.setValueAtTime(0.0001, t + d);
+        g.gain.exponentialRampToValueAtTime(0.25, t + d + 0.015);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.18);
+        o.connect(g).connect(audioCtx.destination);
+        o.start(t + d);
+        o.stop(t + d + 0.2);
+      });
+    }
+    function syncSound() { $("soundToggle").textContent = soundOn ? "🔔" : "🔕"; }
+    $("soundToggle").addEventListener("click", () => {
+      soundOn = !soundOn;
+      try { localStorage.setItem("sound", soundOn ? "1" : "0"); } catch (e) {}
+      syncSound();
+      unlockAudio();
+      playPop();
+      if (!soundOn) { stopBubbles(); toast("Bubbles paused 🔕"); }
+      else if (bubbleWho) { startBubbles(bubbleWho); toast("Bubbles back on 🔔"); }
+    });
+    syncSound();
+    // Browsers only allow sound after a click, so the menu click unlocks it
+    document.addEventListener("pointerdown", unlockAudio, { once: true });
+
+    // ---- Convinced-o-meter ----
+    let meter = 10;
+    const METER_HINTS = [[40, "Getting warmer... 🔥"], [70, "Almost there! 👀"], [100, "100% convinced. Press YES below! 🎉"]];
+    function toast(msg) {
+      document.querySelectorAll(".toast").forEach(x => x.remove());
+      const t = document.createElement("div");
+      t.className = "toast";
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 2700);
+    }
+    function addConvinced(n) {
+      if (meter >= 100) return;
+      meter = Math.min(100, meter + n);
+      $("meterPct").textContent = meter + "%";
+      $("meterFill").style.width = meter + "%";
+      const hint = METER_HINTS.find(([lim]) => meter < lim) || METER_HINTS[METER_HINTS.length - 1];
+      $("meterHint").textContent = meter >= 100 ? METER_HINTS[2][1] : hint[1];
+      if (meter >= 100) {
+        toast("Convinced-o-meter: 100%! Time to press YES 🎉");
+        $("decide").scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+    $("meterFill").style.width = meter + "%";
+    document.querySelectorAll(".excuse").forEach(d => {
+      let counted = false;
+      d.addEventListener("toggle", () => {
+        if (d.open && !counted) { counted = true; addConvinced(10); toast("Excuse busted ✔"); }
+      });
+    });
+
+    // ---- Persuasion bubbles ----
+    const AVATAR = "🎧";
+    let bubbleIdx = 0, bubbleTimer = null;
+    function currentSince() { return Math.max(0, dayDiff(START, new Date())); }
+    function dismiss(b) {
+      if (!b.isConnected || b.classList.contains("out")) return;
+      b.classList.add("out");
+      setTimeout(() => b.remove(), 350);
+    }
+    function showBubble(list) {
+      const box = $("bubbles");
+      while (box.children.length >= 2) dismiss(box.firstElementChild);
+      const sd = schoolDays(new Date());
+      const text = list[bubbleIdx % list.length]
+        .replaceAll("{since}", currentSince())
+        .replaceAll("{school_plus}", sd + 1)
+        .replaceAll("{school}", sd);
+      const replies = REPLIES[bubbleIdx % REPLIES.length];
+      bubbleIdx++;
+
+      const b = document.createElement("div");
+      b.className = "bubble";
+      b.innerHTML = '<div class="av"></div><div class="body"><div class="who">Caden</div><div class="msg"><span class="typing"><span></span><span></span><span></span></span></div></div><button class="x" aria-label="Dismiss">×</button>';
+      b.querySelector(".av").textContent = AVATAR;
+      b.querySelector(".x").onclick = () => dismiss(b);
+      box.appendChild(b);
+      playPop();
+
+      // "typing..." then the message and quick replies
+      setTimeout(() => {
+        if (!b.isConnected) return;
+        b.querySelector(".msg").textContent = text;
+        playPop();
+        const r = document.createElement("div");
+        r.className = "replies";
+        replies.forEach(label => {
+          const btn = document.createElement("button");
+          btn.textContent = label;
+          btn.onclick = () => {
+            if (label.startsWith("🛒")) { openShop(); addConvinced(12); }
+            else if (/Hmm|Nice try/.test(label)) addConvinced(3);
+            else addConvinced(8);
+            dismiss(b);
+          };
+          r.appendChild(btn);
+        });
+        b.querySelector(".body").appendChild(r);
+      }, 1400);
+      setTimeout(() => dismiss(b), 22000);
+    }
+    let bubbleWho = null, firstBubble = null;
+    function stopBubbles() {
+      clearTimeout(firstBubble);
+      clearInterval(bubbleTimer);
+      document.querySelectorAll(".bubble").forEach(dismiss);
+    }
+    function startBubbles(who) {
+      bubbleWho = who;
+      stopBubbles();
+      if (DONE || new Date() >= BDAY || !soundOn) return; // muted bell = no bubbles
+      const list = BUBBLES[who] || BUBBLES.custom;
+      firstBubble = setTimeout(() => showBubble(list), 3500);
+      bubbleTimer = setInterval(() => showBubble(list), 18000);
+    }
+
+    // ---- The Math (cost calculator) ----
+    const money = (n, cents) => "$" + n.toLocaleString("en-US", { minimumFractionDigits: cents ? 2 : 0, maximumFractionDigits: cents ? 2 : 0 });
+    function calc() {
+      const price = parseFloat($("price").value.replace(/[^0-9.]/g, "")) || 0;
+      const q1 = parseFloat($("q1").value.replace(/[^0-9.]/g, "")) || 0;
+      try { localStorage.setItem("calc", JSON.stringify([$("price").value, $("q1").value])); } catch (e) {}
+      if (!price) {
+        ["yourShare", "perDay", "perHour"].forEach(id => $(id).textContent = "$—");
+        $("calcNote").innerHTML = "Used every day, the cost per day gets <strong>tiny</strong>. Try it.";
+        return;
+      }
+      const share = Math.max(0, price - q1);
+      const days = 730;                 // 2 years of daily use
+      const hours = days * 20;          // 20 hours of battery, used up every day
+      $("yourShare").textContent = money(share);
+      $("perDay").textContent = money(share / days, true);
+      $("perHour").textContent = money(share / hours, true);
+      const cents = Math.max(1, Math.round((share / days) * 100));
+      $("calcNote").innerHTML = q1
+        ? `My Q1 money covers <strong>${Math.round(Math.min(100, q1 / price * 100))}%</strong>. Your part works out to about <strong>${cents}¢ a day</strong>. Less than a snack. 🍪`
+        : `That's about <strong>${cents}¢ a day</strong> for something I use every single day. 🍪`;
+    }
+    try {
+      const saved = JSON.parse(localStorage.getItem("calc") || "null");
+      if (saved) { $("price").value = saved[0] || ""; $("q1").value = saved[1] || ""; }
+    } catch (e) {}
+    let calcCounted = false;
+    $("price").addEventListener("input", () => { if (!calcCounted && $("price").value) { calcCounted = true; addConvinced(15); } });
+    $("price").addEventListener("input", calc);
+    $("q1").addEventListener("input", calc);
+    calc();
+
+    // ---- Would You? quiz ----
+    // [question, the answer that agrees with me, reply for each answer]
+    const QUIZ = [
+      ["Would you go through a full workday with only one earbud working?", "No", { No: "Exactly. That's my school day right now.", Yes: "Really? All day, every day? 😅 I don't buy it." }],
+      ["Would you wear a super long gaming cord around school all day?", "No", { No: "Same. That's why my IEMs don't cut it.", Yes: "Okay, I'd love to see you try. 😂" }],
+      ["Would you pay less than a snack a day for something you use every single day?", "Yes", { Yes: "So would I. That's the AirPods Max 2. 🍪", No: "Check The Math. It really is cents a day." }],
+      ["Is it fair that I'm putting my own Q1 money toward it?", "Yes", { Yes: "Thank you! I think so too. 🤝", No: "Hmm... most kids wouldn't chip in at all. 😇" }]
+    ];
+    let quizRight = 0, quizDone = 0;
+    QUIZ.forEach(([q, agree, replies]) => {
+      const box = document.createElement("div");
+      box.className = "q";
+      box.innerHTML = '<div class="q-text"></div><div class="q-btns"><button>Yes</button><button>No</button></div>';
+      box.querySelector(".q-text").textContent = q;
+      box.querySelectorAll("button").forEach(btn => btn.addEventListener("click", () => {
+        if (box.classList.contains("answered")) return;
+        box.classList.add("answered");
+        btn.classList.add("picked");
+        const ans = btn.textContent;
+        const r = document.createElement("div");
+        r.className = "q-reply";
+        r.textContent = replies[ans];
+        box.appendChild(r);
+        quizDone++;
+        if (ans === agree) { quizRight++; addConvinced(6); }
+        if (quizDone === QUIZ.length) {
+          $("quizScore").textContent = `You agreed with me ${quizRight}/${QUIZ.length}. ` +
+            (quizRight >= 3 ? "So... we agree I need them. 😎" : "Read the Excuse Busters and try again. 😉");
+        }
+      }));
+      $("quiz").appendChild(box);
+    });
+
+    // ---- The Deal ----
+    // Things I offer on top. Edit freely; checked ones go into the agreement.
+    const OFFERS = [
+      ["Put my Q1 grade money toward the cost", true, true],
+      ["Take care of them", true, true],
+      ["Use them daily", true, true],
+      ["Get good Q2 / Semester 1 grades", true, true],
+      ["Stop asking for stuff, for real, until my birthday", true, true]
+    ];
+    function renderTerms() {
+      $("contractTerms").innerHTML = "";
+      document.querySelectorAll("#offers input:checked").forEach(c => {
+        const li = document.createElement("li");
+        li.textContent = c.dataset.text;
+        $("contractTerms").appendChild(li);
+      });
+    }
+    OFFERS.forEach(([text, checked, locked]) => {
+      const li = document.createElement("li");
+      li.innerHTML = '<label><input type="checkbox"><span></span></label>';
+      const c = li.querySelector("input");
+      c.checked = checked; c.disabled = !!locked; c.dataset.text = text;
+      li.querySelector("span").textContent = text;
+      c.addEventListener("change", () => { renderTerms(); if (c.checked) addConvinced(5); });
+      $("offers").appendChild(li);
+    });
+    renderTerms();
+    function checkSign() { $("signBtn").disabled = !($("signName").value.trim() && $("signAgree").checked); }
+    $("signName").addEventListener("input", checkSign);
+    $("signAgree").addEventListener("change", checkSign);
+    $("signBtn").addEventListener("click", e => {
+      $("signedName").textContent = $("signName").value.trim();
+      $("signedDate").textContent = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+      $("contract").classList.add("signed");
+      document.querySelectorAll("#offers input").forEach(c => c.disabled = true);
+      addConvinced(100);
+      sayYes(e);
+      toast("Deal signed! ✍️ Best. Parents. Ever.");
+    });
+
+    // ---- Decision card: YES celebrates, "No" runs away ----
+    const NO_LINES = ["No", "Are you sure? 🥺", "Really?", "Think of the TV mornings...", "One earbud... 😢", "Can't catch me 😅", "Just press YES 💙"];
+    let noCount = 0;
+    function dodge() {
+      const zone = $("decideZone"), no = $("noBtn");
+      noCount++;
+      no.textContent = NO_LINES[Math.min(noCount, NO_LINES.length - 1)];
+      no.classList.add("loose");
+      const maxX = zone.clientWidth - no.offsetWidth, maxY = zone.clientHeight - no.offsetHeight;
+      const z = zone.getBoundingClientRect(), y = $("yesBtn").getBoundingClientRect();
+      const pad = 12;
+      let x = 0, top = 0;
+      for (let tries = 0; tries < 40; tries++) {
+        x = Math.random() * maxX; top = Math.random() * maxY;
+        const l = z.left + x, t = z.top + top, r = l + no.offsetWidth, b = t + no.offsetHeight;
+        const hitsYes = l < y.right + pad && r > y.left - pad && t < y.bottom + pad && b > y.top - pad;
+        if (!hitsYes) break;
+      }
+      no.style.left = x + "px";
+      no.style.top = top + "px";
+      if (noCount >= 7) { no.textContent = "YES 🎉"; no.onclick = sayYes; no.className = "yes"; no.style.cssText = ""; }
+    }
+    $("noBtn").addEventListener("mouseenter", () => noCount < 7 && dodge());
+    $("noBtn").addEventListener("click", e => { if (noCount < 7) { e.preventDefault(); dodge(); } });
+    function burst(x, y) {
+      const colors = ["#ec4899", "#a855f7", "#3b82f6", "#facc15", "#22c55e", "#f97316"];
+      for (let i = 0; i < 70; i++) {
+        const c = document.createElement("i");
+        c.className = "burst";
+        c.style.left = x + "px"; c.style.top = y + "px";
+        c.style.background = colors[i % colors.length];
+        const a = Math.random() * Math.PI * 2, r = 120 + Math.random() * 260;
+        c.style.setProperty("--bx", Math.cos(a) * r + "px");
+        c.style.setProperty("--by", Math.sin(a) * r + 120 + "px");
+        c.style.setProperty("--rot", Math.random() * 720 + "deg");
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 1500);
+      }
+    }
+    function sayYes(e) {
+      const r = (e && e.currentTarget || $("yesBtn")).getBoundingClientRect();
+      burst(r.left + r.width / 2, r.top + r.height / 2);
+      $("decide").classList.add("is-yes");
+      stopBubbles();
+    }
+    $("yesBtn").addEventListener("click", sayYes);
+
+    function makeConfetti() {
+      const box = document.createElement("div");
+      box.className = "confetti";
+      const colors = ["#ec4899", "#a855f7", "#3b82f6", "#facc15", "#22c55e", "#f97316"];
+      for (let i = 0; i < 60; i++) {
+        const c = document.createElement("i");
+        c.style.left = Math.random() * 100 + "vw";
+        c.style.background = colors[i % colors.length];
+        c.style.setProperty("--dx", (Math.random() * 30 - 15) + "vw");
+        c.style.setProperty("--rot", (Math.random() * 1440 - 720) + "deg");
+        c.style.animationDuration = 6 + Math.random() * 8 + "s";
+        c.style.animationDelay = -Math.random() * 14 + "s";
+        if (i % 3 === 0) c.style.borderRadius = "50%";
+        box.appendChild(c);
+      }
+      document.body.appendChild(box);
+    }
+
+    // ---- Completion state ----
+    if (DONE) {
+      document.body.classList.add("is-done");
+      const took = Math.max(0, dayDiff(START, DONE));
+      $("doneBanner").innerHTML = "🎉 Party, woo! It's all done. We got it! 🎧<small></small>";
+      $("doneBanner").querySelector("small").textContent = `Hey, it's done on ${fmtDate(DONE)}.`;
+      makeConfetti();
+      $("title").textContent = "🎉 We Got It! 🎉";
+      $("sinceBadge").textContent = "All done";
+      $("rowUntilWrap").hidden = true;
+      $("sinceTitle").textContent = "Days It Took";
+      $("sinceStatus").textContent = "Delivered";
+      $("sinceStatus").className = "status green";
+      $("sinceDays").className = "big green";
+      $("sinceDays").textContent = took;
+      $("sinceExact").textContent = `It took ${took} day${took === 1 ? "" : "s"}, done on ${DONE.toLocaleDateString("en-US")}`;
+      $("rowSince").textContent = took;
+      $("rowDone").textContent = DONE.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+      $("doneTile").className = "tile won";
+      $("schoolDays").textContent = schoolDays(new Date(DONE.getTime() - 1));
+    }
+
+    // ---- Timers ----
+    let timer;
+    function tick() {
+      const now = new Date();
+      $("clock").textContent = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+
+      if (now >= BDAY) {
+        const total = dayDiff(START, DONE || BDAY);
+        $("finalSummary").textContent = DONE
+          ? `The AirPods Max 2 arrived on ${fmtDate(DONE)}, after ${total} days.`
+          : `It took ${total} days of "I'm working on it" to reach this day.`;
+        $("rowSince").textContent = total;
+        $("rowUntil").textContent = 0;
+        document.body.classList.add("is-ended");
+        clearInterval(timer);
+        return;
+      }
+
+      // Timer 1: days since (frozen once completed)
+      if (!DONE) {
+        const since = Math.max(0, dayDiff(START, now));
+        const el = now - START;
+        $("sinceDays").textContent = since;
+        $("sinceExact").textContent = el > 0
+          ? `${since}d ${pad(Math.floor(el / 3600000) % 24)}h ${pad(Math.floor(el / 60000) % 60)}m ${pad(Math.floor(el / 1000) % 60)}s since Tue, Sep 29`
+          : "Since Tuesday, September 29, 2026";
+        $("rowSince").textContent = since;
+        $("schoolDays").textContent = schoolDays(now);
+      }
+
+      // Timer 2: days until birthday
+      const until = dayDiff(now, BDAY);
+      const left = BDAY - now;
+      $("untilDays").textContent = until;
+      $("untilExact").textContent =
+        `${Math.floor(left / DAY)}d ${pad(Math.floor(left / 3600000) % 24)}h ${pad(Math.floor(left / 60000) % 60)}m ${pad(Math.floor(left / 1000) % 60)}s until Thu, Nov 12`;
+
+      const pct = Math.min(100, Math.max(0, ((now - START) / (BDAY - START)) * 100));
+      $("progress").style.width = pct + "%";
+      $("progressPct").textContent = pct.toFixed(1) + "% of the way";
+      $("rowUntil").textContent = until;
+    }
+
+    tick();
+    timer = setInterval(tick, 1000);
+  </script>
+</body>
+</html>
