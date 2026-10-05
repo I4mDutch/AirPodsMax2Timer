@@ -6,12 +6,14 @@ This simple application shows how many days have passed since last Tuesday. As I
 
 - **"Who are you?" menu** every time the page opens: *My dad*, *My mom*, or *Custom* (someone who is neither). Dad and Mom each get a short message plus a reminder to check the reasons banner; Custom goes straight to the timer.
 - **Reasons banner** at the top with a soft glowing pulse: why the AirPods Max 2 are worth it. Click its title to collapse/expand (remembered).
-- **Persuasion bubbles** (with a pop sound; 🔔/🔕 button top-right to mute) pop up in the bottom-left corner every ~18 seconds, tailored to Dad, Mom, or anyone else. Edit them in the `BUBBLES` list in `index.html`.
+- **Persuasion bubbles** (with a pop sound) pop up in the bottom-left corner every ~18 seconds, tailored to Dad, Mom, or anyone else. Edit them in the `BUBBLES` list in `index.html`. The 🔔 button (top-right) turns bubbles and sound off (🔕) or back on.
 - **Compare sellers**: a floating green button (bottom-right) plus buttons in the reasons banner and decision card open the retailers spreadsheet. Change the link in `config.js` (`RETAILERS_URL`).
 - **The Math**: type the price and your Q1 money; it shows what your parents actually pay, per day over 2 years, and per hour of use.
 - **My Promises**: what you commit to if you get them.
 - **Right Now vs. With AirPods Max 2**: a before/after comparison.
-- **Excuse Busters**: tap common objections to see the answer to each.
+- **Excuse Busters**: 14 common objections, each with an answer.
+- **Would You?**: a 4-question quiz with obvious answers.
+- **The Deal**: pick extra offers (chores, grades...) and the parent signs an official agreement, which gets an APPROVED stamp. Edit the offers in the `OFFERS` list in `index.html`.
 - **Convinced-o-meter**: fills up as they bust excuses, use The Math, open the sellers list, and answer bubbles. At 100% it points them to YES.
 - **Decision Time**: "So... can we order them?" The YES button celebrates; the No button runs away.
 - **Menu** also has *Both of us* for when Mom and Dad look together.

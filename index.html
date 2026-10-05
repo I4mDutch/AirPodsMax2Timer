@@ -444,6 +444,75 @@
     }
     @keyframes toast { 0% { opacity: 0; transform: translate(-50%, -20px); } 12%, 85% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; transform: translate(-50%, -10px); } }
 
+    /* Would You? quiz */
+    .quiz { display: flex; flex-direction: column; gap: 12px; }
+    .q { background: var(--row); border: 2px solid var(--border); border-radius: 12px; padding: 14px 18px; transition: border-color 0.3s; }
+    .q.answered { border-color: var(--green); }
+    .q-text { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+    .q-btns { display: flex; gap: 8px; }
+    .q-btns button {
+      font: inherit; font-weight: 800; font-size: 15px;
+      padding: 8px 22px; border-radius: 8px; cursor: pointer;
+      border: 2px solid var(--blue); background: transparent; color: var(--blue);
+      transition: background 0.2s, color 0.2s;
+    }
+    .q-btns button:hover, .q-btns button.picked { background: var(--blue); color: #fff; }
+    .q.answered .q-btns button:not(.picked) { opacity: 0.4; }
+    .q-reply { margin-top: 10px; font-size: 15px; font-weight: 600; color: var(--green); animation: fade 0.3s ease both; }
+    .quiz-score { margin-top: 14px; font-size: 18px; font-weight: 800; text-align: center; }
+    .quiz-score:empty { display: none; }
+
+    /* The Deal (contract) */
+    .deal { display: grid; grid-template-columns: 1fr 1.2fr; gap: 22px; }
+    .offers { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .offers label {
+      display: flex; gap: 10px; align-items: center;
+      background: var(--row); border: 2px solid var(--border); border-radius: 10px;
+      padding: 11px 14px; font-size: 15px; cursor: pointer; transition: border-color 0.2s;
+    }
+    .offers label:has(input:checked) { border-color: var(--green); }
+    .offers input { width: 18px; height: 18px; accent-color: var(--green); flex: none; }
+    .contract {
+      position: relative;
+      background: #fffdf5; color: #1f2937;
+      border: 2px solid #e5d9b6; border-radius: 10px;
+      padding: 22px 22px 18px;
+      font-family: Georgia, "Times New Roman", serif;
+      box-shadow: inset 0 0 40px rgba(180, 150, 80, 0.12);
+    }
+    .contract h4 { text-align: center; font-size: 20px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+    .contract p { font-size: 15px; line-height: 1.55; margin-bottom: 8px; }
+    .contract ul { margin: 0 0 10px 20px; font-size: 15px; line-height: 1.5; }
+    .sign-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 12px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    .sign-row input[type=text] {
+      flex: 1; min-width: 160px;
+      font: inherit; font-size: 16px;
+      padding: 10px 12px; border-radius: 8px;
+      border: 2px solid #d6c99a; background: #fff; color: #111;
+    }
+    .sign-row label { display: flex; gap: 6px; align-items: center; font-size: 14px; font-weight: 600; }
+    .sign-btn {
+      font: inherit; font-weight: 900; font-size: 16px;
+      padding: 11px 20px; border: none; border-radius: 8px; cursor: pointer;
+      background: var(--green); color: #fff;
+    }
+    .sign-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .signed-line { display: none; margin-top: 14px; font-size: 15px; }
+    .signed-line .ink { font-family: "Segoe Script", "Brush Script MT", cursive; font-size: 28px; color: #1d4ed8; }
+    .contract.signed .sign-row { display: none; }
+    .contract.signed .signed-line { display: block; }
+    .stamp {
+      display: none;
+      position: absolute; bottom: 18px; right: 18px;
+      border: 4px solid #16a34a; color: #16a34a;
+      border-radius: 8px; padding: 4px 12px;
+      font: 900 22px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 2px;
+      transform: rotate(-12deg);
+    }
+    .contract.signed .stamp { display: block; animation: stamp 0.5s cubic-bezier(.2, 1.6, .4, 1) both; }
+    @keyframes stamp { from { opacity: 0; transform: rotate(-12deg) scale(2.4); } to { opacity: 0.9; transform: rotate(-12deg) scale(1); } }
+
     /* Floating "compare sellers" quick link (bottom-right) */
     .shop-fab {
       position: fixed; right: 16px; bottom: 16px; z-index: 30;
@@ -593,7 +662,7 @@
       .grid, .reasons ul, .calc-out { grid-template-columns: 1fr; }
       .sound-toggle { right: 70px; }
       .tiles { grid-template-columns: 1fr 1fr; }
-      .ba { grid-template-columns: 1fr; }
+      .ba, .deal { grid-template-columns: 1fr; }
       .ba-arrow { transform: rotate(90deg); animation: none; }
       .decide-zone { height: 230px; }
       .yes { padding: 14px 28px; font-size: 20px; }
@@ -619,7 +688,7 @@
 <body>
   <div class="bg"><span></span><span></span><span></span></div>
   <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
-  <button class="theme-toggle sound-toggle" id="soundToggle" aria-label="Toggle bubble sounds">🔔</button>
+  <button class="theme-toggle sound-toggle" id="soundToggle" aria-label="Turn bubbles and sound on or off" title="Bubbles & sound">🔔</button>
 
   <div class="wrap">
     <header>
@@ -742,7 +811,44 @@
         <details class="excuse"><summary>"Use the AirPod that still works."</summary><p>One ear for a whole school day isn't the same. Half the audio, all day, every day. <strong>Would you do it?</strong></p></details>
         <details class="excuse"><summary>"You'll lose them or break them."</summary><p>Over-ear headphones are <strong>way harder to lose</strong> than tiny earbuds, and the <strong>custom case</strong> protects them.</p></details>
         <details class="excuse"><summary>"You won't actually use them."</summary><p>Daily driver. <strong>20 hours of battery, down to 0%, every day.</strong> You'll see them on me constantly.</p></details>
+        <details class="excuse"><summary>"We'll get them later."</summary><p>Later costs the <strong>exact same</strong>. The only thing that changes is <strong>how many more school days</strong> I go without real headphones. Now is strictly better.</p></details>
+        <details class="excuse"><summary>"Just get cheaper headphones."</summary><p>Buy cheap, buy twice. Cheap ones break or get replaced, and that adds up. <strong>Buying once, the right one, is the cheaper move long-term.</strong></p></details>
+        <details class="excuse"><summary>"Just replace the broken AirPod."</summary><p>That puts money back into <strong>tiny earbuds that are easy to lose and break</strong>. Same money goes further toward <strong>something built to last</strong>.</p></details>
+        <details class="excuse"><summary>"You already have enough tech."</summary><p>This doesn't <strong>add</strong> to my stuff, it <strong>replaces</strong> what's broken. One dead earbud and a gaming cord aren't "enough", they're <strong>nothing usable at school</strong>.</p></details>
+        <details class="excuse"><summary>"Why do you even need headphones at school?"</summary><p><strong>Class videos, assignments, and focusing</strong> in loud rooms. Teachers expect us to have them. Right now I can't do that properly.</p></details>
+        <details class="excuse"><summary>"It's a lot of money at once."</summary><p>Not all from you: <strong>my Q1 money comes off the top</strong>. And spread over daily use it's <strong>cents per day</strong>. One purchase, years of use.</p></details>
+        <details class="excuse"><summary>"We already said no."</summary><p>Then why is Dad <strong>"working on it"</strong>? 😏 Sounds like a yes that's <strong>still loading</strong>.</p></details>
         <details class="excuse"><summary>"I'm working on it."</summary><p>Awesome! The <strong>sellers list is one click away</strong>: the green 🛒 button, bottom-right. 😉</p></details>
+      </div>
+    </section>
+
+    <!-- Would You? quiz -->
+    <section class="card left live">
+      <div class="sec-title">🤔 Would You?</div>
+      <div class="sec-sub">Four quick questions. Be honest.</div>
+      <div class="quiz" id="quiz"></div>
+      <div class="quiz-score" id="quizScore"></div>
+    </section>
+
+    <!-- The Deal -->
+    <section class="card left live">
+      <div class="sec-title">📝 The Deal</div>
+      <div class="sec-sub">Pick what I throw in. Then make it official.</div>
+      <div class="deal">
+        <ul class="offers" id="offers"></ul>
+        <div class="contract" id="contract">
+          <div class="stamp">APPROVED</div>
+          <h4>Official Agreement</h4>
+          <p>I, <b>Caden</b>, agree to:</p>
+          <ul id="contractTerms"></ul>
+          <p>In return, <b id="parentWord">my parent</b> agrees to get me the <b>AirPods Max 2</b> and a <b>custom case</b>, ordered from the sellers list.</p>
+          <div class="sign-row">
+            <input type="text" id="signName" placeholder="Sign here" autocomplete="off">
+            <label><input type="checkbox" id="signAgree"> I agree</label>
+            <button class="sign-btn" id="signBtn" disabled>Sign the deal ✍️</button>
+          </div>
+          <div class="signed-line">Signed: <span class="ink" id="signedName"></span> &nbsp;·&nbsp; <span id="signedDate"></span><br>Witnessed by: <span class="ink">Caden</span></div>
+        </div>
       </div>
     </section>
 
@@ -842,7 +948,9 @@
         "Picture my face when they show up. Now picture the counter turning into confetti. 🎉 Worth it?",
         "My IEMs are made for gaming at home. Would you wear a 6-foot cord around school all day? 🎮",
         "You wouldn't take a desk phone to work. Why would I take gaming IEMs to school? 😂",
-        "Check the Excuse Busters on the page. I answered every one in advance. 🛡️"
+        "Check the Excuse Busters on the page. I answered every one in advance. 🛡️",
+        "There's a contract on this page. It has a stamp. Just saying. ✍️",
+        "Take the \"Would You?\" quiz. I bet you agree with me 4/4. 😎"
       ],
       mom: [
         "Wouldn't it be annoying to hear everything with just one ear? That's my life right now. 😩",
@@ -858,7 +966,9 @@
         "PLEEEEASE? I'll even stop sending you these bubbles. Promise. 🫶",
         "My IEMs are for gaming at home, and the cord is SO long. Not school-friendly at all. 😩",
         "Look at the Before/After on the page. Which version of my school day do you want for me? 🥺",
-        "{school} days without real headphones at school. That's a lot of half-heard lessons. 📚"
+        "{school} days without real headphones at school. That's a lot of half-heard lessons. 📚",
+        "I even offered extra chores in The Deal. Go see. 🧽",
+        "One signature, one click on the sellers list, and you're the hero of this story. 🦸‍♀️"
       ],
       both: [
         "Two parents, one tiny decision, {since} days. We can do this! 🤝",
@@ -960,6 +1070,8 @@
       if (btn.dataset.close) return closeOverlay();
       const who = btn.dataset.who;
       startBubbles(who);
+      $("parentWord").textContent = { dad: "Dad", mom: "Mom", both: "Mom & Dad" }[who] || "my parent";
+      $("signName").placeholder = { dad: "Dad, sign here", mom: "Mom, sign here", both: "Mom & Dad, sign here" }[who] || "Sign here";
       if (!MESSAGES[who]) return closeOverlay(); // Custom: no message
       if (!DONE) $("tagline").textContent = TAGLINES[who];
       const modal = $("modal");
@@ -1027,6 +1139,8 @@
       syncSound();
       unlockAudio();
       playPop();
+      if (!soundOn) { stopBubbles(); toast("Bubbles paused 🔕"); }
+      else if (bubbleWho) { startBubbles(bubbleWho); toast("Bubbles back on 🔔"); }
     });
     syncSound();
     // Browsers only allow sound after a click, so the menu click unlocks it
@@ -1113,11 +1227,18 @@
       }, 1400);
       setTimeout(() => dismiss(b), 22000);
     }
-    function startBubbles(who) {
-      if (DONE || new Date() >= BDAY) return;
-      const list = BUBBLES[who] || BUBBLES.custom;
+    let bubbleWho = null, firstBubble = null;
+    function stopBubbles() {
+      clearTimeout(firstBubble);
       clearInterval(bubbleTimer);
-      setTimeout(() => showBubble(list), 3500);
+      document.querySelectorAll(".bubble").forEach(dismiss);
+    }
+    function startBubbles(who) {
+      bubbleWho = who;
+      stopBubbles();
+      if (DONE || new Date() >= BDAY || !soundOn) return; // muted bell = no bubbles
+      const list = BUBBLES[who] || BUBBLES.custom;
+      firstBubble = setTimeout(() => showBubble(list), 3500);
       bubbleTimer = setInterval(() => showBubble(list), 18000);
     }
 
@@ -1152,6 +1273,81 @@
     $("price").addEventListener("input", calc);
     $("q1").addEventListener("input", calc);
     calc();
+
+    // ---- Would You? quiz ----
+    // [question, the answer that agrees with me, reply for each answer]
+    const QUIZ = [
+      ["Would you go through a full workday with only one earbud working?", "No", { No: "Exactly. That's my school day right now.", Yes: "Really? All day, every day? 😅 I don't buy it." }],
+      ["Would you wear a super long gaming cord around school all day?", "No", { No: "Same. That's why my IEMs don't cut it.", Yes: "Okay, I'd love to see you try. 😂" }],
+      ["Would you pay less than a snack a day for something you use every single day?", "Yes", { Yes: "So would I. That's the AirPods Max 2. 🍪", No: "Check The Math. It really is cents a day." }],
+      ["Is it fair that I'm putting my own Q1 money toward it?", "Yes", { Yes: "Thank you! I think so too. 🤝", No: "Hmm... most kids wouldn't chip in at all. 😇" }]
+    ];
+    let quizRight = 0, quizDone = 0;
+    QUIZ.forEach(([q, agree, replies]) => {
+      const box = document.createElement("div");
+      box.className = "q";
+      box.innerHTML = '<div class="q-text"></div><div class="q-btns"><button>Yes</button><button>No</button></div>';
+      box.querySelector(".q-text").textContent = q;
+      box.querySelectorAll("button").forEach(btn => btn.addEventListener("click", () => {
+        if (box.classList.contains("answered")) return;
+        box.classList.add("answered");
+        btn.classList.add("picked");
+        const ans = btn.textContent;
+        const r = document.createElement("div");
+        r.className = "q-reply";
+        r.textContent = replies[ans];
+        box.appendChild(r);
+        quizDone++;
+        if (ans === agree) { quizRight++; addConvinced(6); }
+        if (quizDone === QUIZ.length) {
+          $("quizScore").textContent = `You agreed with me ${quizRight}/${QUIZ.length}. ` +
+            (quizRight >= 3 ? "So... we agree I need them. 😎" : "Read the Excuse Busters and try again. 😉");
+        }
+      }));
+      $("quiz").appendChild(box);
+    });
+
+    // ---- The Deal ----
+    // Things I offer on top. Edit freely; checked ones go into the agreement.
+    const OFFERS = [
+      ["Put my Q1 grade money toward the cost", true, true],
+      ["Take care of them and keep them in the custom case", true, true],
+      ["Use them every day (that's the whole point)", true, true],
+      ["Do the dishes for a week", false],
+      ["Take out the trash for two weeks", false],
+      ["Keep my grades up all of Q2", false],
+      ["Stop asking about headphones. Forever. 😇", false]
+    ];
+    function renderTerms() {
+      $("contractTerms").innerHTML = "";
+      document.querySelectorAll("#offers input:checked").forEach(c => {
+        const li = document.createElement("li");
+        li.textContent = c.dataset.text;
+        $("contractTerms").appendChild(li);
+      });
+    }
+    OFFERS.forEach(([text, checked, locked]) => {
+      const li = document.createElement("li");
+      li.innerHTML = '<label><input type="checkbox"><span></span></label>';
+      const c = li.querySelector("input");
+      c.checked = checked; c.disabled = !!locked; c.dataset.text = text;
+      li.querySelector("span").textContent = text + (locked ? " (included)" : "");
+      c.addEventListener("change", () => { renderTerms(); if (c.checked) addConvinced(5); });
+      $("offers").appendChild(li);
+    });
+    renderTerms();
+    function checkSign() { $("signBtn").disabled = !($("signName").value.trim() && $("signAgree").checked); }
+    $("signName").addEventListener("input", checkSign);
+    $("signAgree").addEventListener("change", checkSign);
+    $("signBtn").addEventListener("click", e => {
+      $("signedName").textContent = $("signName").value.trim();
+      $("signedDate").textContent = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+      $("contract").classList.add("signed");
+      document.querySelectorAll("#offers input").forEach(c => c.disabled = true);
+      addConvinced(100);
+      sayYes(e);
+      toast("Deal signed! ✍️ Best. Parents. Ever.");
+    });
 
     // ---- Decision card: YES celebrates, "No" runs away ----
     const NO_LINES = ["No", "Are you sure? 🥺", "Really?", "Think of the TV mornings...", "One earbud... 😢", "Can't catch me 😅", "Just press YES 💙"];
@@ -1196,6 +1392,7 @@
       const r = (e && e.currentTarget || $("yesBtn")).getBoundingClientRect();
       burst(r.left + r.width / 2, r.top + r.height / 2);
       $("decide").classList.add("is-yes");
+      stopBubbles();
     }
     $("yesBtn").addEventListener("click", sayYes);
 
