@@ -648,7 +648,7 @@
     .ba-arrow { display: grid; place-items: center; font-size: 34px; animation: slideR 1.6s ease-in-out infinite; }
     @keyframes slideR { 0%, 100% { transform: translateX(-4px); } 50% { transform: translateX(6px); } }
 
-    /* Excuse busters (accordion) */
+    /* Doubt busters (accordion) */
     .excuses { display: flex; flex-direction: column; gap: 10px; }
     .excuse { background: var(--row); border: 2px solid var(--border); border-radius: 12px; overflow: hidden; transition: border-color 0.2s; }
     .excuse[open] { border-color: var(--green); }
@@ -810,7 +810,7 @@
 
     .signature { margin-top: 14px; text-align: right; font-family: "Segoe Script", "Brush Script MT", cursive; font-size: 24px; color: var(--blue); }
 
-    /* Decision card with the runaway "No" */
+    /* Decision card */
     .decide h2 { font-size: 40px; }
     .decide .sub { margin-bottom: 26px; }
     .decide-zone { position: relative; height: 150px; display: flex; justify-content: center; align-items: center; gap: 18px; }
@@ -827,9 +827,7 @@
       font: inherit; font-size: 16px; font-weight: 700;
       padding: 12px 22px; border-radius: 12px; cursor: pointer;
       border: 2px solid var(--border); background: var(--card); color: var(--muted);
-      transition: left 0.25s ease, top 0.25s ease, transform 0.25s;
     }
-    .no.loose { position: absolute; }
     .decided { display: none; margin-top: 10px; }
     .decide.is-yes .decide-zone, .decide.is-yes .sub, .decide.is-yes .ask { display: none; }
     .decide.is-yes .decided { display: block; animation: pop 0.5s cubic-bezier(.2, 1.4, .4, 1) both; }
@@ -1000,18 +998,18 @@
             <li>Full sound in both ears, all day.</li>
             <li>Wireless. No cord to tangle or snag in class.</li>
             <li>Hard to lose, protected by a custom case.</li>
-            <li>No more asking. This page retires. 🎉</li>
+            <li>Ready for class, every day. 🎉</li>
           </ul>
         </div>
       </div>
       </section>
     </div>
 
-    <!-- ===== 3. How long it's been (key dates stay visible after it's done) ===== -->
+    <!-- ===== 3. Key dates (key dates stay visible after it's done) ===== -->
     <div class="chapter">
       <div class="chapter-head">
         <span class="step">3</span>
-        <div><div class="kicker">How long it's been</div><div class="lead">Meanwhile, the clock keeps ticking.</div></div>
+        <div><div class="kicker">Key dates</div><div class="lead">Here's the timeline.</div></div>
       </div>
       <div class="live">
       <!-- Countdown to birthday -->
@@ -1029,7 +1027,7 @@
         <h3>📌 Key Dates</h3>
       <div class="tiles">
         <div class="tile cake"><span class="t-ico">🎂</span><span class="t-label">My Birthday</span><span class="t-val">Nov 12</span></div>
-        <div class="tile" id="rowUntilWrap"><span class="t-ico">⌛</span><span class="t-label">Days left to deliver</span><span class="t-val" id="rowUntil">0</span></div>
+        <div class="tile" id="rowUntilWrap"><span class="t-ico">⌛</span><span class="t-label">Days until my birthday</span><span class="t-val" id="rowUntil">0</span></div>
         <div class="tile mystery" id="doneTile"><span class="t-ico">✅</span><span class="t-label">Completed on</span><span class="t-val" id="rowDone">???</span></div>
       </div>
       </section>
@@ -1064,16 +1062,16 @@
         <div><div class="kicker">Your questions</div><div class="lead">Still have doubts? Every one of them, answered.</div></div>
       </div>
       <section class="card left">
-        <div class="sec-title">🛡️ Excuse Busters</div>
-        <div class="sec-sub">Every reason to wait, answered. Tap one.</div>
+        <div class="sec-title">🛡️ Doubt Busters</div>
+        <div class="sec-sub">Fair questions, honest answers. Tap one.</div>
       <div class="excuses" id="excuses">
         <details class="excuse"><summary>"They're too expensive."</summary><p>Even at <strong>$549 (Apple's max price)</strong>, my <strong>Q1 grade money</strong> goes toward it, and used every day it's <strong>cents per day</strong>. Check The Math above.</p></details>
-        <details class="excuse"><summary>"Just wait until your birthday."</summary><p>Buying now <strong>only shifts the date</strong>, it doesn't add cost. Waiting just means <strong>more school days</strong> without real headphones.</p></details>
+        <details class="excuse"><summary>"Just wait until your birthday."</summary><p>That's fair. Getting them a little earlier <strong>doesn't add any cost</strong>, it just means I can use them <strong>for school right away</strong>. And I'd count them as my birthday present.</p></details>
         <details class="excuse"><summary>"Just use your IEMs."</summary><p>They're <strong>built for gaming at home</strong> and the cord is <strong>super long</strong>. They don't work for school.</p></details>
-        <details class="excuse"><summary>"Use the AirPod that still works."</summary><p>One ear for a whole school day isn't the same. Half the audio, all day, every day. <strong>Would you do it?</strong></p></details>
+        <details class="excuse"><summary>"Use the AirPod that still works."</summary><p>I've been trying, but one ear for a whole school day means I <strong>miss part of the audio</strong> in videos and lessons.</p></details>
         <details class="excuse"><summary>"You'll lose them or break them."</summary><p>Over-ear headphones are <strong>way harder to lose</strong> than tiny earbuds, and the <strong>custom case</strong> protects them.</p></details>
         <details class="excuse"><summary>"You won't actually use them."</summary><p>Daily driver. <strong>20 hours of battery, down to 0%, every day.</strong> You'll see them on me constantly.</p></details>
-        <details class="excuse"><summary>"We'll get them later."</summary><p>Later costs the <strong>exact same</strong>. The only thing that changes is <strong>how many more school days</strong> I go without real headphones. Now is strictly better.</p></details>
+        <details class="excuse"><summary>"We'll get them later."</summary><p>Totally your call. The price is <strong>the same either way</strong>, so sooner just means I get to use them <strong>for school</strong> while I need them most.</p></details>
         <details class="excuse"><summary>"Just get cheaper headphones."</summary><p>Buy cheap, buy twice. Cheap ones break or get replaced, and that adds up. <strong>Buying once, the right one, is the cheaper move long-term.</strong></p></details>
         <details class="excuse"><summary>"Just replace the broken AirPod."</summary><p>That puts money back into <strong>tiny earbuds that are easy to lose and break</strong>. Same money goes further toward <strong>something built to last</strong>.</p></details>
         <details class="excuse"><summary>"You already have enough tech."</summary><p>This doesn't <strong>add</strong> to my stuff, it <strong>replaces</strong> what's broken. One dead earbud and a gaming cord aren't "enough", they're <strong>nothing usable at school</strong>.</p></details>
@@ -1132,18 +1130,18 @@
     <div class="chapter live">
       <div class="chapter-head">
         <span class="step">8</span>
-        <div><div class="kicker">The ask</div><div class="lead">That's everything. One last step.</div></div>
+        <div><div class="kicker">The ask</div><div class="lead">That's my whole case. Take your time.</div></div>
       </div>
       <section class="card decide" id="decide">
-        <h2 class="ask">Please buy me them. 🙏</h2>
-        <div class="sub">Reasons, math, answers, and a signed deal. Only one right answer left.</div>
+        <h2 class="ask">Will you get me the AirPods Max 2? 💙</h2>
+        <div class="sub">Reasons, math, answers, and my side of the deal. Whatever you decide, thank you for reading.</div>
         <div class="decide-zone" id="decideZone">
           <button class="yes" id="yesBtn">YES! 🎉</button>
-          <button class="no" id="noBtn">No</button>
+          <button class="no" id="noBtn">Let me think about it</button>
         </div>
         <div class="decided">
           <h2>BEST. MOM. EVER. 💙</h2>
-          <p>Thank you!! Here's where to grab them:</p>
+          <p>Thank you so much, Mom! Here's where to find them:</p>
           <a class="shop-btn retail-link" href="#" target="_blank" rel="noopener">🛒 Open the sellers list</a>
         </div>
       </section>
@@ -1172,37 +1170,37 @@
     const BDAY  = new Date(2026, 10, 12); // Nov 12, 2026 (app stops here)
     const DAY = 86400000;
 
-    const REASONS_HINT = "Forgot some of the reasons I want the AirPods Max 2? See the banner at the top!";
+    const REASONS_HINT = "All my reasons are in the banner at the top, if you want to look back at them.";
     const MESSAGES = {
-      mom: "Hey, can I please get this? PLEEEASE? 🥺 Pitches can be hit or miss, so instead of another one, this timer is here to show you that this investment is really worth it, and you know it. I didn't want to annoy you, so this is how I'm presenting it. Pretty please? 🙏"
+      mom: "Hi Mom! 💙 Instead of asking you over and over, I put all my reasons in one place so you can look at them whenever you have time. No pressure. I just want to show you why I think the AirPods Max 2 are a smart buy, and what I'm willing to do on my end."
     };
-    const HEADINGS = { mom: "Hey Mom 🥺" };
+    const HEADINGS = { mom: "Hi Mom 💙" };
     const TAGLINES = {
-      mom: "Mom, can I please get this? PLEEEASE 🥺"
+      mom: "Mom, here's why I think they're worth it 💙"
     };
 
     // Little chat bubbles shown in the corner, one at a time.
     const BUBBLES = {
       mom: [
         "Wouldn't it be annoying to hear everything with just one ear? That's my life right now. 😩",
-        "At school, a broken bud means I can't hear class videos properly. You want my grades to stay good, right? 📚",
-        "I'm putting my Q1 grade money toward it. Isn't that a pretty fair deal? 💵",
-        "20 hours of battery, used down to 0% every day. Isn't something used every single day worth it? 🔋",
-        "You know I'll actually use them. Not a phase, not a drawer item. Every day. 🥺",
+        "At school, a broken bud means I miss part of class videos. Real headphones would help me keep my grades up. 📚",
+        "I'm putting my Q1 grade money toward it, so it's not all on you. 💵",
+        "I'd use them every day, battery down to 0%. That's a lot of use for the money. 🔋",
+        "These won't end up in a drawer. I'll use them every single day. 🎧",
         "Over-ear headphones are also way easier to not lose than tiny earbuds. Fewer replacements later! 🧠",
-        "I made a whole website instead of whining. That's growth, right? 📈😇",
-        "PLEEEEASE? I'll even stop sending you these bubbles. Promise. 🫶",
+        "I made this website instead of asking you every day. Hope it helps. 😇",
+        "No rush. Read through it whenever you have a minute. 🫶",
         "My IEMs are for gaming at home, and the cord is SO long. Not school-friendly at all. 😩",
-        "Look at the Before/After on the page. Which version of my school day do you want for me? 🥺",
+        "The Before/After on the page shows how much this would change my school day. 📖",
         "I promised good Q2 grades AND no asking for stuff until my birthday. It's in The Deal. 📝",
-        "One signature, one click on the sellers list, and you're the hero of this story. 🦸‍♀️"
+        "Whatever you decide, thanks for taking the time to look. 💙"
       ]
     };
     const REPLIES = [
       ["Fair point 🤔", "🛒 Show me the sellers"],
-      ["Okay, okay 😅", "Hmm..."],
+      ["Good point 👍", "I'll think about it"],
       ["You're right 😂", "🛒 Where do I buy?"],
-      ["Can't argue with that", "Nice try 😏"]
+      ["Makes sense", "Hmm..."]
     ];
 
     const DONE_MESSAGES = {
@@ -1265,9 +1263,9 @@
     const NAMES = { mom: "Mom" };
     const INTRO_QA = [
       ["What is it?", "A site I built with one job: getting me the AirPods Max 2. It counts down to my birthday and keeps every reason in one place."],
-      ["What is it for?", "Instead of nagging you every day, the whole pitch lives here: why I need them, what changes, what it costs, your questions answered, and my side of the deal."],
-      ["Why not just ask again?", "Pitches can be hit or miss. This one doesn't forget anything, and you can read it at your own pace."],
-      ["How does it work?", "It's a story in 8 short steps. Read from top to bottom and it ends with one simple question."]
+      ["What is it for?", "Instead of bringing it up every day, everything lives here: why I need them, what changes, what it costs, your questions answered, and my side of the deal."],
+      ["Why not just ask again?", "When I ask out loud, I forget half my reasons. This way nothing gets left out, and you can read it at your own pace."],
+      ["How does it work?", "It's 8 short steps. Read from top to bottom, take your time, and it ends with one question."]
     ];
     const viewer = { who: null, name: "" };
     const WHO_SCREEN = $("modal").innerHTML;
@@ -1524,7 +1522,7 @@
     document.querySelectorAll(".excuse").forEach(d => {
       let counted = false;
       d.addEventListener("toggle", () => {
-        if (d.open && !counted) { counted = true; toast("Excuse busted ✔"); }
+        if (d.open && !counted) { counted = true; toast("Doubt busted ✔"); }
       });
     });
 
@@ -1622,10 +1620,10 @@
     // ---- Would You? quiz ----
     // [question, the answer that agrees with me, reply for each answer]
     const QUIZ = [
-      ["Would you go through a full workday with only one earbud working?", "No", { No: "Exactly. That's my school day right now.", Yes: "Really? All day, every day? 😅 I don't buy it." }],
-      ["Would you wear a super long gaming cord around school all day?", "No", { No: "Same. That's why my IEMs don't cut it.", Yes: "Okay, I'd love to see you try. 😂" }],
+      ["Would you go through a full workday with only one earbud working?", "No", { No: "Exactly. That's my school day right now.", Yes: "Maybe for a day, but every day gets tiring. 😅" }],
+      ["Would you wear a super long gaming cord around school all day?", "No", { No: "Same. That's why my IEMs don't cut it.", Yes: "It gets tangled fast, trust me. 😂" }],
       ["Would you pay less than a snack a day for something you use every single day?", "Yes", { Yes: "So would I. That's the AirPods Max 2. 🍪", No: "Check The Math. It really is cents a day." }],
-      ["Is it fair that I'm putting my own Q1 money toward it?", "Yes", { Yes: "Thank you! I think so too. 🤝", No: "Hmm... most kids wouldn't chip in at all. 😇" }]
+      ["Is it fair that I'm putting my own Q1 money toward it?", "Yes", { Yes: "Thank you! I think so too. 🤝", No: "That's okay. I still want to help pay for it. 😇" }]
     ];
     let quizRight = 0, quizDone = 0;
     QUIZ.forEach(([q, agree, replies]) => {
@@ -1646,7 +1644,7 @@
         if (ans === agree) quizRight++;
         if (quizDone === QUIZ.length) {
           $("quizScore").textContent = `You agreed with me ${quizRight}/${QUIZ.length}. ` +
-            (quizRight >= 3 ? "So... we agree I need them. 😎" : "Read the Excuse Busters and try again. 😉");
+            (quizRight >= 3 ? "Looks like we see it the same way. 💙" : "Fair enough. The Doubt Busters explain my side a little more. 💙");
         }
       }));
       $("quiz").appendChild(box);
@@ -1691,30 +1689,8 @@
       toast("Deal signed! ✍️ Best. Mom. Ever.");
     });
 
-    // ---- Decision card: YES celebrates, "No" runs away ----
-    const NO_LINES = ["No", "Are you sure? 🥺", "Really?", "Think of the TV mornings...", "One earbud... 😢", "Can't catch me 😅", "Just press YES 💙"];
-    let noCount = 0;
-    function dodge() {
-      const zone = $("decideZone"), no = $("noBtn");
-      noCount++;
-      no.textContent = NO_LINES[Math.min(noCount, NO_LINES.length - 1)];
-      no.classList.add("loose");
-      const maxX = zone.clientWidth - no.offsetWidth, maxY = zone.clientHeight - no.offsetHeight;
-      const z = zone.getBoundingClientRect(), y = $("yesBtn").getBoundingClientRect();
-      const pad = 12;
-      let x = 0, top = 0;
-      for (let tries = 0; tries < 40; tries++) {
-        x = Math.random() * maxX; top = Math.random() * maxY;
-        const l = z.left + x, t = z.top + top, r = l + no.offsetWidth, b = t + no.offsetHeight;
-        const hitsYes = l < y.right + pad && r > y.left - pad && t < y.bottom + pad && b > y.top - pad;
-        if (!hitsYes) break;
-      }
-      no.style.left = x + "px";
-      no.style.top = top + "px";
-      if (noCount >= 7) { no.textContent = "YES 🎉"; no.onclick = sayYes; no.className = "yes"; no.style.cssText = ""; }
-    }
-    $("noBtn").addEventListener("mouseenter", () => noCount < 7 && dodge());
-    $("noBtn").addEventListener("click", e => { if (noCount < 7) { e.preventDefault(); dodge(); } });
+    // ---- Decision card ----
+    $("noBtn").addEventListener("click", () => toast("Of course. Take your time 💙"));
     function burst(x, y) {
       const colors = ["#ec4899", "#a855f7", "#3b82f6", "#facc15", "#22c55e", "#f97316"];
       for (let i = 0; i < 70; i++) {

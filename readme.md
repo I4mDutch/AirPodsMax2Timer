@@ -16,10 +16,10 @@ The page opens in a plain black-and-white look with the "Who are you?" menu:
 2. **What it changes**: right now vs. with AirPods Max 2.
 3. **How long it's been**: birthday countdown and Key Dates.
 4. **The cost**: The Math. The price starts at **$549, Apple's max price** for AirPods Max 2 (change `DEFAULT_PRICE` in `index.html`). Type a cheaper price and Q1 money to get cost per day/hour.
-5. **Your questions**: Excuse Busters, 12 objections answered.
+5. **Your questions**: Doubt Busters, 12 questions answered.
 6. **Gut check**: the "Would You?" quiz.
 7. **My side of the deal**: my promises and a contract Mom can sign.
-8. **The ask**: **"Please buy me them. 🙏"** with YES / (runaway) No.
+8. **The ask**: **"Will you get me the AirPods Max 2? 💙"** with YES / "Let me think about it".
 
 **Returning visitors** see "Welcome back, [name]" with one button that skips straight to the story in their last theme, or "Start over" to pick again.
 
