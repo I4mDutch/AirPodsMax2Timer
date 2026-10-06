@@ -388,7 +388,7 @@
     body.theme-apple .big, body.theme-apple .yes, body.theme-apple .ba-arrow, body.theme-apple .tile.mystery .t-val { animation: none; }
     body.theme-apple .big { font-weight: 700; letter-spacing: -0.04em; }
     body.theme-apple .badge, body.theme-apple .status, body.theme-apple .kicker, body.theme-apple .sec-title,
-    body.theme-apple .list h3, body.theme-apple .t-label, body.theme-apple .reasons-toggle, body.theme-apple .meter-top, body.theme-apple .ba-col h4 {
+    body.theme-apple .list h3, body.theme-apple .t-label, body.theme-apple .reasons-toggle, body.theme-apple .ba-col h4 {
       text-transform: none; letter-spacing: -0.01em;
     }
     body.theme-apple .kicker { font-size: 15px; font-weight: 600; }
@@ -405,7 +405,7 @@
     body.theme-apple .money { border: none; border-radius: 12px; }
     body.theme-apple .money:focus-within { box-shadow: 0 0 0 2px var(--blue); }
     body.theme-apple .stat { border-radius: 14px; }
-    body.theme-apple .bar, body.theme-apple .meter-bar { background: var(--row); }
+    body.theme-apple .bar { background: var(--row); }
     body.theme-apple .bar > div { background: var(--blue); animation: none; }
     body.theme-apple .btn { min-height: 50px; border-radius: 999px; border: none; font-weight: 600; background: var(--blue-soft); color: var(--blue); transition: transform 0.4s var(--ease), filter 0.2s; }
     body.theme-apple .btn:hover { background: var(--blue-soft); color: var(--blue); filter: brightness(0.96); transform: scale(0.99); }
@@ -663,13 +663,6 @@
     .excuse p { padding: 0 18px 16px; font-size: 16px; line-height: 1.5; color: var(--text); animation: fade 0.3s ease both; }
     .excuse p strong { color: var(--green); }
 
-    /* Convinced-o-meter */
-    .meter { max-width: 560px; margin: 0 auto 26px; text-align: left; }
-    .meter-top { display: flex; justify-content: space-between; font-size: 14px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
-    .meter-top b { color: var(--green); font-size: 18px; letter-spacing: 0; }
-    .meter-bar { height: 16px; border-radius: 99px; background: var(--border); overflow: hidden; }
-    .meter-bar div { height: 100%; width: 0; border-radius: 99px; background: linear-gradient(90deg, #f59e0b, #22c55e); transition: width 0.6s cubic-bezier(.2, 1.2, .4, 1); }
-    .meter-hint { font-size: 13px; color: var(--muted); margin-top: 6px; }
     .toast {
       position: fixed; top: 20px; left: 50%; z-index: 70;
       transform: translateX(-50%);
@@ -1157,11 +1150,6 @@
         <div><div class="kicker">The ask</div><div class="lead">That's everything. One last step.</div></div>
       </div>
       <section class="card decide" id="decide">
-        <div class="meter">
-          <div class="meter-top"><span>Convinced-o-meter</span><b id="meterPct">10%</b></div>
-          <div class="meter-bar"><div id="meterFill"></div></div>
-          <div class="meter-hint" id="meterHint">Bust excuses, try The Math, and answer bubbles to fill it up.</div>
-        </div>
         <h2 class="ask">Please buy me them. 🙏</h2>
         <div class="sub">Reasons, math, answers, and a signed deal. Only one right answer left.</div>
         <div class="decide-zone" id="decideZone">
@@ -1262,8 +1250,7 @@
         "Used every day, from 20 hours of battery to 0%. That's the opposite of a waste. 🔋",
         "Fun fact: tapping the green button takes you straight to the sellers list. Just saying. 🛒",
         "Imagine the group hug when they arrive. 🫂 Now imagine scrolling past this counter instead.",
-        "Gaming IEMs with a super long cord aren't school headphones. You both know that. 🎮",
-        "Check the Convinced-o-meter at the bottom. How full is it for you two? 📊"
+        "Gaming IEMs with a super long cord aren't school headphones. You both know that. 🎮"
       ],
       custom: [
         "Wouldn't it be frustrating if only one of your earbuds worked? That's me right now. 🎧",
@@ -1329,7 +1316,6 @@
       if (SHOP) a.href = SHOP; else a.hidden = true;
     });
     const openShop = () => SHOP && window.open(SHOP, "_blank", "noopener");
-    document.querySelectorAll(".retail-link").forEach(a => a.addEventListener("click", () => typeof addConvinced === "function" && addConvinced(12)));
 
     // ---- Reading progress bar ----
     function onScroll() {
@@ -1622,9 +1608,7 @@
     // Browsers only allow sound after a click, so the menu click unlocks it
     document.addEventListener("pointerdown", unlockAudio, { once: true });
 
-    // ---- Convinced-o-meter ----
-    let meter = 10;
-    const METER_HINTS = [[40, "Getting warmer... 🔥"], [70, "Almost there! 👀"], [100, "100% convinced. Press YES below! 🎉"]];
+    // ---- Toast ----
     function toast(msg) {
       document.querySelectorAll(".toast").forEach(x => x.remove());
       const t = document.createElement("div");
@@ -1633,23 +1617,10 @@
       document.body.appendChild(t);
       setTimeout(() => t.remove(), 2700);
     }
-    function addConvinced(n) {
-      if (meter >= 100) return;
-      meter = Math.min(100, meter + n);
-      $("meterPct").textContent = meter + "%";
-      $("meterFill").style.width = meter + "%";
-      const hint = METER_HINTS.find(([lim]) => meter < lim) || METER_HINTS[METER_HINTS.length - 1];
-      $("meterHint").textContent = meter >= 100 ? METER_HINTS[2][1] : hint[1];
-      if (meter >= 100) {
-        toast("Convinced-o-meter: 100%! Time to press YES 🎉");
-        $("decide").scrollIntoView({ behavior: "smooth", block: "center" });
-      }
-    }
-    $("meterFill").style.width = meter + "%";
     document.querySelectorAll(".excuse").forEach(d => {
       let counted = false;
       d.addEventListener("toggle", () => {
-        if (d.open && !counted) { counted = true; addConvinced(10); toast("Excuse busted ✔"); }
+        if (d.open && !counted) { counted = true; toast("Excuse busted ✔"); }
       });
     });
 
@@ -1692,9 +1663,7 @@
           const btn = document.createElement("button");
           btn.textContent = label;
           btn.onclick = () => {
-            if (label.startsWith("🛒")) { openShop(); addConvinced(12); }
-            else if (/Hmm|Nice try/.test(label)) addConvinced(3);
-            else addConvinced(8);
+            if (label.startsWith("🛒")) openShop();
             dismiss(b);
           };
           r.appendChild(btn);
@@ -1747,8 +1716,6 @@
       const saved = JSON.parse(localStorage.getItem("calc") || "null");
       if (saved) { $("price").value = saved[0] || DEFAULT_PRICE; $("q1").value = saved[1] || ""; }
     } catch (e) {}
-    let calcCounted = false;
-    $("price").addEventListener("input", () => { if (!calcCounted && $("price").value) { calcCounted = true; addConvinced(15); } });
     $("price").addEventListener("input", calc);
     $("q1").addEventListener("input", calc);
     calc();
@@ -1777,7 +1744,7 @@
         r.textContent = replies[ans];
         box.appendChild(r);
         quizDone++;
-        if (ans === agree) { quizRight++; addConvinced(6); }
+        if (ans === agree) quizRight++;
         if (quizDone === QUIZ.length) {
           $("quizScore").textContent = `You agreed with me ${quizRight}/${QUIZ.length}. ` +
             (quizRight >= 3 ? "So... we agree I need them. 😎" : "Read the Excuse Busters and try again. 😉");
@@ -1809,7 +1776,7 @@
       const c = li.querySelector("input");
       c.checked = checked; c.disabled = !!locked; c.dataset.text = text;
       li.querySelector("span").textContent = text;
-      c.addEventListener("change", () => { renderTerms(); if (c.checked) addConvinced(5); });
+      c.addEventListener("change", () => { renderTerms(); });
       $("offers").appendChild(li);
     });
     renderTerms();
@@ -1821,7 +1788,6 @@
       $("signedDate").textContent = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
       $("contract").classList.add("signed");
       document.querySelectorAll("#offers input").forEach(c => c.disabled = true);
-      addConvinced(100);
       sayYes(e);
       toast("Deal signed! ✍️ Best. Parents. Ever.");
     });

@@ -19,7 +19,7 @@ The page opens in a plain black-and-white look with the "Who are you?" menu:
 5. **Your questions**: Excuse Busters, 14 objections answered.
 6. **Gut check**: the "Would You?" quiz.
 7. **My side of the deal**: my promises and a contract the parent can sign.
-8. **The ask**: the Convinced-o-meter and **"Please buy me them. 🙏"** with YES / (runaway) No.
+8. **The ask**: **"Please buy me them. 🙏"** with YES / (runaway) No.
 
 **Returning visitors** see "Welcome back, [name]" with one button that skips straight to the story in their last theme, or "Start over" to pick again.
 
