@@ -991,7 +991,6 @@
             <li>One AirPod Pro 3 bud works. The other is dead.</li>
             <li>IEMs with a super long gaming cord. Not a school thing.</li>
             <li>Class videos and assignments with half the audio.</li>
-            <li>Asking. Waiting. Hearing "I'm working on it."</li>
           </ul>
         </div>
         <div class="ba-arrow">➡️</div>
@@ -1014,17 +1013,8 @@
         <span class="step">3</span>
         <div><div class="kicker">How long it's been</div><div class="lead">Meanwhile, the clock keeps ticking.</div></div>
       </div>
-      <div class="grid live">
-      <!-- Timer 1: days since the ask -->
-      <section class="card">
-        <span class="badge" id="sinceBadge">"I'm working on it"</span>
-        <div class="status red" id="sinceStatus">Still waiting</div>
-        <h2 id="sinceTitle">Days Since I Asked</h2>
-        <div class="big red" id="sinceDays">0</div>
-        <div class="sub" id="sinceExact">Since Tuesday, September 29, 2026</div>
-      </section>
-
-      <!-- Timer 2: countdown to birthday -->
+      <div class="live">
+      <!-- Countdown to birthday -->
       <section class="card">
         <span class="badge">Birthday Countdown</span>
         <div class="status">Coming up</div>
@@ -1038,10 +1028,7 @@
       <section class="card list">
         <h3>📌 Key Dates</h3>
       <div class="tiles">
-        <div class="tile"><span class="t-ico">📅</span><span class="t-label">Asked Dad to start (Tue)</span><span class="t-val">Sep 29</span></div>
         <div class="tile cake"><span class="t-ico">🎂</span><span class="t-label">My Birthday</span><span class="t-val">Nov 12</span></div>
-        <div class="tile hot"><span class="t-ico">⏳</span><span class="t-label">Days Dad's been "working on it"</span><span class="t-val" id="rowSince">0</span></div>
-        <div class="tile hot"><span class="t-ico">🏫</span><span class="t-label">Days without REAL headphones at school</span><span class="t-val" id="schoolDays">0</span></div>
         <div class="tile" id="rowUntilWrap"><span class="t-ico">⌛</span><span class="t-label">Days left to deliver</span><span class="t-val" id="rowUntil">0</span></div>
         <div class="tile mystery" id="doneTile"><span class="t-ico">✅</span><span class="t-label">Completed on</span><span class="t-val" id="rowDone">???</span></div>
       </div>
@@ -1092,8 +1079,6 @@
         <details class="excuse"><summary>"You already have enough tech."</summary><p>This doesn't <strong>add</strong> to my stuff, it <strong>replaces</strong> what's broken. One dead earbud and a gaming cord aren't "enough", they're <strong>nothing usable at school</strong>.</p></details>
         <details class="excuse"><summary>"Why do you even need headphones at school?"</summary><p><strong>Class videos, assignments, and focusing</strong> in loud rooms. Teachers expect us to have them. Right now I can't do that properly.</p></details>
         <details class="excuse"><summary>"It's a lot of money at once."</summary><p>Not all from you: <strong>my Q1 money comes off the top</strong>. And spread over daily use it's <strong>cents per day</strong>. One purchase, years of use.</p></details>
-        <details class="excuse"><summary>"We already said no."</summary><p>Then why is Dad <strong>"working on it"</strong>? 😏 Sounds like a yes that's <strong>still loading</strong>.</p></details>
-        <details class="excuse"><summary>"I'm working on it."</summary><p>Awesome! The <strong>sellers list is one click away</strong>: the green 🛒 button, bottom-right. 😉</p></details>
       </div>
       </section>
     </div>
@@ -1131,7 +1116,7 @@
             <h4>Official Agreement</h4>
             <p>I, <b>Caden</b>, agree to:</p>
             <ul id="contractTerms"></ul>
-            <p>In return, <b id="parentWord">my parent</b> agrees to get me the <b>AirPods Max 2</b> and a <b>custom case</b>, ordered from the sellers list.</p>
+            <p>In return, <b id="parentWord">Mom</b> agrees to get me the <b>AirPods Max 2</b> and a <b>custom case</b>, ordered from the sellers list.</p>
             <div class="sign-row">
               <input type="text" id="signName" placeholder="Sign here" autocomplete="off">
               <label><input type="checkbox" id="signAgree"> I agree</label>
@@ -1157,7 +1142,7 @@
           <button class="no" id="noBtn">No</button>
         </div>
         <div class="decided">
-          <h2>BEST. PARENTS. EVER. 💙</h2>
+          <h2>BEST. MOM. EVER. 💙</h2>
           <p>Thank you!! Here's where to grab them:</p>
           <a class="shop-btn retail-link" href="#" target="_blank" rel="noopener">🛒 Open the sellers list</a>
         </div>
@@ -1174,10 +1159,7 @@
     <div class="modal" id="modal">
       <h2>Who are you?</h2>
       <div class="choices">
-        <button class="btn" data-who="dad">My dad</button>
         <button class="btn" data-who="mom">My mom</button>
-        <button class="btn" data-who="both">Both of us<small>Mom and Dad, together</small></button>
-        <button class="btn" data-who="custom">Custom<small>Someone else, not my mom or my dad</small></button>
       </div>
     </div>
   </div>
@@ -1192,72 +1174,28 @@
 
     const REASONS_HINT = "Forgot some of the reasons I want the AirPods Max 2? See the banner at the top!";
     const MESSAGES = {
-      dad: "Hey Dad, could you please hurry up a little? 🙏 I know, I know, you're \"working on it.\" But the counter below is literally ticking, and it's not getting any smaller. Love you, but... tick tock. ⏰",
-      mom: "Hey, can I please get this? PLEEEASE? 🥺 Pitches can be hit or miss, so instead of another one, this timer is here to show you that this investment is really worth it, and you know it. I didn't want to annoy you, so this is how I'm presenting it. Pretty please? 🙏",
-      both: "Hey Mom and Dad! 👋 Since you're both here... can we PLEASE make this happen? 🥺 Dad's been \"working on it,\" Mom could help him cross the finish line, and I'm chipping in my Q1 money. Teamwork makes the dream work. 🤝"
+      mom: "Hey, can I please get this? PLEEEASE? 🥺 Pitches can be hit or miss, so instead of another one, this timer is here to show you that this investment is really worth it, and you know it. I didn't want to annoy you, so this is how I'm presenting it. Pretty please? 🙏"
     };
-    const HEADINGS = { dad: "Hey Dad 👋", mom: "Hey Mom 🥺", both: "Hey Mom & Dad 👋👋" };
+    const HEADINGS = { mom: "Hey Mom 🥺" };
     const TAGLINES = {
-      dad: "Dad, could you please hurry up a little? ⏰",
-      mom: "Mom, can I please get this? PLEEEASE 🥺",
-      both: "Mom & Dad, can we please make this happen? 🙏"
+      mom: "Mom, can I please get this? PLEEEASE 🥺"
     };
 
-    // Little chat bubbles shown in the corner, one at a time. {since} = days waited so far.
+    // Little chat bubbles shown in the corner, one at a time.
     const BUBBLES = {
-      dad: [
-        "Wouldn't it suck if the one AirPod you use for the TV on weekend mornings died, so you couldn't hear anything without waking up Mom? That's me at school, every single day.",
-        "Imagine asking for something and hearing \"I'm working on it\" for {since} days. Would you be patient? 😅",
-        "At school I need audio for videos and assignments. One working bud means I'm missing half of it. Could we fix that a little faster?",
-        "If you got them today, this counter stops forever and you never have to see this page again. Tempting, right? 👀",
-        "What's the hold-up, honestly? I'll put my Q1 grade money toward it. Deal? 🤝",
-        "That's {school} days at school without real headphones. Would you sit through {school} days of meetings with one ear? 🫠",
-        "You always say buy quality once instead of cheap twice. Isn't this exactly that? 💯",
-        "Real talk: is it \"working on it\" or \"waiting it out\"? 😏 Either way, the sellers list is one click away.",
-        "Every day you wait, this number goes up and you have to look at it. Every. Single. Day. 📈",
-        "Ordering takes about 2 minutes. You've spent longer reading these bubbles. 😂",
-        "Picture my face when they show up. Now picture the counter turning into confetti. 🎉 Worth it?",
-        "My IEMs are made for gaming at home. Would you wear a 6-foot cord around school all day? 🎮",
-        "You wouldn't take a desk phone to work. Why would I take gaming IEMs to school? 😂",
-        "Check the Excuse Busters on the page. I answered every one in advance. 🛡️",
-        "There's a contract on this page. It has a stamp. Just saying. ✍️",
-        "Take the \"Would You?\" quiz. I bet you agree with me 4/4. 😎"
-      ],
       mom: [
         "Wouldn't it be annoying to hear everything with just one ear? That's my life right now. 😩",
         "At school, a broken bud means I can't hear class videos properly. You want my grades to stay good, right? 📚",
         "I'm putting my Q1 grade money toward it. Isn't that a pretty fair deal? 💵",
         "20 hours of battery, used down to 0% every day. Isn't something used every single day worth it? 🔋",
-        "Could you maybe give Dad a tiny nudge? It's been {since} days... 👉👈",
         "You know I'll actually use them. Not a phase, not a drawer item. Every day. 🥺",
         "Over-ear headphones are also way easier to not lose than tiny earbuds. Fewer replacements later! 🧠",
         "I made a whole website instead of whining. That's growth, right? 📈😇",
-        "{school} days without real headphones at school so far. Can we not make it {school_plus}? 🙏",
-        "You and Dad could split the \"best parent\" title. I'll make a trophy. 🏆",
         "PLEEEEASE? I'll even stop sending you these bubbles. Promise. 🫶",
         "My IEMs are for gaming at home, and the cord is SO long. Not school-friendly at all. 😩",
         "Look at the Before/After on the page. Which version of my school day do you want for me? 🥺",
-        "{school} days without real headphones at school. That's a lot of half-heard lessons. 📚",
         "I promised good Q2 grades AND no asking for stuff until my birthday. It's in The Deal. 📝",
         "One signature, one click on the sellers list, and you're the hero of this story. 🦸‍♀️"
-      ],
-      both: [
-        "Two parents, one tiny decision, {since} days. We can do this! 🤝",
-        "Dad's \"working on it.\" Mom, you can be the closer. 🏁",
-        "I'm covering part of it with my Q1 money. That's three of us splitting it. Totally fair, right? 💵",
-        "Wouldn't it be nice to never hear me mention earbuds again? One order fixes that. 🙉",
-        "{school} days without real headphones at school. Both of you would've fixed that for yourselves by now. 😅",
-        "Used every day, from 20 hours of battery to 0%. That's the opposite of a waste. 🔋",
-        "Fun fact: tapping the green button takes you straight to the sellers list. Just saying. 🛒",
-        "Imagine the group hug when they arrive. 🫂 Now imagine scrolling past this counter instead.",
-        "Gaming IEMs with a super long cord aren't school headphones. You both know that. 🎮"
-      ],
-      custom: [
-        "Wouldn't it be frustrating if only one of your earbuds worked? That's me right now. 🎧",
-        "It's been {since} days of \"I'm working on it.\" Would you wait that long? ⏳",
-        "Something used every day, from 20 hours of battery to 0%, is worth it. Don't you think? 🔋",
-        "{school} days without real headphones at school. Rough, right? 🏫",
-        "If you know my parents, feel free to give them a little nudge. 😉"
       ]
     };
     const REPLIES = [
@@ -1268,9 +1206,7 @@
     ];
 
     const DONE_MESSAGES = {
-      dad: "Party, woo! It's all done. We got it! Thank you, Dad. 🎉",
-      mom: "Party, woo! It's all done. We got it! Thank you, Mom. 🎉",
-      both: "Party, woo! It's all done. We got it! Thank you, Mom and Dad. 🎉"
+      mom: "Party, woo! It's all done. We got it! Thank you, Mom. 🎉"
     };
 
     const $ = id => document.getElementById(id);
@@ -1300,16 +1236,6 @@
       return Math.round((ub - ua) / DAY);
     }
 
-    // Weekdays from the ask through today (school days with one earbud)
-    function schoolDays(now) {
-      let n = 0;
-      for (let d = new Date(START); d <= now; d.setDate(d.getDate() + 1)) {
-        const w = d.getDay();
-        if (w !== 0 && w !== 6) n++;
-      }
-      return n;
-    }
-
     // ---- Retailer links ----
     const SHOP = typeof RETAILERS_URL !== "undefined" ? RETAILERS_URL : "";
     document.querySelectorAll(".retail-link").forEach(a => {
@@ -1336,11 +1262,11 @@
     syncToggle();
 
     // ---- "Who are you?" menu → message → theme → intro → story ----
-    const NAMES = { dad: "Dad", mom: "Mom", both: "Mom & Dad" };
+    const NAMES = { mom: "Mom" };
     const INTRO_QA = [
-      ["What is it?", "A site I built with one job: getting me the AirPods Max 2. It counts the days since I asked, counts down to my birthday, and keeps every reason in one place."],
+      ["What is it?", "A site I built with one job: getting me the AirPods Max 2. It counts down to my birthday and keeps every reason in one place."],
       ["What is it for?", "Instead of nagging you every day, the whole pitch lives here: why I need them, what changes, what it costs, your questions answered, and my side of the deal."],
-      ["Why not just ask again?", "I did, on Tuesday, September 29. Pitches can be hit or miss. This one doesn't forget anything, and you can read it at your own pace."],
+      ["Why not just ask again?", "Pitches can be hit or miss. This one doesn't forget anything, and you can read it at your own pace."],
       ["How does it work?", "It's a story in 8 short steps. Read from top to bottom and it ends with one simple question."]
     ];
     const viewer = { who: null, name: "" };
@@ -1381,24 +1307,10 @@
       startBubbles(viewer.who);
     }
 
-    function nameScreen() {
-      const input = el("input", "name-input");
-      input.id = "nameInput";
-      input.placeholder = "Your name";
-      input.maxLength = 40;
-      input.autocomplete = "given-name";
-      const go = actionBtn("name", "Continue", true);
-      input.addEventListener("keydown", e => { if (e.key === "Enter") go.click(); });
-      showScreen(el("h2", null, "What's your name? 👋"), el("p", null, "So I know who I'm talking to."), input, go);
-      input.focus();
-    }
-
     function messageScreen() {
-      const { who, name } = viewer;
-      const heading = HEADINGS[who] || `Hey ${name} 👋`;
-      const msg = DONE
-        ? (DONE_MESSAGES[who] || `Party, woo! It's all done. We got it! Thanks for checking in, ${name}. 🎉`)
-        : (MESSAGES[who] || `Hey ${name}! 👋 Thanks for stopping by. I'm trying to get the AirPods Max 2, and this site is how I'm making my case. If you know my parents, you might be able to help. 😉`);
+      const { who } = viewer;
+      const heading = HEADINGS[who];
+      const msg = DONE ? DONE_MESSAGES[who] : MESSAGES[who];
       const hint = el("p", "hint", REASONS_HINT);
       hint.hidden = !!DONE;
       showScreen(el("h2", null, heading), el("p", null, msg), hint, actionBtn("toTheme", "Next: pick a theme 🎨", true));
@@ -1484,19 +1396,11 @@
       if (btn.dataset.who) {
         const who = btn.dataset.who;
         viewer.who = who;
-        if (who === "custom") return nameScreen();
         viewer.name = NAMES[who];
         return setViewer();
       }
       if (btn.dataset.theme) return applyTheme(btn.dataset.theme, e.clientX || innerWidth / 2, e.clientY || innerHeight / 2, introScreen);
       const act = btn.dataset.act;
-      if (act === "name") {
-        const input = $("nameInput");
-        const name = input.value.trim();
-        if (!name) { input.focus(); input.placeholder = "Type your name first 🙂"; return; }
-        viewer.name = name;
-        return setViewer();
-      }
       if (act === "toTheme") return themeScreen();
       if (act === "resume") {
         const saved = store.get("viewer");
@@ -1511,14 +1415,14 @@
     function setViewer(quiet) {
       const { who, name } = viewer;
       store.set("viewer", { who, name });
-      $("parentWord").textContent = NAMES[who] || name;
+      $("parentWord").textContent = NAMES[who];
       $("signName").placeholder = `${name}, sign here`;
-      if (!DONE) $("tagline").textContent = TAGLINES[who] || `${name}, help me make this happen 🙏`;
+      if (!DONE) $("tagline").textContent = TAGLINES[who];
       if (!quiet) messageScreen();
     }
     {
       const saved = store.get("viewer");
-      if (saved && saved.who && saved.name) welcomeBackScreen(saved);
+      if (saved && NAMES[saved.who]) welcomeBackScreen(saved);
     }
 
     // ---- Theme switcher (any time after the menu) ----
@@ -1627,7 +1531,6 @@
     // ---- Persuasion bubbles ----
     const AVATAR = "🎧";
     let bubbleIdx = 0, bubbleTimer = null;
-    function currentSince() { return Math.max(0, dayDiff(START, new Date())); }
     function dismiss(b) {
       if (!b.isConnected || b.classList.contains("out")) return;
       b.classList.add("out");
@@ -1636,11 +1539,7 @@
     function showBubble(list) {
       const box = $("bubbles");
       while (box.children.length >= 2) dismiss(box.firstElementChild);
-      const sd = schoolDays(new Date());
-      const text = list[bubbleIdx % list.length]
-        .replaceAll("{since}", currentSince())
-        .replaceAll("{school_plus}", sd + 1)
-        .replaceAll("{school}", sd);
+      const text = list[bubbleIdx % list.length];
       const replies = REPLIES[bubbleIdx % REPLIES.length];
       bubbleIdx++;
 
@@ -1682,7 +1581,7 @@
       bubbleWho = who;
       stopBubbles();
       if (DONE || new Date() >= BDAY || !soundOn) return; // muted bell = no bubbles
-      const list = BUBBLES[who] || BUBBLES.custom;
+      const list = BUBBLES[who] || BUBBLES.mom;
       firstBubble = setTimeout(() => showBubble(list), 3500);
       bubbleTimer = setInterval(() => showBubble(list), 18000);
     }
@@ -1789,7 +1688,7 @@
       $("contract").classList.add("signed");
       document.querySelectorAll("#offers input").forEach(c => c.disabled = true);
       sayYes(e);
-      toast("Deal signed! ✍️ Best. Parents. Ever.");
+      toast("Deal signed! ✍️ Best. Mom. Ever.");
     });
 
     // ---- Decision card: YES celebrates, "No" runs away ----
@@ -1860,23 +1759,13 @@
     // ---- Completion state ----
     if (DONE) {
       document.body.classList.add("is-done");
-      const took = Math.max(0, dayDiff(START, DONE));
       $("doneBanner").innerHTML = "🎉 Party, woo! It's all done. We got it! 🎧<small></small>";
       $("doneBanner").querySelector("small").textContent = `Hey, it's done on ${fmtDate(DONE)}.`;
       makeConfetti();
       $("title").textContent = "🎉 We Got It! 🎉";
-      $("sinceBadge").textContent = "All done";
       $("rowUntilWrap").hidden = true;
-      $("sinceTitle").textContent = "Days It Took";
-      $("sinceStatus").textContent = "Delivered";
-      $("sinceStatus").className = "status green";
-      $("sinceDays").className = "big green";
-      $("sinceDays").textContent = took;
-      $("sinceExact").textContent = `It took ${took} day${took === 1 ? "" : "s"}, done on ${DONE.toLocaleDateString("en-US")}`;
-      $("rowSince").textContent = took;
       $("rowDone").textContent = DONE.toLocaleDateString("en-US", { month: "short", day: "numeric" });
       $("doneTile").className = "tile won";
-      $("schoolDays").textContent = schoolDays(new Date(DONE.getTime() - 1));
     }
 
     // ---- Timers ----
@@ -1886,30 +1775,16 @@
       $("clock").textContent = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
 
       if (now >= BDAY) {
-        const total = dayDiff(START, DONE || BDAY);
         $("finalSummary").textContent = DONE
-          ? `The AirPods Max 2 arrived on ${fmtDate(DONE)}, after ${total} days.`
-          : `It took ${total} days of "I'm working on it" to reach this day.`;
-        $("rowSince").textContent = total;
+          ? `The AirPods Max 2 arrived on ${fmtDate(DONE)}.`
+          : "The countdown is over.";
         $("rowUntil").textContent = 0;
         document.body.classList.add("is-ended");
         clearInterval(timer);
         return;
       }
 
-      // Timer 1: days since (frozen once completed)
-      if (!DONE) {
-        const since = Math.max(0, dayDiff(START, now));
-        const el = now - START;
-        $("sinceDays").textContent = since;
-        $("sinceExact").textContent = el > 0
-          ? `${since}d ${pad(Math.floor(el / 3600000) % 24)}h ${pad(Math.floor(el / 60000) % 60)}m ${pad(Math.floor(el / 1000) % 60)}s since Tue, Sep 29`
-          : "Since Tuesday, September 29, 2026";
-        $("rowSince").textContent = since;
-        $("schoolDays").textContent = schoolDays(now);
-      }
-
-      // Timer 2: days until birthday
+      // Days until birthday
       const until = dayDiff(now, BDAY);
       const left = BDAY - now;
       $("untilDays").textContent = until;
